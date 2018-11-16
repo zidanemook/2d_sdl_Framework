@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{66702b3a-32ec-4532-b15b-ec37d83917e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Util">
+      <UniqueIdentifier>{459d2571-82c3-4d4e-b92a-2030a0e19d69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Header">
+      <UniqueIdentifier>{6a7b7a91-5e35-454c-817a-a1a34ab0d506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\SuperClass">
+      <UniqueIdentifier>{e72bbc7c-031a-4731-9b76-2519cd5b7ad9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Mode">
+      <UniqueIdentifier>{1f58ed28-a58a-4334-a718-97a696f0f0a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Obj">
+      <UniqueIdentifier>{484299af-5586-4995-a6dd-2bc963f2534c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Resource">
+      <UniqueIdentifier>{a6fb52a2-b3bb-40db-ba02-19b91fc582d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Component">
+      <UniqueIdentifier>{abe212aa-9381-45dd-a818-01026c47f4dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Obj\Dynamic">
+      <UniqueIdentifier>{753d69e3-596d-4738-ba1a-bb930c832805}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Obj\Static">
+      <UniqueIdentifier>{0d3909ed-4c08-4216-a773-02290a348864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Manager">
+      <UniqueIdentifier>{64eacf53-9354-42b3-9d9d-8695414119a1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\Main.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameMode\BaseMode.cpp">
+      <Filter>Src\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameMode\FadeSystem.cpp">
+      <Filter>Src\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Program.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Resource\Texture.cpp">
+      <Filter>Src\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Header\stdafx.cpp">
+      <Filter>Src\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Obj\Obj.cpp">
+      <Filter>Src\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Component\Component.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Obj\Dynamic\Unit.cpp">
+      <Filter>Src\Obj\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Component\Sprite.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Component\SingleTexture.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Component\Transform.cpp">
+      <Filter>Src\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Obj\Dynamic\Player.cpp">
+      <Filter>Src\Obj\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\ControlManager.cpp">
+      <Filter>Src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\KeyManager.cpp">
+      <Filter>Src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\ModeManager.cpp">
+      <Filter>Src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\ObjMgr.cpp">
+      <Filter>Src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\RenderManager.cpp">
+      <Filter>Src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\ResourceManager.cpp">
+      <Filter>Src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\SystemManager.cpp">
+      <Filter>Src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameMode\Game.cpp">
+      <Filter>Src\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameMode\Logo.cpp">
+      <Filter>Src\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameMode\Mainmenu.cpp">
+      <Filter>Src\Mode</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Util\Function.h">
+      <Filter>Src\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Header\Define.h">
+      <Filter>Src\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\SuperClass\Base.h">
+      <Filter>Src\SuperClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameMode\BaseMode.h">
+      <Filter>Src\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameMode\FadeSystem.h">
+      <Filter>Src\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Program.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Header\stdafx.h">
+      <Filter>Src\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Resource\Texture.h">
+      <Filter>Src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Obj\Obj.h">
+      <Filter>Src\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Component\Component.h">
+      <Filter>Src\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Obj\Dynamic\Unit.h">
+      <Filter>Src\Obj\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Component\Sprite.h">
+      <Filter>Src\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Component\SingleTexture.h">
+      <Filter>Src\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Component\Transform.h">
+      <Filter>Src\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Util\Vector2D.h">
+      <Filter>Src\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Obj\Dynamic\Player.h">
+      <Filter>Src\Obj\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\ControlManager.h">
+      <Filter>Src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\KeyManager.h">
+      <Filter>Src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\ModeManager.h">
+      <Filter>Src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\ObjMgr.h">
+      <Filter>Src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\RenderManager.h">
+      <Filter>Src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\ResourceManager.h">
+      <Filter>Src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\SystemManager.h">
+      <Filter>Src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameMode\Game.h">
+      <Filter>Src\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameMode\Logo.h">
+      <Filter>Src\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameMode\Mainmenu.h">
+      <Filter>Src\Mode</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Src\SuperClass\Base.inl">
+      <Filter>Src\SuperClass</Filter>
+    </None>
+  </ItemGroup>
+</Project>
