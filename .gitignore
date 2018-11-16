@@ -31,7 +31,7 @@
 
 # Debug folder
 Win32/*
-.vs/Wargame/v15/*
+.vs/*
 
 # Guitar
 *.bak
