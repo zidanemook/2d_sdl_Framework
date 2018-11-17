@@ -14,14 +14,14 @@
 #include "Mainmenu.h"
 
 const int TargetFPS = 60;
-const double dFramedelaySecond = 1.0f / double(TargetFPS);
+const float fFramedelaySecond = ONESECOND / float(TargetFPS);
 static int FrameCounter = 0;
 
 static Uint64 NOW = SDL_GetPerformanceCounter();
 static Uint64 LAST = SDL_GetPerformanceCounter();
 static float fTime = 0.f;
 
-double deltaTime = 0.f;
+float deltaTime = 0.f;
 
 CProgram::CProgram()
 {
@@ -139,26 +139,25 @@ void CProgram::Update()
 	ModeMgr->Update();
 	OBJMGR->Update();
 	RdrMgr->Render();
-
 	
 	NOW = SDL_GetPerformanceCounter();
-	deltaTime = (double)((NOW - LAST) / (double)SDL_GetPerformanceFrequency());
+	deltaTime = ((NOW - LAST) / (float)SDL_GetPerformanceFrequency());
 
 	LAST = NOW;
 
-	//if (deltaTime < dFramedelaySecond)
-	//{
-	//	double dDelay = ((dFramedelaySecond - deltaTime) * 1000);
-	//	SDL_Delay(dDelay);
-	//}
+	if (deltaTime < fFramedelaySecond)
+	{
+		Uint32 fDelay = Uint32((fFramedelaySecond - deltaTime) * 1000);
+		SDL_Delay(fDelay);
+	}
 
 	FrameCounter++;
-	fTime += float(deltaTime);
-	if (fTime > 1.0f)
-	{
-		fTime = 0.f;
+	fTime += deltaTime;
+	if (fTime > ONESECOND)
+	{	
 		//wprintf(_T("FPS: %d\n"), FrameCounter);
 		FrameCounter = 0;
+		fTime = 0.f;
 	}
 }
 

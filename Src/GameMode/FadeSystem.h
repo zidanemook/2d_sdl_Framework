@@ -39,7 +39,7 @@ public:
 	void Initialize();
 	void OnRender();
 
-	void StartFade(eFadeStage eFadeType, double fFadeTime = 1.0f );
+	void StartFade(eFadeStage eFadeType, double fFadeTime = ONESECOND);
 	bool IsPlaying() { return m_bPlay; }
 
 private:

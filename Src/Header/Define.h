@@ -54,6 +54,7 @@ enum eKeyFunc
 	eKeyFunc_Max
 };
 
+//Related ToAnimationState function!!!
 enum eAnimationState
 {
 	eAnimationState_Idle,
@@ -68,6 +69,6 @@ enum eAnimationState
 	eAnimationState_Max
 };
 
-
+#define  ONESECOND 1.0f
 
 #endif //Define_h

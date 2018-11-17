@@ -19,4 +19,4 @@
 #include "Define.h"
 
 
-extern double deltaTime;
+extern float deltaTime;

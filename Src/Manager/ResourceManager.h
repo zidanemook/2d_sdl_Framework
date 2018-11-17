@@ -9,8 +9,8 @@
 
 #pragma once
 
-
 class CTexture;
+class CComponent;
 class CResourceManager
 {
 private:
@@ -39,13 +39,16 @@ public:
 public:
 	bool Init();
 	void Destroy();
-	bool LoadTextureCSVFile(const TCHAR* file);
+	bool LoadSingleTextureCSVFile(const TCHAR* file);
+	bool LoadSpriteTextureCSVFile(const TCHAR* file);
 	bool LoadTexture(const TCHAR* name, const TCHAR* tszfilepath);
 	SDL_Texture*	GetSDLTextureByName(const tstring& name);
 	CTexture*		GetTextureByName(const tstring& name);
+	CComponent*		GetSpriteComponent(const TCHAR* path);
 
 private:
-	std::map<tstring, CTexture*>	m_mapTexture;//Name, Texture
+	std::map<tstring, CTexture*>		m_mapTexture;//Name or Path, Texture
+	std::map<tstring, CComponent*>		m_mapSpriteComponent;
 };
 
 #define RSCMgr	CResourceManager::GetInstance()

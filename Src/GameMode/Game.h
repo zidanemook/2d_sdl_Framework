@@ -36,5 +36,8 @@ public:
 
 	void Init();
 	virtual void Update();
+
+	virtual void Open();
+	virtual void Close();
 };
 

@@ -42,10 +42,7 @@ void CGame::Free(void)
 
 void CGame::Init()
 {
-	CObj* pPlayer = CPlayer::Create();
-	pPlayer->Init();
-
-	OBJMGR->AddObj(pPlayer->GetName(), pPlayer);
+	
 }
 
 void CGame::Update()
@@ -53,4 +50,17 @@ void CGame::Update()
 	//CTRLMGR->
 	//OBJMGR->Update();
 	//RdrMgr->Render();
+}
+
+void CGame::Open()
+{
+	CObj* pPlayer = CPlayer::Create();
+	pPlayer->Init();
+
+	OBJMGR->AddObj(pPlayer->GetName(), pPlayer);
+}
+
+void CGame::Close()
+{
+
 }

@@ -43,8 +43,12 @@ void CMainmenu::Init()
 
 void CMainmenu::Update()
 {
-
-	//ModeMgr->ChangeMode(eModeTypes_Play);
+	if (KEYMGR->CheckKey(eKeyFunc_Enter, PUSHKEY) || KEYMGR->CheckKey(eKeyFunc_Enter, HOLDKEY)
+		|| KEYMGR->CheckKey(eKeyFunc_Interact, PUSHKEY) || KEYMGR->CheckKey(eKeyFunc_Interact, HOLDKEY)
+		|| KEYMGR->CheckKey(eKeyFunc_Esc, PUSHKEY) || KEYMGR->CheckKey(eKeyFunc_Esc, HOLDKEY))
+	{
+		ModeMgr->ChangeMode(eModeTypes_Play);
+	}
 }
 
 void CMainmenu::Open()

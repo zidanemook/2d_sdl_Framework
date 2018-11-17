@@ -10,7 +10,6 @@ protected:
 public:
 	inline size_t	AddRef(void);
 	inline size_t	Release(void);
-
 	inline virtual void Free(void) = 0;
 
 private:

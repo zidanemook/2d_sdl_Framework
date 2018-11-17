@@ -3,6 +3,8 @@
 #include "ResourceManager.h"
 #include "RenderManager.h"
 #include "Texture.h"
+#include "Sprite.h"
+#include "Component.h"
 #include <atlstr.h>
 #include <fstream> 
 
@@ -24,7 +26,10 @@ bool CResourceManager::Init()
 
 	//tstring ExePath = buffer;
 	
-	if (false == LoadTextureCSVFile(_T("Resource/Data/SingleTexture.csv")))
+	if (false == LoadSingleTextureCSVFile(_T("Resource/Data/SingleTexture.csv")))
+		return false;
+
+	if (false == LoadSpriteTextureCSVFile(_T("Resource/Data/SpriteTexture.csv")))
 		return false;
 
 	return true;
@@ -36,7 +41,7 @@ void CResourceManager::Destroy()
 	m_mapTexture.clear();
 }
 
-bool CResourceManager::LoadTextureCSVFile(const TCHAR* file)
+bool CResourceManager::LoadSingleTextureCSVFile(const TCHAR* file)
 {
 	std::wifstream wif(file);
 
@@ -75,10 +80,104 @@ bool CResourceManager::LoadTextureCSVFile(const TCHAR* file)
 			_tcscpy_s(tszPath, token);
 
 			LoadTexture(tszName, tszPath);
+		}
+	}
+	else
+		return false;
 
-			//token = wcstok_s(NULL, seps, &next_token);
-			//if (!token) return;
-			//int iGrade = _wtoi(token);
+	return true;
+}
+
+bool CResourceManager::LoadSpriteTextureCSVFile(const TCHAR* file)
+{
+	std::wifstream wif(file);
+
+	if (wif.is_open())
+	{
+		wif.imbue(std::locale("kor"));
+
+		TCHAR tszBuf[1024] = { 0, };
+
+		wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+
+		while (!wif.eof())
+		{
+			wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+
+			TCHAR seps[] = TEXT(",");
+			TCHAR *token;
+			TCHAR pStr[MAX_PATH];
+			TCHAR *next_token = NULL;
+
+			_tcscpy_s(pStr, tszBuf);
+			token = _tcstok_s(pStr, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszIndex[MAX_PATH] = { 0, };
+			_tcscpy_s(tszIndex, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszAnimationState[MAX_PATH] = { 0, };			
+			_tcscpy_s(tszAnimationState, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszName[MAX_PATH] = { 0, };
+			_tcscpy_s(tszName, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszPath[MAX_PATH] = { 0, };
+			_tcscpy_s(tszPath, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int OriginX = _ttoi(token);
+			
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int OriginY = _ttoi(token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int PixelSizeX = _ttoi(token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int PixelSizeY = _ttoi(token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int FrameTotalCount = _ttoi(token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int FramePerSecond = _ttoi(token);
+
+			std::map<tstring, CComponent*>::iterator iter;
+			iter = m_mapSpriteComponent.find(tszName);
+			if (iter == m_mapSpriteComponent.end())
+			{
+				LoadTexture(tszPath, tszPath);
+
+				CComponent* pSprite = CSprite::Create();
+				
+				if (pSprite)
+				{
+					pSprite->SetComponentType(eComponentTypes_Sprite);
+					dynamic_cast<CSprite*>(pSprite)->SetTexture(RSCMgr->GetTextureByName(tszPath));
+					dynamic_cast<CSprite*>(pSprite)->SetAnimData(dynamic_cast<CSprite*>(pSprite)->ToAnimationState(tszAnimationState), OriginX, OriginY, PixelSizeX, PixelSizeY, FrameTotalCount, FramePerSecond);
+
+					m_mapSpriteComponent.insert(std::make_pair(tszName, pSprite));
+				}
+			}
+			else
+			{
+				CComponent* pSprite = iter->second;
+				if(pSprite)
+					dynamic_cast<CSprite*>(pSprite)->SetAnimData(dynamic_cast<CSprite*>(pSprite)->ToAnimationState(tszAnimationState), OriginX, OriginY, PixelSizeX, PixelSizeY, FrameTotalCount, FramePerSecond);
+			}
+			
 		}
 	}
 	else
@@ -100,13 +199,11 @@ bool CResourceManager::LoadTexture(const TCHAR* name, const TCHAR* tszfilepath)
 	filepath = tszfilepath;
 #endif
 
-
-
 	if (m_mapTexture.find(name) != m_mapTexture.end())
 	{
-		char szMessage[MAX_PATH] = { 0, };
-		sprintf_s(szMessage, "%s is already exist\n", filepath.c_str());
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+		//char szMessage[MAX_PATH] = { 0, };
+		//sprintf_s(szMessage, "%s is already exist\n", filepath.c_str());
+		//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
 		return false;
 	}
 
@@ -147,6 +244,18 @@ CTexture* CResourceManager::GetTextureByName(const tstring& name)
 {
 	std::map<tstring, CTexture*>::iterator iter = m_mapTexture.find(name);
 	if (iter != m_mapTexture.end())
+	{
+		if (iter->second)
+			return iter->second;
+	}
+
+	return nullptr;
+}
+
+CComponent* CResourceManager::GetSpriteComponent(const TCHAR* path)
+{
+	std::map<tstring, CComponent*>::iterator iter = m_mapSpriteComponent.find(path);
+	if (iter != m_mapSpriteComponent.end())
 	{
 		if (iter->second)
 			return iter->second;

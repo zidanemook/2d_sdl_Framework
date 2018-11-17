@@ -58,8 +58,8 @@ void CObj::Update()
 
 void CObj::AddComponent(CComponent* pComponent)
 {
-	//pComponent->SetOwner(this);
-	//m_mapComponent.insert(std::make_pair(ComponentTypeToName(pComponent->GetComponentType()), pComponent));
+	pComponent->SetOwner(this);
+
 	if (m_Component[pComponent->GetComponentType()])
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "AddComponent failed", NULL);
