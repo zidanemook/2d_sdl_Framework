@@ -43,7 +43,8 @@ void CKeyManager::UpdateKeyBoardState()
 
 			m_LastKeyState[ nState ] = m_NowKeyState[ nState ];
 		}
-	}memset( m_NowKeyState, 0, sizeof( m_NowKeyState ) );
+	}
+	/*memset( m_NowKeyState, 0, sizeof( m_NowKeyState ) );
 
 	if( GetKeyboardState( m_NowKeyState ) )	
 	{
@@ -70,7 +71,7 @@ void CKeyManager::UpdateKeyBoardState()
 
 			m_LastKeyState[ nState ] = m_NowKeyState[ nState ];
 		}
-	}
+	}*/
 }
 
 bool CKeyManager::CheckInputKey( BYTE byInputKey, DWORD dwInputFlag )

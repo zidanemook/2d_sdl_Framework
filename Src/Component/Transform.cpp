@@ -4,6 +4,7 @@
 
 CTransform::CTransform()
 {
+	m_eComponentTypes = eComponentTypes_Transform;
 }
 
 

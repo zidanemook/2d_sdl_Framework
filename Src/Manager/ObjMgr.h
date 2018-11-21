@@ -30,6 +30,8 @@ private:
 	std::map<tstring, CObj*>	m_mapObject;
 //	std::set<tstring>			m_setDeleteList;
 
+	CObj*						m_pSelfPlayer;
+
 private:
 	int				m_NODEID;
 
@@ -43,7 +45,7 @@ public:
 	void PopObj(tstring& tsName);
 //	void ReservePopObj(tstring& tsName);
 	void Update();
-
+	CObj*	GetSelf();
 
 	/*void AddObj(CObj* pObj, OBJID ID);
 	void PopObj(CObj* pObj, OBJID ID);

@@ -2,6 +2,7 @@
 #include "function.h"
 #include "ObjMgr.h"
 #include "Obj.h"
+#include "Player.h"
 
 CObjMgr*	CObjMgr::m_pInst = nullptr;
 
@@ -9,6 +10,7 @@ CObjMgr::CObjMgr(void)
 {
 	Initialize();
 	m_NODEID = 1;
+	m_pSelfPlayer = NULL;
 }
 
 
@@ -18,6 +20,8 @@ CObjMgr::~CObjMgr(void)
 
 void CObjMgr::Initialize()
 {
+	m_pSelfPlayer = CPlayer::Create();
+	m_pSelfPlayer->Init();
 }
 
 void CObjMgr::Progress()
@@ -33,6 +37,9 @@ void CObjMgr::Destroy()
 {
 	for_each(m_mapObject.begin(), m_mapObject.end(), ReleaseMapElement());
 	m_mapObject.clear();
+
+	if (m_pSelfPlayer)
+		m_pSelfPlayer->Release();
 	/*for(int i = 0; i < OBJ_END; ++i)
 	{
 		for(iter = m_List[i].begin(); iter != m_List[i].end(); ++iter)
@@ -68,7 +75,8 @@ void CObjMgr::PopObj(tstring& tsName)
 
 void CObjMgr::Update()
 {
-	//for_each(m_mapObject.begin(), m_mapObject.end(), UpdateMapElement());
+	if (m_pSelfPlayer)
+		m_pSelfPlayer->Update();
 
 	std::map<tstring, CObj*>::iterator iter = m_mapObject.begin();
 	for (iter; iter != m_mapObject.end(); )
@@ -83,6 +91,14 @@ void CObjMgr::Update()
 		else
 			++iter;
 	}
+}
+
+CObj* CObjMgr::GetSelf()
+{
+	if(m_pSelfPlayer)
+		return m_pSelfPlayer;
+
+	return NULL;
 }
 
 //void CObjMgr::AddObj( CObj* pObj , OBJID ID)

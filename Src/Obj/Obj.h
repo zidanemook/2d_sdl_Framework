@@ -44,12 +44,22 @@ public:
 	void				SetAnimState(eAnimationState eState);
 	bool				IsDead();
 	bool				IsAnimFinish(eAnimationState eState);
+	void				DoMove(eMoveDirection eDirection);
+	eMoveDirection		GetMoveDirection();
+	void				SetDestWidth(int iWidth);
+	int					GetDestWidth();
+	void				SetDestHeight(int iHeight);
+	int					GetDestHeight();
 
 protected:
 	tstring				m_tsName;
 	eRenderLayer		m_eRenderLayer;
 	bool				m_bShow;
 	eAnimationState		m_eAnimState;
+	float				m_fMoveSpeed;//PerSecond
+	eMoveDirection		m_eMoveDirection;
+	int					m_iDestWidth;
+	int					m_iDestHeight;
 
 protected:
 	//std::map<tstring, CComponent*>	m_mapComponent;

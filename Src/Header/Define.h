@@ -57,7 +57,10 @@ enum eKeyFunc
 //Related ToAnimationState function!!!
 enum eAnimationState
 {
-	eAnimationState_Idle,
+	eAnimationState_Idle_Left,
+	eAnimationState_Idle_Right,
+	eAnimationState_Idle_Up,
+	eAnimationState_Idle_Down,
 	eAnimationState_Dead,
 	eAnimationState_Invincible,
 	eAnimationState_Left,
@@ -67,6 +70,14 @@ enum eAnimationState
 	eAnimationState_Attack,
 	eAnimationState_Defence,
 	eAnimationState_Max
+};
+
+enum eMoveDirection
+{
+	eMoveDirection_Left,
+	eMoveDirection_Up,
+	eMoveDirection_Right,
+	eMoveDirection_Down
 };
 
 #define  ONESECOND 1.0f

@@ -11,8 +11,8 @@
 #include <functional>
 #include <process.h>
 #include <algorithm>
-
 #include "Function.h"
+#include "Vector2D.h"
 
 #include <windows.h>
 #include "SDL.h"

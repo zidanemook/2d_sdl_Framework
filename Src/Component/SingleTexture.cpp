@@ -87,11 +87,19 @@ void CSingleTexture::SetShow(bool set)
 		if(m_pTexture)
 		{
 			if (m_pOwner)
-				RdrMgr->AddRenderCommand(m_pOwner->GetName(), m_pTexture->GetTexture(), NULL, NULL, eRenderLayer_UI, &m_bShow);
+				RdrMgr->AddRenderCommand(m_pOwner->GetName(), m_pTexture->GetTexture(), NULL, NULL, eRenderLayer_UI, m_pOwner->GetPos(),&m_bShow);
 			else
 			{
-				RdrMgr->AddRenderCommand(m_pTexture->GetPath(), m_pTexture->GetTexture(), NULL, NULL, eRenderLayer_UI, &m_bShow);
+				RdrMgr->AddRenderCommand(m_pTexture->GetPath(), m_pTexture->GetTexture(), NULL, NULL, eRenderLayer_UI, &m_vDestPos, &m_bShow);
 			}	
 		}
 	}	
+}
+
+void CSingleTexture::Set(SDL_Rect& srcRect, SDL_Rect& destRect, CTexture* pTexture)
+{
+	m_SrcRect = srcRect;
+	m_DestRect = destRect;
+	m_pTexture = pTexture;
+	m_vDestPos = Vector2D(float(destRect.x), float(destRect.y));
 }

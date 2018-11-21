@@ -7,6 +7,7 @@
 #define EFFECT_RENDER_DEFAULT	100
 #define UI_RENDER_DEFAULT		100
 
+class Vector2D;
 class CRenderCommand : public CBase
 {
 protected:
@@ -18,7 +19,7 @@ public:
 	inline virtual void Free(void);
 
 	void Initialize();
-	void Set(const tstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, bool* bpShow);
+	void Set(const tstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* vpPos, bool* bpShow);
 	bool IsInUse();
 	bool IsShow();
 	bool* GetShow();
@@ -31,6 +32,7 @@ public:
 	SDL_Rect*		GetSrcRect();
 	SDL_Rect*		GetDestRect();
 	eRenderLayer	GetRenderLayer();
+	Vector2D*		GetPos();
 
 protected:
 	tstring			m_tsName;
@@ -39,7 +41,9 @@ protected:
 	SDL_Rect*		m_pDestRect;
 	eRenderLayer	m_eRenderLayer;
 	bool			m_bIsInUse;
+	Vector2D*		m_pvPos;
 	bool*			m_pbShow;
+
 
 	friend class CRenderManager;
 };
@@ -77,7 +81,7 @@ public:
 	void RenderCopy(SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect);
 	void Render();
 	//Add when to render
-	void AddRenderCommand(const tstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, bool* bpShow);
+	void AddRenderCommand(const tstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* pvPos, bool* bpShow);
 	//void DeleteRenderCommand(tstring& name, eRenderLayer RenderLayer);
 	void AddEmpty(eRenderLayer eLayer);
 	void Destroy();

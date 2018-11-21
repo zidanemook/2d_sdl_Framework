@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "RenderManager.h"
+#include "Vector2D.h"
+#include "Function.h"
 
 //struct RenderFunc
 //{
@@ -13,6 +15,14 @@
 //
 //	}
 //};
+
+bool YSorting(CRenderCommand* Command1, CRenderCommand* Command2)
+{
+	if (Command1 && Command2 && Command1->GetPos() && Command2->GetPos())
+		return Command1->GetPos()->m_y < Command2->GetPos()->m_y ? true : false;
+
+	return false;
+}
 
 CRenderCommand::CRenderCommand()
 {
@@ -51,10 +61,12 @@ void CRenderCommand::Initialize()
 	m_pDestRect = nullptr;
 	m_eRenderLayer = eRenderLayer_None;
 	m_bIsInUse = false;
+	m_pvPos = NULL;
 	m_pbShow = NULL;
+	
 }
 
-void CRenderCommand::Set(const tstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, bool* bpShow)
+void CRenderCommand::Set(const tstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* vpPos, bool* bpShow)
 {
 	if ( pTexture && ( eRenderLayer_None != RenderLayer) )
 	{
@@ -91,7 +103,7 @@ bool* CRenderCommand::GetShow()
 
 void CRenderCommand::operator=(CRenderCommand* pRenderCommand)
 {
-	Set(pRenderCommand->GetName(), pRenderCommand->GetTexture(), pRenderCommand->GetSrcRect(), pRenderCommand->GetDestRect(), pRenderCommand->GetRenderLayer(), pRenderCommand->GetShow());
+	Set(pRenderCommand->GetName(), pRenderCommand->GetTexture(), pRenderCommand->GetSrcRect(), pRenderCommand->GetDestRect(), pRenderCommand->GetRenderLayer(), pRenderCommand->GetPos(),pRenderCommand->GetShow());
 }
 
 //void CRenderCommand::SetInUse(bool bInuse)
@@ -122,6 +134,11 @@ SDL_Rect* CRenderCommand::GetDestRect()
 eRenderLayer CRenderCommand::GetRenderLayer()
 {
 	return m_eRenderLayer;
+}
+
+Vector2D* CRenderCommand::GetPos()
+{
+	return m_pvPos;
 }
 
 //-------------------------------------------------------------------
@@ -206,6 +223,9 @@ void CRenderManager::Render()
 
 	for (int Layer = 0; Layer < eRenderLayer_Max; ++Layer)
 	{
+		if(eRenderLayer_Object == Layer )
+			std::sort((m_vRenderCommand[Layer]).begin(), (m_vRenderCommand[Layer]).end(), YSorting);
+
 		for (size_t i = 0; i != (m_vRenderCommand[Layer]).size(); ++i)
 		{
 			pRenderCommand = m_vRenderCommand[Layer][i];
@@ -235,14 +255,14 @@ void CRenderManager::Render()
 	RenderPresent();
 }
 
-void CRenderManager::AddRenderCommand(const tstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, bool* bpShow)
+void CRenderManager::AddRenderCommand(const tstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* pvPos, bool* bpShow)
 {
 	if (true == (m_vRenderCommand[RenderLayer]).empty())
 		return;
 
 	if (false == m_vRenderCommand[RenderLayer][m_iEmptyIndex[RenderLayer]]->IsInUse())
 	{
-		m_vRenderCommand[RenderLayer][m_iEmptyIndex[RenderLayer]]->Set(name, pTexture, pSrcRect, pDestRect, RenderLayer, bpShow);
+		m_vRenderCommand[RenderLayer][m_iEmptyIndex[RenderLayer]]->Set(name, pTexture, pSrcRect, pDestRect, RenderLayer, pvPos,bpShow);
 		m_iEmptyIndex[RenderLayer]++;
 		if ((int)(m_vRenderCommand[RenderLayer]).size() <= m_iEmptyIndex[RenderLayer])
 			AddEmpty(RenderLayer);

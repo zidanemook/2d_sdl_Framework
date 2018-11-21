@@ -2,6 +2,7 @@
 
 #pragma once
 #include "Component.h"
+#include "Vector2D.h"
 
 typedef struct tagAnimData
 {
@@ -36,6 +37,8 @@ public:
 	void SetTexture(CTexture* pTexture);
 	eAnimationState ToAnimationState(TCHAR* tszAnimState);
 	void SetAnimationState(eAnimationState eAnimState);
+	void SetDestRectWidth(int iWidth);
+	void SetDestRectHeight(int iHeight);
 
 private:
 	CTexture*	m_pTexture;
@@ -43,9 +46,13 @@ private:
 	bool				m_bShow;
 	int					m_iCurrentFrame;
 	float				m_fTime;
+	
 	stAnimData			m_Animation[eAnimationState_Max];
+	float				m_fSecondPerFrame[eAnimationState_Max];
+
 	eAnimationState		m_eAnimationState;
 	SDL_Rect			m_SrcRect;
 	SDL_Rect			m_DestRect;
+	Vector2D			m_vDestPos;
 };
 

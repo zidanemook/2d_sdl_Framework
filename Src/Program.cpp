@@ -145,17 +145,17 @@ void CProgram::Update()
 
 	LAST = NOW;
 
-	if (deltaTime < fFramedelaySecond)
-	{
-		Uint32 fDelay = Uint32((fFramedelaySecond - deltaTime) * 1000);
-		SDL_Delay(fDelay);
-	}
+	//if (deltaTime < fFramedelaySecond)
+	//{
+		//Uint32 fDelay = Uint32((fFramedelaySecond - deltaTime) * 1000);
+		//SDL_Delay(fDelay);
+	//}
 
 	FrameCounter++;
 	fTime += deltaTime;
 	if (fTime > ONESECOND)
 	{	
-		//wprintf(_T("FPS: %d\n"), FrameCounter);
+		wprintf(_T("FPS: %d\n"), FrameCounter);
 		FrameCounter = 0;
 		fTime = 0.f;
 	}

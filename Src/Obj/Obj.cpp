@@ -11,7 +11,9 @@ CObj::CObj()
 {
 	m_eRenderLayer = eRenderLayer_None;
 	m_bShow = true;
-	m_eAnimState = eAnimationState_Idle;
+	m_eAnimState = eAnimationState_Idle_Down;
+	m_fMoveSpeed = 1.f;
+	m_eMoveDirection = eMoveDirection_Down;
 	for (int i = eComponentTypes_None; i < eComponentTypes_Max; ++i)
 	{
 		m_Component[i] = NULL;
@@ -65,7 +67,13 @@ void CObj::AddComponent(CComponent* pComponent)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "AddComponent failed", NULL);
 		return;
 	}
-		
+	
+	if (pComponent->GetComponentType() == eComponentTypes_Sprite)
+	{
+		dynamic_cast<CSprite*>(pComponent)->SetDestRectHeight(m_iDestHeight);
+		dynamic_cast<CSprite*>(pComponent)->SetDestRectWidth(m_iDestWidth);
+	}
+
 	m_Component[pComponent->GetComponentType()] = pComponent;
 }
 
@@ -162,8 +170,13 @@ eAnimationState CObj::GetAnimState()
 
 void CObj::SetAnimState(eAnimationState eState)
 {
-	if(eAnimationState_Idle <= eState && eAnimationState_Max > eState)
+	if(eAnimationState_Idle_Left <= eState && eAnimationState_Max > eState)
+	{
 		m_eAnimState = eState;
+		dynamic_cast<CSprite*>(GetComponent(eComponentTypes_Sprite))->SetAnimationState(m_eAnimState);
+	}
+	
+
 }
 
 bool CObj::IsDead()
@@ -187,4 +200,76 @@ bool CObj::IsAnimFinish(eAnimationState eState)
 		
 	}
 	return false;
+}
+
+void CObj::DoMove(eMoveDirection eDirection)
+{
+	if ( NULL == GetComponent(eComponentTypes_Transform))
+		return;
+
+	CTransform* pTransform = dynamic_cast<CTransform*>(GetComponent(eComponentTypes_Transform));
+	if (NULL == pTransform)
+		return;
+
+	if (NULL == pTransform->GetPos())
+		return;
+
+	m_eMoveDirection = eDirection;
+
+	
+
+	switch (eDirection)
+	{
+	case eMoveDirection_Left:
+	{
+		pTransform->GetPos()->m_x -= m_fMoveSpeed * deltaTime;
+		SetAnimState(eAnimationState_Left);
+	}
+		break;
+	case eMoveDirection_Up:
+	{
+		pTransform->GetPos()->m_y -= m_fMoveSpeed * deltaTime;
+		SetAnimState(eAnimationState_Up);
+	}
+		break;
+	case eMoveDirection_Right:
+	{
+		pTransform->GetPos()->m_x += m_fMoveSpeed * deltaTime;
+		SetAnimState(eAnimationState_Right);
+	}
+		break;
+	case eMoveDirection_Down:
+	{
+		pTransform->GetPos()->m_y += m_fMoveSpeed * deltaTime;
+		SetAnimState(eAnimationState_Down);
+	}
+		break;
+	default:
+		break;
+	}
+}
+
+eMoveDirection CObj::GetMoveDirection()
+{
+	return m_eMoveDirection;
+}
+
+void CObj::SetDestWidth(int iWidth)
+{
+	m_iDestWidth = iWidth;
+}
+
+int CObj::GetDestWidth()
+{
+	return m_iDestWidth;
+}
+
+void CObj::SetDestHeight(int iHeight)
+{
+	m_iDestHeight = iHeight;
+}
+
+int CObj::GetDestHeight()
+{
+	return m_iDestHeight;
 }
