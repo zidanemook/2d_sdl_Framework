@@ -16,7 +16,7 @@
 //	}
 //};
 
-bool YSorting(CRenderCommand* Command1, CRenderCommand* Command2)
+static bool YSorting(CRenderCommand* Command1, CRenderCommand* Command2)
 {
 	if (Command1 && Command2 && Command1->GetPos() && Command2->GetPos())
 		return Command1->GetPos()->m_y < Command2->GetPos()->m_y ? true : false;

@@ -65,6 +65,7 @@ void CProgram::Free(void)
 
 void CProgram::Init()
 {
+	m_bIsRunning = true;
 	//Window, Device
 	if (false == SysMgr->Init("Framework", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 720, false))
 	{
