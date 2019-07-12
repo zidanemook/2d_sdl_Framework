@@ -82,7 +82,7 @@ void CObjMgr::Update()
 	for (iter; iter != m_mapObject.end(); )
 	{
 		iter->second->Update();
-		if (iter->second->IsDead() && iter->second->IsAnimFinish(eAnimationState_Dead))
+		if (iter->second->IsDead())
 		{
 			iter->second->SetShow(false);
 			iter->second->Release();

@@ -152,38 +152,184 @@ eAnimationState CSprite::ToAnimationState(TCHAR* tszAnimState)
 	{
 		return eAnimationState_Idle_Down;
 	}
-	else if (_tcscmp(tszAnimState, _T("eAnimationState_Dead")) == 0)
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Walk_Left")) == 0)
 	{
-		return eAnimationState_Dead;
+		return eAnimationState_Walk_Left;
 	}
-	else if (_tcscmp(tszAnimState, _T("eAnimationState_Invincible")) == 0)
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Walk_Right")) == 0)
 	{
-		return eAnimationState_Invincible;
+		return eAnimationState_Walk_Right;
 	}
-	else if (_tcscmp(tszAnimState, _T("eAnimationState_Left")) == 0)
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Walk_Up")) == 0)
 	{
-		return eAnimationState_Left;
+		return eAnimationState_Walk_Up;
 	}
-	else if (_tcscmp(tszAnimState, _T("eAnimationState_Right")) == 0)
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Walk_Down")) == 0)
 	{
-		return eAnimationState_Right;
+		return eAnimationState_Walk_Down;
 	}
-	else if (_tcscmp(tszAnimState, _T("eAnimationState_Up")) == 0)
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Run_Left")) == 0)
 	{
-		return eAnimationState_Up;
+		return eAnimationState_Run_Left;
 	}
-	else if (_tcscmp(tszAnimState, _T("eAnimationState_Down")) == 0)
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Run_Left_Up")) == 0)
 	{
-		return eAnimationState_Down;
+		return eAnimationState_Run_Left_Up;
 	}
-	else if (_tcscmp(tszAnimState, _T("eAnimationState_Attack")) == 0)
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Run_Up")) == 0)
 	{
-		return eAnimationState_Attack;
+		return eAnimationState_Run_Up;
 	}
-	else if (_tcscmp(tszAnimState, _T("eAnimationState_Defence")) == 0)
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Run_Right_Up")) == 0)
 	{
-		return eAnimationState_Defence;
+		return eAnimationState_Run_Right_Up;
 	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Run_Right")) == 0)
+	{
+		return eAnimationState_Run_Right;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Run_Right_Down")) == 0)
+	{
+		return eAnimationState_Run_Right_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Run_Down")) == 0)
+	{
+		return eAnimationState_Run_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Run_Left_Down")) == 0)
+	{
+		return eAnimationState_Run_Left_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Attack_Left")) == 0)
+	{
+		return eAnimationState_Attack_Left;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Attack_Left_Up")) == 0)
+	{
+		return eAnimationState_Attack_Left_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Attack_Up")) == 0)
+	{
+		return eAnimationState_Attack_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Attack_Right_Up")) == 0)
+	{
+		return eAnimationState_Attack_Right_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Attack_Right")) == 0)
+	{
+		return eAnimationState_Attack_Right;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Attack_Right_Down")) == 0)
+	{
+		return eAnimationState_Attack_Right_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Attack_Down")) == 0)
+	{
+		return eAnimationState_Attack_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Attack_Left_Down")) == 0)
+	{
+		return eAnimationState_Attack_Left_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Talk_Left")) == 0)
+	{
+		return eAnimationState_Talk_Left;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Talk_Left_Up")) == 0)
+	{
+		return eAnimationState_Talk_Left_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Talk_Up")) == 0)
+	{
+		return eAnimationState_Talk_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Talk_Right_Up")) == 0)
+	{
+		return eAnimationState_Talk_Right_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Talk_Right")) == 0)
+	{
+		return eAnimationState_Talk_Right;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Talk_Right_Down")) == 0)
+	{
+		return eAnimationState_Talk_Right_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Talk_Down")) == 0)
+	{
+		return eAnimationState_Talk_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Talk_Left_Down")) == 0)
+	{
+		return eAnimationState_Talk_Left_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Beaten_Left")) == 0)
+	{
+		return eAnimationState_Beaten_Left;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Beaten_Left_Up")) == 0)
+	{
+		return eAnimationState_Beaten_Left_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Beaten_Up")) == 0)
+	{
+		return eAnimationState_Beaten_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Beaten_Right_Up")) == 0)
+	{
+		return eAnimationState_Beaten_Right_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Beaten_Right")) == 0)
+	{
+		return eAnimationState_Beaten_Right;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Beaten_Right_Down")) == 0)
+	{
+		return eAnimationState_Beaten_Right_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Beaten_Down")) == 0)
+	{
+		return eAnimationState_Beaten_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_Beaten_Left_Down")) == 0)
+	{
+		return eAnimationState_Beaten_Left_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_FallDown_Left")) == 0)
+	{
+		return eAnimationState_FallDown_Left;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_FallDown_Left_Up")) == 0)
+	{
+		return eAnimationState_FallDown_Left_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_FallDown_Up")) == 0)
+	{
+		return eAnimationState_FallDown_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_FallDown_Right_Up")) == 0)
+	{
+		return eAnimationState_FallDown_Right_Up;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_FallDown_Right")) == 0)
+	{
+		return eAnimationState_FallDown_Right;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_FallDown_Right_Down")) == 0)
+	{
+		return eAnimationState_FallDown_Right_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_FallDown_Down")) == 0)
+	{
+		return eAnimationState_FallDown_Down;
+	}
+	else if (_tcscmp(tszAnimState, _T("eAnimationState_FallDown_Left_Down")) == 0)
+	{
+		return eAnimationState_FallDown_Left_Down;
+	}
+	
+ 
 	return eAnimationState_Idle_Down;
 }
 

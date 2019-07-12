@@ -4,6 +4,8 @@
  * \brief 
  Store Texture. Used for sprite, ui, particle...etc
 
+This has only one in memory and is used by several components.
+
  * \author mook
  * \date 7¿ù 2018
  */

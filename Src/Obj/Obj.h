@@ -42,6 +42,7 @@ public:
 	bool				GetShow();
 	eAnimationState		GetAnimState();
 	void				SetAnimState(eAnimationState eState);
+	bool				IsDying();
 	bool				IsDead();
 	bool				IsAnimFinish(eAnimationState eState);
 	void				DoMove(eMoveDirection eDirection);

@@ -29,7 +29,9 @@ bool CResourceManager::Init()
 	if (false == LoadSingleTextureCSVFile(_T("Resource/Data/SingleTexture.csv")))
 		return false;
 
-	if (false == LoadSpriteTextureCSVFile(_T("Resource/Data/SpriteTexture.csv")))
+	//if (false == LoadSpriteTextureCSVFile(_T("Resource/Data/SpriteTexture.csv")))
+	//	return false;
+	if (false == LoadSerialSpriteTextureCSVFile(_T("Resource/Data/SpriteTexture.csv")))
 		return false;
 
 	return true;
@@ -109,6 +111,9 @@ bool CResourceManager::LoadSpriteTextureCSVFile(const TCHAR* file)
 			TCHAR pStr[MAX_PATH];
 			TCHAR *next_token = NULL;
 
+			if (0 >= _tcsclen(tszBuf))
+				continue;
+
 			_tcscpy_s(pStr, tszBuf);
 			token = _tcstok_s(pStr, seps, &next_token);
 			if (!token) return false;
@@ -117,13 +122,13 @@ bool CResourceManager::LoadSpriteTextureCSVFile(const TCHAR* file)
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszAnimationState[MAX_PATH] = { 0, };			
-			_tcscpy_s(tszAnimationState, token);
+			TCHAR tszName[MAX_PATH] = { 0, };
+			_tcscpy_s(tszName, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszName[MAX_PATH] = { 0, };
-			_tcscpy_s(tszName, token);
+			TCHAR tszAnimationState[MAX_PATH] = { 0, };
+			_tcscpy_s(tszAnimationState, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
@@ -178,6 +183,107 @@ bool CResourceManager::LoadSpriteTextureCSVFile(const TCHAR* file)
 					dynamic_cast<CSprite*>(pSprite)->SetAnimData(dynamic_cast<CSprite*>(pSprite)->ToAnimationState(tszAnimationState), OriginX, OriginY, PixelSizeX, PixelSizeY, FrameTotalCount, FramePerSecond);
 			}
 			
+		}
+	}
+	else
+		return false;
+
+	return true;
+}
+
+bool CResourceManager::LoadSerialSpriteTextureCSVFile(const TCHAR* file)
+{
+	std::wifstream wif(file);
+
+	if (wif.is_open())
+	{
+		wif.imbue(std::locale("kor"));
+
+		TCHAR tszBuf[1024] = { 0, };
+
+		wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+
+		while (!wif.eof())
+		{
+			wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+
+			TCHAR seps[] = TEXT(",");
+			TCHAR* token;
+			TCHAR pStr[MAX_PATH];
+			TCHAR* next_token = NULL;
+
+			if (0 >= _tcsclen(tszBuf))
+				continue;
+
+			_tcscpy_s(pStr, tszBuf);
+			token = _tcstok_s(pStr, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszIndex[MAX_PATH] = { 0, };
+			_tcscpy_s(tszIndex, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszName[MAX_PATH] = { 0, };
+			_tcscpy_s(tszName, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszAnimationState[MAX_PATH] = { 0, };
+			_tcscpy_s(tszAnimationState, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszPath[MAX_PATH] = { 0, };
+			_tcscpy_s(tszPath, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int OriginX = _ttoi(token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int OriginY = _ttoi(token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int PixelSizeX = _ttoi(token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int PixelSizeY = _ttoi(token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int FrameTotalCount = _ttoi(token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			int FramePerSecond = _ttoi(token);
+
+			std::map<tstring, CComponent*>::iterator iter;
+			iter = m_mapSpriteComponent.find(tszName);
+			if (iter == m_mapSpriteComponent.end())
+			{
+				LoadTexture(tszPath, tszPath);
+
+				CComponent* pSprite = CSprite::Create();
+
+				if (pSprite)
+				{
+					pSprite->SetComponentType(eComponentTypes_Sprite);
+					dynamic_cast<CSprite*>(pSprite)->SetTexture(RSCMgr->GetTextureByName(tszPath));
+					dynamic_cast<CSprite*>(pSprite)->SetAnimData(dynamic_cast<CSprite*>(pSprite)->ToAnimationState(tszAnimationState), OriginX, OriginY, PixelSizeX, PixelSizeY, FrameTotalCount, FramePerSecond);
+
+					m_mapSpriteComponent.insert(std::make_pair(tszName, pSprite));
+				}
+			}
+			else
+			{
+				CComponent* pSprite = iter->second;
+				if (pSprite)
+					dynamic_cast<CSprite*>(pSprite)->SetAnimData(dynamic_cast<CSprite*>(pSprite)->ToAnimationState(tszAnimationState), OriginX, OriginY, PixelSizeX, PixelSizeY, FrameTotalCount, FramePerSecond);
+			}
+
 		}
 	}
 	else

@@ -179,11 +179,20 @@ void CObj::SetAnimState(eAnimationState eState)
 
 }
 
-bool CObj::IsDead()
+bool CObj::IsDying()
 {
-	if (eAnimationState_Dead == m_eAnimState)
+	if (eAnimationState_FallDown_Left <= m_eAnimState && eAnimationState_FallDown_Left_Down >= m_eAnimState)
 	{
 		return true;
+	}
+	return false;
+}
+
+bool CObj::IsDead()
+{
+	if (eAnimationState_FallDown_Left <= m_eAnimState && eAnimationState_FallDown_Left_Down >= m_eAnimState)
+	{
+		return IsAnimFinish(m_eAnimState);
 	}
 	return false;
 }
@@ -223,25 +232,25 @@ void CObj::DoMove(eMoveDirection eDirection)
 	case eMoveDirection_Left:
 	{
 		pTransform->GetPos()->m_x -= m_fMoveSpeed * deltaTime;
-		SetAnimState(eAnimationState_Left);
+		SetAnimState(eAnimationState_Walk_Left);
 	}
 		break;
 	case eMoveDirection_Up:
 	{
 		pTransform->GetPos()->m_y -= m_fMoveSpeed * deltaTime;
-		SetAnimState(eAnimationState_Up);
+		SetAnimState(eAnimationState_Walk_Up);
 	}
 		break;
 	case eMoveDirection_Right:
 	{
 		pTransform->GetPos()->m_x += m_fMoveSpeed * deltaTime;
-		SetAnimState(eAnimationState_Right);
+		SetAnimState(eAnimationState_Walk_Right);
 	}
 		break;
 	case eMoveDirection_Down:
 	{
 		pTransform->GetPos()->m_y += m_fMoveSpeed * deltaTime;
-		SetAnimState(eAnimationState_Down);
+		SetAnimState(eAnimationState_Walk_Down);
 	}
 		break;
 	default:
