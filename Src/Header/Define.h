@@ -54,7 +54,7 @@ enum eKeyFunc
 	eKeyFunc_Max
 };
 
-//Related ToAnimationState function!!!
+//Related ToAnimationState function!!! //CSprite::ToAnimationState 함수에도 추가할것!!
 enum eAnimationState
 {
 	eAnimationState_Idle_Left,

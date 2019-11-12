@@ -95,23 +95,28 @@ void CProgram::Init()
 	ModeMgr;
 	OBJMGR->Initialize();
 
-	//Logo 싱글텍스쳐 하나 fadein fadeout
-	CLogo* pLogo = CLogo::Create();
-	pLogo->Init();
-	ModeMgr->AddMode(eModeTypes_Logo, pLogo);
-	ModeMgr->ChangeMode(eModeTypes_Logo);
 
-	//MainMenu
-	CMainmenu* pMainmenu = CMainmenu::Create();
-	pMainmenu->Init();
-	ModeMgr->AddMode(eModeTypes_MainMenu, pMainmenu);
+	//Add Mode
+	{
+		//Logo 싱글텍스쳐 하나 fadein fadeout
+		CLogo* pLogo = CLogo::Create();
+		pLogo->Init();
+		ModeMgr->AddMode(eModeTypes_Logo, pLogo);
+		ModeMgr->ChangeMode(eModeTypes_Logo);
 
-	//Loading 캐릭터 애니메이션 아무거나 달리게 하기. 팁 띄우기
+		//MainMenu
+		CMainmenu* pMainmenu = CMainmenu::Create();
+		pMainmenu->Init();
+		ModeMgr->AddMode(eModeTypes_MainMenu, pMainmenu);
 
-	//Game
-	CGame* pGame = CGame::Create();
-	pGame->Init();
-	ModeMgr->AddMode(eModeTypes_Play, pGame);
+		//Loading 캐릭터 애니메이션 아무거나 달리게 하기. 팁 띄우기
+
+		//Game
+		CGame* pGame = CGame::Create();
+		pGame->Init();
+		ModeMgr->AddMode(eModeTypes_Play, pGame);
+	}
+	
 }
 
 void CProgram::HandleEvents()

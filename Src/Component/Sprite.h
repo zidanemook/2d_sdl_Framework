@@ -16,7 +16,7 @@ typedef struct tagAnimData
 }stAnimData;
 
 class CTexture;
-class CSprite : public CComponent
+class CSprite : public CComponent//애니메이션, 동적인 캐릭터 하나당 이거하나로 처리!.  정적인 것도 처리할수 있을거 같긴하다..
 {
 public:
 	explicit CSprite();

@@ -43,6 +43,8 @@ public:
 	bool LoadSpriteTextureCSVFile(const TCHAR* file);
 	bool LoadSerialSpriteTextureCSVFile(const TCHAR* file);
 	bool LoadTexture(const TCHAR* name, const TCHAR* tszfilepath);
+
+
 	SDL_Texture*	GetSDLTextureByName(const tstring& name);
 	CTexture*		GetTextureByName(const tstring& name);
 	CComponent*		GetSpriteComponent(const TCHAR* path);
