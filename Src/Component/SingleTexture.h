@@ -17,17 +17,24 @@ public:
 
 public:
 	void Init();
+	void SetLayer(eRenderLayer eLayer);
+	eRenderLayer GetLayer();
 	//void SetTexture(SDL_Texture* pSDLTexture);
 	void SetTexture(CTexture* pTexture);
 	bool GetShow();
 	void SetShow(bool set);
-	void Set(SDL_Rect& srcRect, SDL_Rect& destRect, CTexture* pTexture);
+	void Set(SDL_Rect& srcRect, SDL_Rect& destRect, eRenderLayer eLayer, CTexture* pTexture);
+	void SetBlendMode(SDL_BlendMode BlendMode);
+	void SetAlpha(Uint8 uiAlpha);
 
 private:
-	CTexture*	m_pTexture;
-	bool		m_bShow;
-	SDL_Rect	m_SrcRect;
-	SDL_Rect	m_DestRect;
-	Vector2D	m_vDestPos;
+	eRenderLayer	m_RendereLayer;
+	CTexture*		m_pTexture;
+	bool			m_bShow;
+	SDL_Rect		m_SrcRect;
+	SDL_Rect		m_DestRect;
+	Vector2D		m_vDestPos;
+	SDL_BlendMode	m_BlendMode;
+	Uint8			m_uiAlpha;
 };
 

@@ -39,6 +39,7 @@ public:
 	virtual void Update();
 	virtual void Open();
 	virtual void Close();
+	virtual void Closed();
 
 private:
 	CSingleTexture* m_pLogo;

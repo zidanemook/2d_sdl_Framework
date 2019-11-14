@@ -15,6 +15,9 @@ CSprite::CSprite()
 	ZeroMemory(&m_SrcRect, sizeof(SDL_Rect));
 	ZeroMemory(&m_DestRect, sizeof(SDL_Rect));
 
+	m_BlendMode = SDL_BLENDMODE_NONE;
+	m_uiAlpha = 255;
+
 	Init();
 }
 
@@ -86,10 +89,10 @@ void CSprite::SetShow(bool set)
 		if (m_pTexture)
 		{
 			if (m_pOwner)
-				RdrMgr->AddRenderCommand(m_pOwner->GetName(), m_pTexture->GetTexture(), &m_SrcRect, &m_DestRect, m_pOwner->GetRenderLayer(), m_pOwner->GetPos(), &m_bShow);
+				RdrMgr->AddRenderCommand(m_pOwner->GetName(), m_pTexture->GetTexture(), &m_SrcRect, &m_DestRect, m_pOwner->GetRenderLayer(), m_pOwner->GetPos(), &m_bShow, &m_BlendMode, &m_uiAlpha);
 			else
 			{
-				RdrMgr->AddRenderCommand(m_pTexture->GetPath(), m_pTexture->GetTexture(), &m_SrcRect, &m_DestRect, eRenderLayer_Object, &m_vDestPos, &m_bShow);
+				RdrMgr->AddRenderCommand(m_pTexture->GetPath(), m_pTexture->GetTexture(), &m_SrcRect, &m_DestRect, eRenderLayer_Object, &m_vDestPos, &m_bShow, &m_BlendMode, &m_uiAlpha);
 			}
 		}
 	}

@@ -60,5 +60,11 @@ void CMainmenu::Open()
 void CMainmenu::Close()
 {
 	CBaseMode::Close();
+	
+}
+
+void CMainmenu::Closed()
+{
+	CBaseMode::Closed();
 	m_pSkyBg->SetShow(false);
 }

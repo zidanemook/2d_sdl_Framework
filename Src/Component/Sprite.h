@@ -54,5 +54,7 @@ private:
 	SDL_Rect			m_SrcRect;
 	SDL_Rect			m_DestRect;
 	Vector2D			m_vDestPos;
+	SDL_BlendMode m_BlendMode;
+	Uint8		m_uiAlpha;
 };
 

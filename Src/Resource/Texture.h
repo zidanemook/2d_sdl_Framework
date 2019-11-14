@@ -32,6 +32,8 @@ public:
 	SDL_Texture*	GetTexture();
 	void			SetPath(const TCHAR* tszPath);
 	const TCHAR*	GetPath();
+	void			SetBlendMode(SDL_BlendMode BlendMode);
+	void			SetAlpha(Uint8 alpha);
 
 private:
 	SDL_Texture*	m_pTexture;

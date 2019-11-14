@@ -50,3 +50,13 @@ const TCHAR* CTexture::GetPath()
 {
 	return m_tsPath.c_str();
 }
+
+void CTexture::SetBlendMode(SDL_BlendMode BlendMode)
+{
+	SDL_SetTextureBlendMode(m_pTexture, BlendMode);
+}
+
+void CTexture::SetAlpha(Uint8 alpha)
+{
+	SDL_SetTextureAlphaMod(m_pTexture, alpha);
+}

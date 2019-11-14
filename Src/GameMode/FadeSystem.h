@@ -8,6 +8,7 @@ enum eFadeStage
 	eFadeStage_Max
 };
 
+class CSingleTexture;
 class CFadeSystem
 {
 private:
@@ -48,6 +49,8 @@ private:
 	double m_fTotalTime;
 	double m_fCurrentTime;
 	float m_fCurrentAlpha;
+
+	CSingleTexture* m_pBlack;
 };
 
 #define FadeSystem CFadeSystem::GetInst()

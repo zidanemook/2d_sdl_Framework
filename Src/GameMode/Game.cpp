@@ -52,10 +52,17 @@ void CGame::Update()
 
 void CGame::Open()
 {
+	CBaseMode::Open();
 	OBJMGR->GetSelf()->SetShow(true);
 }
 
 void CGame::Close()
 {
+	CBaseMode::Close();
+}
+
+void CGame::Closed()
+{
+	CBaseMode::Closed();
 	OBJMGR->GetSelf()->SetShow(false);
 }

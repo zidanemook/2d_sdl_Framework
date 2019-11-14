@@ -60,5 +60,11 @@ void CLogo::Open()
 void CLogo::Close()
 {
 	CBaseMode::Close();
+	
+}
+
+void CLogo::Closed()
+{
+	CBaseMode::Closed();
 	m_pLogo->SetShow(false);
 }

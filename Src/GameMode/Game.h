@@ -39,5 +39,6 @@ public:
 
 	virtual void Open();
 	virtual void Close();
+	virtual void Closed();
 };
 

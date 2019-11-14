@@ -38,6 +38,7 @@ enum eRenderLayer
 	eRenderLayer_Object,
 	eRenderLayer_Effect,
 	eRenderLayer_UI,
+	eRenderLayer_Fade,
 	eRenderLayer_Max
 };
 
