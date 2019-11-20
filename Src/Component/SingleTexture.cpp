@@ -132,3 +132,13 @@ void CSingleTexture::SetAlpha(Uint8 uiAlpha)
 	m_uiAlpha = uiAlpha;
 }
 
+void CSingleTexture::SetName(TCHAR* pszName)
+{
+	m_Name = pszName;
+}
+
+void CSingleTexture::SetName(tstring& tstrName)
+{
+	m_Name = tstrName;
+}
+

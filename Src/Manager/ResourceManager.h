@@ -44,6 +44,7 @@ public:
 	bool LoadSerialSpriteTextureCSVFile(const TCHAR* file);
 	bool LoadTexture(const TCHAR* name, const TCHAR* tszfilepath);
 
+	bool LoadNamingTextureJSONFile(const TCHAR* tszfilepath);
 
 	SDL_Texture*	GetSDLTextureByName(const tstring& name);
 	CTexture*		GetTextureByName(const tstring& name);
@@ -51,7 +52,8 @@ public:
 
 private:
 	std::map<tstring, CTexture*>		m_mapTexture;//Name or Path, Texture
-	std::map<tstring, CComponent*>		m_mapSpriteComponent;
+	std::map<tstring, CComponent*>		m_mapSpriteComponent;//For Sprite animation
+	std::map<tstring, CComponent*>		m_mapNamingTexture;
 };
 
 #define RSCMgr	CResourceManager::GetInstance()

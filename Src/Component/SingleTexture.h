@@ -26,6 +26,8 @@ public:
 	void Set(SDL_Rect& srcRect, SDL_Rect& destRect, eRenderLayer eLayer, CTexture* pTexture);
 	void SetBlendMode(SDL_BlendMode BlendMode);
 	void SetAlpha(Uint8 uiAlpha);
+	void SetName(TCHAR* pszName);
+	void SetName(tstring& tstrName);
 
 private:
 	eRenderLayer	m_RendereLayer;
@@ -36,5 +38,6 @@ private:
 	Vector2D		m_vDestPos;
 	SDL_BlendMode	m_BlendMode;
 	Uint8			m_uiAlpha;
+	tstring			m_Name;
 };
 

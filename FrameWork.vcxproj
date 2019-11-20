@@ -84,7 +84,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>.\Libraries\SDL2-2.0.8\include;.\Src\Game;.\Src\Header;.\Src\Util;.\Src\SuperClass;.\Src\GameMode;.\Src\SDLManager;.\Libraries\SDL2_image-2.0.1\include;.\Src\Resource;.\Src\Obj;.\Src\Component;.\Src\Obj\Dynamic;.\Src\RenderManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Libraries\SDL2-2.0.8\include;.\Src\Game;.\Src\Header;.\Src\Util;.\Src\SuperClass;.\Src\GameMode;.\Src\SDLManager;.\Libraries\SDL2_image-2.0.1\include;.\Src\Resource;.\Src\Obj;.\Src\Component;.\Src\Obj\Dynamic;.\Src\RenderManager;.\Dependencies\JSON;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>_DEBUG_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Dependencies\JSON\jsoncpp.cpp" />
     <ClCompile Include="Src\Component\Component.cpp" />
     <ClCompile Include="Src\Component\SingleTexture.cpp" />
     <ClCompile Include="Src\Component\Sprite.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Src\Resource\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dependencies\JSON\json.h" />
     <ClInclude Include="Src\Component\Component.h" />
     <ClInclude Include="Src\Component\SingleTexture.h" />
     <ClInclude Include="Src\Component\Sprite.h" />

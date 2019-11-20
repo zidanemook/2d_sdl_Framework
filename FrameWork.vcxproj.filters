@@ -38,6 +38,12 @@
     <Filter Include="Src\Manager">
       <UniqueIdentifier>{64eacf53-9354-42b3-9d9d-8695414119a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Dependencies">
+      <UniqueIdentifier>{7c27aed9-5cc4-44ea-96ff-05252949e6bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Dependencies\JSON">
+      <UniqueIdentifier>{a5282153-d9d2-42ac-986d-708047068b38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp">
@@ -108,6 +114,9 @@
     </ClCompile>
     <ClCompile Include="Src\GameMode\Mainmenu.cpp">
       <Filter>Src\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\JSON\jsoncpp.cpp">
+      <Filter>Src\Dependencies\JSON</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +197,9 @@
     </ClInclude>
     <ClInclude Include="Src\GameMode\Mainmenu.h">
       <Filter>Src\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\JSON\json.h">
+      <Filter>Src\Dependencies\JSON</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

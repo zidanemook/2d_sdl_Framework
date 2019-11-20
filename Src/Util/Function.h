@@ -2,6 +2,7 @@
 #define Function_h
 
 #include "SDL.h"
+#include <atlstr.h>
 
 #define MSG_BOX(text) MessageBox(NULL, TEXT(text), NULL, MB_OK)
 
@@ -93,5 +94,22 @@ static bool AABB(const SDL_Rect& recA, const SDL_Rect& recB)
 
 	return false;
 }
+
+static std::string WToM(std::wstring wstrWide)
+{
+	int len = WideCharToMultiByte(CP_ACP, 0, &wstrWide[0], -1, NULL, 0, NULL, NULL);
+	std::string strMulti(len, 0);
+	WideCharToMultiByte(CP_ACP, 0, &wstrWide[0], -1, &strMulti[0], len, NULL, NULL);
+	return strMulti;
+}
+
+static std::wstring MToW(std::string strMulti)
+{
+	int nLen = MultiByteToWideChar(CP_ACP, 0, &strMulti[0], strMulti.size(), NULL, NULL);
+	std::wstring strWide(nLen, 0);
+	MultiByteToWideChar(CP_ACP, 0, &strMulti[0], strMulti.size(), &strWide[0], nLen);
+	return strWide;
+}
+
 
 #endif //Function_h

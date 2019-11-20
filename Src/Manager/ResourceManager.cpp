@@ -1,12 +1,15 @@
 #include "stdafx.h"
 #include "Define.h"
+#include "Function.h"
 #include "ResourceManager.h"
 #include "RenderManager.h"
 #include "Texture.h"
 #include "Sprite.h"
+#include "SingleTexture.h"
 #include "Component.h"
 #include <atlstr.h>
-#include <fstream> 
+#include <fstream>
+#include "json.h"//https://github.com/open-source-parsers/jsoncpp/wiki
 
 CResourceManager*		CResourceManager::m_pInst = nullptr;
 
@@ -34,11 +37,21 @@ bool CResourceManager::Init()
 	if (false == LoadSerialSpriteTextureCSVFile(_T("Resource/Data/SpriteTexture.csv")))
 		return false;
 
+	if (false == LoadNamingTextureJSONFile(_T("Resource/Data/UI/NamingTexture.json")))
+		return false;
+
 	return true;
 }
 
 void CResourceManager::Destroy()
 {
+	
+	for_each(m_mapNamingTexture.begin(), m_mapNamingTexture.end(), ReleaseMapElement());
+	m_mapNamingTexture.clear();
+
+	for_each(m_mapSpriteComponent.begin(), m_mapSpriteComponent.end(), ReleaseMapElement());
+	m_mapSpriteComponent.clear();
+
 	for_each(m_mapTexture.begin(), m_mapTexture.end(), ReleaseMapElement());
 	m_mapTexture.clear();
 }
@@ -296,11 +309,7 @@ bool CResourceManager::LoadTexture(const TCHAR* name, const TCHAR* tszfilepath)
 {
 	std::string filepath;
 #ifdef  UNICODE 
-
-	char szMultibyte[MAX_PATH] = { 0, };
-	int len = WideCharToMultiByte(CP_ACP, 0, tszfilepath, -1, NULL, 0, NULL, NULL);
-	WideCharToMultiByte(CP_ACP, 0, tszfilepath, -1, szMultibyte, len, NULL, NULL);
-	filepath = szMultibyte;
+	filepath = WToM(tszfilepath);
 #else
 	filepath = tszfilepath;
 #endif
@@ -332,6 +341,77 @@ bool CResourceManager::LoadTexture(const TCHAR* name, const TCHAR* tszfilepath)
 
 	return true;
 	
+}
+
+bool CResourceManager::LoadNamingTextureJSONFile(const TCHAR* tszfilepath)
+{
+	std::string filepath;
+	filepath = WToM(tszfilepath);
+	
+	std::ifstream ifs(filepath);
+
+	if (ifs.is_open())
+	{
+		ifs.imbue(std::locale("kor"));
+
+		Json::Value value;
+		Json::Reader reader;
+
+		if (false == reader.parse(ifs, value))
+		{
+			char szMessage[MAX_PATH] = { 0, };
+			sprintf_s(szMessage, "%s load failed\n", filepath.c_str());
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+			return false;
+		}
+		
+		Json::Value root = value["root"];
+
+		int rootsize = root.size();
+		for (int i = 0; i < rootsize; ++i)
+		{
+			CComponent* pSingleTexture = CSingleTexture::Create();
+
+			std::wstring Name = MToW(root[i][0].asString());
+			dynamic_cast<CSingleTexture*>(pSingleTexture)->SetName(Name);
+
+			std::wstring SingleTextureName = MToW(root[i][1].asString());
+			CTexture* pTexture = GetTextureByName(SingleTextureName);
+
+			if (!pTexture)
+			{
+				char szMessage[MAX_PATH] = { 0, };
+				sprintf_s(szMessage, "%s find fail plz add to singletexture.csv\n", root[i][1].asString().c_str());
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+				return false;
+			}
+			//dynamic_cast<CSingleTexture*>(pSingleTexture)->SetTexture(pTexture);
+
+			int iStart_Pos_X = root[i][2].asInt();
+			int iStart_Pos_Y = root[i][3].asInt();
+			int iEnd_Pos_X = root[i][4].asInt();
+			int iEnd_Pos_Y = root[i][5].asInt();
+
+			SDL_Rect srcRect;
+			srcRect.h = iEnd_Pos_Y - iStart_Pos_Y;
+			srcRect.w = iEnd_Pos_X - iStart_Pos_X;
+			srcRect.x = iStart_Pos_X;
+			srcRect.y = iStart_Pos_Y;
+
+			SDL_Rect destRect;
+			destRect.h = srcRect.h;
+			destRect.w = srcRect.w;
+			destRect.x = 0;
+			destRect.y = 0;
+
+			dynamic_cast<CSingleTexture*>(pSingleTexture)->SetShow(true);
+			dynamic_cast<CSingleTexture*>(pSingleTexture)->Set(srcRect, destRect, eRenderLayer_UI, pTexture);
+
+			m_mapNamingTexture.insert(std::make_pair(Name, pSingleTexture));
+		}
+	}
+
+	return true;
 }
 
 SDL_Texture* CResourceManager::GetSDLTextureByName(const tstring& name)
