@@ -44,8 +44,7 @@ void CMainmenu::Init()
 void CMainmenu::Update()
 {
 	if (KEYMGR->CheckKey(eKeyFunc_Enter, PUSHKEY) || KEYMGR->CheckKey(eKeyFunc_Enter, HOLDKEY)
-		|| KEYMGR->CheckKey(eKeyFunc_Interact, PUSHKEY) || KEYMGR->CheckKey(eKeyFunc_Interact, HOLDKEY)
-		|| KEYMGR->CheckKey(eKeyFunc_Esc, PUSHKEY) || KEYMGR->CheckKey(eKeyFunc_Esc, HOLDKEY))
+		|| KEYMGR->CheckKey(eKeyFunc_Interact, PUSHKEY) || KEYMGR->CheckKey(eKeyFunc_Interact, HOLDKEY))
 	{
 		ModeMgr->ChangeMode(eModeTypes_Play);
 	}

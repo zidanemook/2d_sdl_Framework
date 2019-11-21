@@ -39,18 +39,25 @@ public:
 public:
 	bool Init();
 	void Destroy();
+
+	//CSV
+	bool LoadScriptCSVFile(const TCHAR* file);
 	bool LoadSingleTextureCSVFile(const TCHAR* file);
 	bool LoadSpriteTextureCSVFile(const TCHAR* file);
 	bool LoadSerialSpriteTextureCSVFile(const TCHAR* file);
+
 	bool LoadTexture(const TCHAR* name, const TCHAR* tszfilepath);
 
+	//JSON
 	bool LoadNamingTextureJSONFile(const TCHAR* tszfilepath);
+	bool LoadUIJSONFile(const TCHAR* tszfilepath);
 
 	SDL_Texture*	GetSDLTextureByName(const tstring& name);
 	CTexture*		GetTextureByName(const tstring& name);
 	CComponent*		GetSpriteComponent(const TCHAR* path);
 
 private:
+	std::map<tstring, tstring>			m_mapScript;
 	std::map<tstring, CTexture*>		m_mapTexture;//Name or Path, Texture
 	std::map<tstring, CComponent*>		m_mapSpriteComponent;//For Sprite animation
 	std::map<tstring, CComponent*>		m_mapNamingTexture;

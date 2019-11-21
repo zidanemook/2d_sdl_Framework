@@ -44,6 +44,9 @@
     <Filter Include="Src\Dependencies\JSON">
       <UniqueIdentifier>{a5282153-d9d2-42ac-986d-708047068b38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\UI">
+      <UniqueIdentifier>{7e21dc77-7125-4993-8998-be59b155ee9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp">

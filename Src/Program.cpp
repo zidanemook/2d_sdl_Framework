@@ -130,6 +130,21 @@ void CProgram::HandleEvents()
 	{
 		m_bIsRunning = false;
 	}
+	case SDL_MOUSEMOTION:
+	{
+
+	}
+
+	case SDL_MOUSEBUTTONDOWN:
+	{
+
+	}
+
+	case SDL_MOUSEBUTTONUP:
+	{
+
+	}
+
 	break;
 
 	default:

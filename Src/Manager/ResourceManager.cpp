@@ -29,6 +29,9 @@ bool CResourceManager::Init()
 
 	//tstring ExePath = buffer;
 	
+	if (false == LoadScriptCSVFile(_T("Resource/Data/UI/Script.csv")))
+		return false;
+
 	if (false == LoadSingleTextureCSVFile(_T("Resource/Data/SingleTexture.csv")))
 		return false;
 
@@ -39,6 +42,8 @@ bool CResourceManager::Init()
 
 	if (false == LoadNamingTextureJSONFile(_T("Resource/Data/UI/NamingTexture.json")))
 		return false;
+
+
 
 	return true;
 }
@@ -54,6 +59,53 @@ void CResourceManager::Destroy()
 
 	for_each(m_mapTexture.begin(), m_mapTexture.end(), ReleaseMapElement());
 	m_mapTexture.clear();
+}
+
+bool CResourceManager::LoadScriptCSVFile(const TCHAR* file)
+{
+	std::wifstream wif(file);
+
+	if (wif.is_open())
+	{
+		wif.imbue(std::locale("kor"));
+
+		TCHAR tszBuf[1024] = { 0, };
+
+		wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+
+		while (!wif.eof())
+		{
+			wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+
+			TCHAR seps[] = TEXT(",");
+			TCHAR* token;
+			TCHAR pStr[MAX_PATH];
+			TCHAR* next_token = NULL;
+			//wcscpy_s(pStr, tszBuf);
+			_tcscpy_s(pStr, tszBuf);
+			//token = wcstok_s(pStr, seps, &next_token);
+			token = _tcstok_s(pStr, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszIndex[MAX_PATH] = { 0, };
+			_tcscpy_s(tszIndex, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszName[MAX_PATH] = { 0, };
+			_tcscpy_s(tszName, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			TCHAR tszMessage[MAX_PATH] = { 0, };
+			_tcscpy_s(tszMessage, token);
+
+			m_mapScript.insert(std::make_pair(tszName, tszMessage));
+		}
+	}
+	else
+		return false;
+
+	return true;
 }
 
 bool CResourceManager::LoadSingleTextureCSVFile(const TCHAR* file)
@@ -412,6 +464,14 @@ bool CResourceManager::LoadNamingTextureJSONFile(const TCHAR* tszfilepath)
 	}
 
 	return true;
+}
+
+bool CResourceManager::LoadUIJSONFile(const TCHAR* tszfilepath)
+{
+
+
+
+	return false;
 }
 
 SDL_Texture* CResourceManager::GetSDLTextureByName(const tstring& name)
