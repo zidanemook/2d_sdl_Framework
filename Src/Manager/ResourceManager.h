@@ -11,6 +11,7 @@
 
 class CTexture;
 class CComponent;
+class CFont;
 class CResourceManager
 {
 private:
@@ -41,26 +42,36 @@ public:
 	void Destroy();
 
 	//CSV
-	bool LoadScriptCSVFile(const TCHAR* file);
-	bool LoadSingleTextureCSVFile(const TCHAR* file);
-	bool LoadSpriteTextureCSVFile(const TCHAR* file);
-	bool LoadSerialSpriteTextureCSVFile(const TCHAR* file);
+	bool LoadScriptCSVFile(const wchar_t* file);
+	bool LoadSingleTextureCSVFile(const wchar_t* file);
+	bool LoadSpriteTextureCSVFile(const wchar_t* file);
+	bool LoadSerialSpriteTextureCSVFile(const wchar_t* file);
 
-	bool LoadTexture(const TCHAR* name, const TCHAR* tszfilepath);
+	bool LoadTexture(const wchar_t* name, const wchar_t* tszfilepath);
 
 	//JSON
-	bool LoadNamingTextureJSONFile(const TCHAR* tszfilepath);
-	bool LoadUIJSONFile(const TCHAR* tszfilepath);
+	bool LoadNamingTextureJSONFile(const wchar_t* tszfilepath);
+	bool LoadUIJSONFile(const wchar_t* tszfilepath);
 
-	SDL_Texture*	GetSDLTextureByName(const tstring& name);
-	CTexture*		GetTextureByName(const tstring& name);
-	CComponent*		GetSpriteComponent(const TCHAR* path);
+	SDL_Texture*	GetSDLTextureByName(const std::wstring& name);
+	CTexture*		GetTextureByName(const std::wstring& name);
+	CComponent*		GetSpriteComponent(const wchar_t* path);
+	CComponent*		GetNamingTextureByName(const std::wstring& name);
+	CFont*			GetFont();
+
 
 private:
-	std::map<tstring, tstring>			m_mapScript;
-	std::map<tstring, CTexture*>		m_mapTexture;//Name or Path, Texture
-	std::map<tstring, CComponent*>		m_mapSpriteComponent;//For Sprite animation
-	std::map<tstring, CComponent*>		m_mapNamingTexture;
+	
+
+private:
+
+	std::map<std::wstring, std::wstring>	m_mapScript;
+	std::map<std::wstring, CTexture*>		m_mapTexture;//Name or Path, Texture
+	std::map<std::wstring, CComponent*>		m_mapSpriteComponent;//For Sprite animation
+	std::map<std::wstring, CComponent*>		m_mapNamingTexture;
+
+	CFont*			m_Font;
 };
 
 #define RSCMgr	CResourceManager::GetInstance()
+#define RSFONT	CResourceManager::GetInstance()->GetFont()

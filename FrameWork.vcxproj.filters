@@ -121,6 +121,21 @@
     <ClCompile Include="Dependencies\JSON\jsoncpp.cpp">
       <Filter>Src\Dependencies\JSON</Filter>
     </ClCompile>
+    <ClCompile Include="Src\UI\UIWnd.cpp">
+      <Filter>Src\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\UIManager.cpp">
+      <Filter>Src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\UI\ImageBox.cpp">
+      <Filter>Src\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\UI\TextButton.cpp">
+      <Filter>Src\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Resource\Font.cpp">
+      <Filter>Src\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Util\Function.h">
@@ -203,6 +218,21 @@
     </ClInclude>
     <ClInclude Include="Dependencies\JSON\json.h">
       <Filter>Src\Dependencies\JSON</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UI\UIWnd.h">
+      <Filter>Src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\UIManager.h">
+      <Filter>Src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UI\ImageBox.h">
+      <Filter>Src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UI\TextButton.h">
+      <Filter>Src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Resource\Font.h">
+      <Filter>Src\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

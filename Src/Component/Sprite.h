@@ -35,7 +35,7 @@ public:
 	const stAnimData&	 GetAnimData(eAnimationState eAnimState);
 	void SetAnimData(eAnimationState eAnimState, int iOriginX, int iOriginY, int HorizontalFramePixelSize, int VerticalFramePixelSize,  int iFrameTotalCount, int iFramePerSecond);
 	void SetTexture(CTexture* pTexture);
-	eAnimationState ToAnimationState(TCHAR* tszAnimState);
+	eAnimationState ToAnimationState(wchar_t* tszAnimState);
 	void SetAnimationState(eAnimationState eAnimState);
 	void SetDestRectWidth(int iWidth);
 	void SetDestRectHeight(int iHeight);

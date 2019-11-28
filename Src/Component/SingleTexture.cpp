@@ -7,7 +7,7 @@
 
 CSingleTexture::CSingleTexture()
 {
-	m_RendereLayer = eRenderLayer_UI;
+	m_RendereLayer = eRenderLayer_None;
 	m_pTexture = CTexture::Create();
 	m_bShow = false;
 	
@@ -85,7 +85,7 @@ eRenderLayer CSingleTexture::GetLayer()
 void CSingleTexture::SetTexture(CTexture* pTexture)
 {
 	m_pTexture = pTexture;
-	pTexture->AddRef();
+//	pTexture->AddRef();
 }
 
 bool CSingleTexture::GetShow()
@@ -132,13 +132,28 @@ void CSingleTexture::SetAlpha(Uint8 uiAlpha)
 	m_uiAlpha = uiAlpha;
 }
 
-void CSingleTexture::SetName(TCHAR* pszName)
+void CSingleTexture::SetName(wchar_t* pszName)
 {
 	m_Name = pszName;
 }
 
-void CSingleTexture::SetName(tstring& tstrName)
+void CSingleTexture::SetName(std::wstring& tstrName)
 {
 	m_Name = tstrName;
+}
+
+CTexture* CSingleTexture::GetTexture()
+{
+	return m_pTexture;
+}
+
+SDL_Rect& CSingleTexture::GetSrcRect()
+{
+	return m_SrcRect;
+}
+
+SDL_Rect& CSingleTexture::GetDestRect()
+{
+	return m_DestRect;
 }
 

@@ -3,9 +3,11 @@
 #include "Function.h"
 #include "ResourceManager.h"
 #include "RenderManager.h"
+#include "UIManager.h"
 #include "Texture.h"
 #include "Sprite.h"
 #include "SingleTexture.h"
+#include "Font.h"
 #include "Component.h"
 #include <atlstr.h>
 #include <fstream>
@@ -20,11 +22,29 @@ CResourceManager::CResourceManager()
 
 CResourceManager::~CResourceManager()
 {
+	TTF_Quit();
+	IMG_Quit();
 }
 
 bool CResourceManager::Init()
 {
-	//TCHAR buffer[MAX_PATH];
+	int imgFlags = IMG_INIT_PNG;
+	if (!(IMG_Init(imgFlags) & imgFlags))
+	{
+		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+		return false;
+	}
+
+	if (TTF_Init() == -1)
+	{
+		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+		return false;
+	}
+
+	m_Font = CFont::Create();
+	m_Font->OpenFont(_T("Resource/Font/KBLZ_M.ttf"), 14);
+
+	//wchar_t buffer[MAX_PATH];
 	//GetModuleFileName(NULL, buffer, MAX_PATH);
 
 	//tstring ExePath = buffer;
@@ -43,7 +63,8 @@ bool CResourceManager::Init()
 	if (false == LoadNamingTextureJSONFile(_T("Resource/Data/UI/NamingTexture.json")))
 		return false;
 
-
+	if(false == LoadUIJSONFile(_T("Resource/Data/UI/MainMenu.json")))
+		return false;
 
 	return true;
 }
@@ -61,7 +82,7 @@ void CResourceManager::Destroy()
 	m_mapTexture.clear();
 }
 
-bool CResourceManager::LoadScriptCSVFile(const TCHAR* file)
+bool CResourceManager::LoadScriptCSVFile(const wchar_t* file)
 {
 	std::wifstream wif(file);
 
@@ -69,34 +90,34 @@ bool CResourceManager::LoadScriptCSVFile(const TCHAR* file)
 	{
 		wif.imbue(std::locale("kor"));
 
-		TCHAR tszBuf[1024] = { 0, };
+		wchar_t wszBuf[1024] = { 0, };
 
-		wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+		wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
 
 		while (!wif.eof())
 		{
-			wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+			wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
 
-			TCHAR seps[] = TEXT(",");
-			TCHAR* token;
-			TCHAR pStr[MAX_PATH];
-			TCHAR* next_token = NULL;
-			//wcscpy_s(pStr, tszBuf);
-			_tcscpy_s(pStr, tszBuf);
+			wchar_t seps[] = TEXT(",");
+			wchar_t* token;
+			wchar_t pStr[MAX_PATH];
+			wchar_t* next_token = NULL;
+			//wcscpy_s(pStr, wszBuf);
+			_tcscpy_s(pStr, wszBuf);
 			//token = wcstok_s(pStr, seps, &next_token);
 			token = _tcstok_s(pStr, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszIndex[MAX_PATH] = { 0, };
+			wchar_t tszIndex[MAX_PATH] = { 0, };
 			_tcscpy_s(tszIndex, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszName[MAX_PATH] = { 0, };
+			wchar_t tszName[MAX_PATH] = { 0, };
 			_tcscpy_s(tszName, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszMessage[MAX_PATH] = { 0, };
+			wchar_t tszMessage[MAX_PATH] = { 0, };
 			_tcscpy_s(tszMessage, token);
 
 			m_mapScript.insert(std::make_pair(tszName, tszMessage));
@@ -108,7 +129,7 @@ bool CResourceManager::LoadScriptCSVFile(const TCHAR* file)
 	return true;
 }
 
-bool CResourceManager::LoadSingleTextureCSVFile(const TCHAR* file)
+bool CResourceManager::LoadSingleTextureCSVFile(const wchar_t* file)
 {
 	std::wifstream wif(file);
 
@@ -116,34 +137,34 @@ bool CResourceManager::LoadSingleTextureCSVFile(const TCHAR* file)
 	{
 		wif.imbue(std::locale("kor"));
 
-		TCHAR tszBuf[1024] = { 0, };
+		wchar_t wszBuf[1024] = { 0, };
 
-		wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+		wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
 
 		while (!wif.eof())
 		{
-			wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+			wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
 
-			TCHAR seps[] = TEXT(",");
-			TCHAR *token;
-			TCHAR pStr[MAX_PATH];
-			TCHAR *next_token = NULL;
-			//wcscpy_s(pStr, tszBuf);
-			_tcscpy_s(pStr, tszBuf);
+			wchar_t seps[] = TEXT(",");
+			wchar_t *token;
+			wchar_t pStr[MAX_PATH];
+			wchar_t *next_token = NULL;
+			//wcscpy_s(pStr, wszBuf);
+			_tcscpy_s(pStr, wszBuf);
 			//token = wcstok_s(pStr, seps, &next_token);
 			token = _tcstok_s(pStr, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszIndex[MAX_PATH] = { 0, };
+			wchar_t tszIndex[MAX_PATH] = { 0, };
 			_tcscpy_s(tszIndex, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszName[MAX_PATH] = { 0, };
+			wchar_t tszName[MAX_PATH] = { 0, };
 			_tcscpy_s(tszName, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszPath[MAX_PATH] = { 0, };
+			wchar_t tszPath[MAX_PATH] = { 0, };
 			_tcscpy_s(tszPath, token);
 
 			LoadTexture(tszName, tszPath);
@@ -155,7 +176,7 @@ bool CResourceManager::LoadSingleTextureCSVFile(const TCHAR* file)
 	return true;
 }
 
-bool CResourceManager::LoadSpriteTextureCSVFile(const TCHAR* file)
+bool CResourceManager::LoadSpriteTextureCSVFile(const wchar_t* file)
 {
 	std::wifstream wif(file);
 
@@ -163,41 +184,41 @@ bool CResourceManager::LoadSpriteTextureCSVFile(const TCHAR* file)
 	{
 		wif.imbue(std::locale("kor"));
 
-		TCHAR tszBuf[1024] = { 0, };
+		wchar_t wszBuf[1024] = { 0, };
 
-		wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+		wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
 
 		while (!wif.eof())
 		{
-			wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+			wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
 
-			TCHAR seps[] = TEXT(",");
-			TCHAR *token;
-			TCHAR pStr[MAX_PATH];
-			TCHAR *next_token = NULL;
+			wchar_t seps[] = TEXT(",");
+			wchar_t *token;
+			wchar_t pStr[MAX_PATH];
+			wchar_t *next_token = NULL;
 
-			if (0 >= _tcsclen(tszBuf))
+			if (0 >= _tcsclen(wszBuf))
 				continue;
 
-			_tcscpy_s(pStr, tszBuf);
+			_tcscpy_s(pStr, wszBuf);
 			token = _tcstok_s(pStr, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszIndex[MAX_PATH] = { 0, };
+			wchar_t tszIndex[MAX_PATH] = { 0, };
 			_tcscpy_s(tszIndex, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszName[MAX_PATH] = { 0, };
+			wchar_t tszName[MAX_PATH] = { 0, };
 			_tcscpy_s(tszName, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszAnimationState[MAX_PATH] = { 0, };
+			wchar_t tszAnimationState[MAX_PATH] = { 0, };
 			_tcscpy_s(tszAnimationState, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszPath[MAX_PATH] = { 0, };
+			wchar_t tszPath[MAX_PATH] = { 0, };
 			_tcscpy_s(tszPath, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
@@ -224,7 +245,7 @@ bool CResourceManager::LoadSpriteTextureCSVFile(const TCHAR* file)
 			if (!token) return false;
 			int FramePerSecond = _ttoi(token);
 
-			std::map<tstring, CComponent*>::iterator iter;
+			std::map<std::wstring, CComponent*>::iterator iter;
 			iter = m_mapSpriteComponent.find(tszName);
 			if (iter == m_mapSpriteComponent.end())
 			{
@@ -256,7 +277,7 @@ bool CResourceManager::LoadSpriteTextureCSVFile(const TCHAR* file)
 	return true;
 }
 
-bool CResourceManager::LoadSerialSpriteTextureCSVFile(const TCHAR* file)
+bool CResourceManager::LoadSerialSpriteTextureCSVFile(const wchar_t* file)
 {
 	std::wifstream wif(file);
 
@@ -264,41 +285,41 @@ bool CResourceManager::LoadSerialSpriteTextureCSVFile(const TCHAR* file)
 	{
 		wif.imbue(std::locale("kor"));
 
-		TCHAR tszBuf[1024] = { 0, };
+		wchar_t wszBuf[1024] = { 0, };
 
-		wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+		wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
 
 		while (!wif.eof())
 		{
-			wif.getline((WCHAR*)tszBuf, _countof(tszBuf));
+			wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
 
-			TCHAR seps[] = TEXT(",");
-			TCHAR* token;
-			TCHAR pStr[MAX_PATH];
-			TCHAR* next_token = NULL;
+			wchar_t seps[] = TEXT(",");
+			wchar_t* token;
+			wchar_t pStr[MAX_PATH];
+			wchar_t* next_token = NULL;
 
-			if (0 >= _tcsclen(tszBuf))
+			if (0 >= _tcsclen(wszBuf))
 				continue;
 
-			_tcscpy_s(pStr, tszBuf);
+			_tcscpy_s(pStr, wszBuf);
 			token = _tcstok_s(pStr, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszIndex[MAX_PATH] = { 0, };
+			wchar_t tszIndex[MAX_PATH] = { 0, };
 			_tcscpy_s(tszIndex, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszName[MAX_PATH] = { 0, };
+			wchar_t tszName[MAX_PATH] = { 0, };
 			_tcscpy_s(tszName, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszAnimationState[MAX_PATH] = { 0, };
+			wchar_t tszAnimationState[MAX_PATH] = { 0, };
 			_tcscpy_s(tszAnimationState, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
 			if (!token) return false;
-			TCHAR tszPath[MAX_PATH] = { 0, };
+			wchar_t tszPath[MAX_PATH] = { 0, };
 			_tcscpy_s(tszPath, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
@@ -325,7 +346,7 @@ bool CResourceManager::LoadSerialSpriteTextureCSVFile(const TCHAR* file)
 			if (!token) return false;
 			int FramePerSecond = _ttoi(token);
 
-			std::map<tstring, CComponent*>::iterator iter;
+			std::map<std::wstring, CComponent*>::iterator iter;
 			iter = m_mapSpriteComponent.find(tszName);
 			if (iter == m_mapSpriteComponent.end())
 			{
@@ -357,8 +378,10 @@ bool CResourceManager::LoadSerialSpriteTextureCSVFile(const TCHAR* file)
 	return true;
 }
 
-bool CResourceManager::LoadTexture(const TCHAR* name, const TCHAR* tszfilepath)
+bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepath)
 {
+	IMG_Init(IMG_INIT_PNG);
+
 	std::string filepath;
 #ifdef  UNICODE 
 	filepath = WToM(tszfilepath);
@@ -395,7 +418,7 @@ bool CResourceManager::LoadTexture(const TCHAR* name, const TCHAR* tszfilepath)
 	
 }
 
-bool CResourceManager::LoadNamingTextureJSONFile(const TCHAR* tszfilepath)
+bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 {
 	std::string filepath;
 	filepath = WToM(tszfilepath);
@@ -417,17 +440,17 @@ bool CResourceManager::LoadNamingTextureJSONFile(const TCHAR* tszfilepath)
 			return false;
 		}
 		
-		Json::Value root = value["root"];
+		Json::Value root = value["Root"];
 
 		int rootsize = root.size();
 		for (int i = 0; i < rootsize; ++i)
 		{
 			CComponent* pSingleTexture = CSingleTexture::Create();
 
-			std::wstring Name = MToW(root[i][0].asString());
+			std::wstring Name = MToW(root[i][0].asString().c_str());
 			dynamic_cast<CSingleTexture*>(pSingleTexture)->SetName(Name);
 
-			std::wstring SingleTextureName = MToW(root[i][1].asString());
+			std::wstring SingleTextureName = MToW(root[i][1].asString().c_str());
 			CTexture* pTexture = GetTextureByName(SingleTextureName);
 
 			if (!pTexture)
@@ -456,7 +479,7 @@ bool CResourceManager::LoadNamingTextureJSONFile(const TCHAR* tszfilepath)
 			destRect.x = 0;
 			destRect.y = 0;
 
-			dynamic_cast<CSingleTexture*>(pSingleTexture)->SetShow(true);
+			dynamic_cast<CSingleTexture*>(pSingleTexture)->SetShow(false);
 			dynamic_cast<CSingleTexture*>(pSingleTexture)->Set(srcRect, destRect, eRenderLayer_UI, pTexture);
 
 			m_mapNamingTexture.insert(std::make_pair(Name, pSingleTexture));
@@ -466,17 +489,40 @@ bool CResourceManager::LoadNamingTextureJSONFile(const TCHAR* tszfilepath)
 	return true;
 }
 
-bool CResourceManager::LoadUIJSONFile(const TCHAR* tszfilepath)
+bool CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
 {
+	std::string filepath;
+	filepath = WToM(tszfilepath);
 
+	std::ifstream ifs(filepath);
+
+	if (ifs.is_open())
+	{
+		ifs.imbue(std::locale("kor"));
+
+		Json::Value value;
+		Json::Reader reader;
+
+		if (false == reader.parse(ifs, value))
+		{
+			char szMessage[MAX_PATH] = { 0, };
+			sprintf_s(szMessage, "%s load failed\n", filepath.c_str());
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+			return false;
+		}
+		
+		UIMGR->ParseUI(value);
+
+		
+	}
 
 
 	return false;
 }
 
-SDL_Texture* CResourceManager::GetSDLTextureByName(const tstring& name)
+SDL_Texture* CResourceManager::GetSDLTextureByName(const std::wstring& name)
 {
-	std::map<tstring, CTexture*>::iterator iter = m_mapTexture.find(name);
+	std::map<std::wstring, CTexture*>::iterator iter = m_mapTexture.find(name);
 	if (iter != m_mapTexture.end())
 	{
 		if (iter->second)
@@ -486,9 +532,9 @@ SDL_Texture* CResourceManager::GetSDLTextureByName(const tstring& name)
 	return nullptr;
 }
 
-CTexture* CResourceManager::GetTextureByName(const tstring& name)
+CTexture* CResourceManager::GetTextureByName(const std::wstring& name)
 {
-	std::map<tstring, CTexture*>::iterator iter = m_mapTexture.find(name);
+	std::map<std::wstring, CTexture*>::iterator iter = m_mapTexture.find(name);
 	if (iter != m_mapTexture.end())
 	{
 		if (iter->second)
@@ -498,9 +544,9 @@ CTexture* CResourceManager::GetTextureByName(const tstring& name)
 	return nullptr;
 }
 
-CComponent* CResourceManager::GetSpriteComponent(const TCHAR* path)
+CComponent* CResourceManager::GetSpriteComponent(const wchar_t* path)
 {
-	std::map<tstring, CComponent*>::iterator iter = m_mapSpriteComponent.find(path);
+	std::map<std::wstring, CComponent*>::iterator iter = m_mapSpriteComponent.find(path);
 	if (iter != m_mapSpriteComponent.end())
 	{
 		if (iter->second)
@@ -508,4 +554,21 @@ CComponent* CResourceManager::GetSpriteComponent(const TCHAR* path)
 	}
 
 	return nullptr;
+}
+
+CComponent* CResourceManager::GetNamingTextureByName(const std::wstring& name)
+{
+	CComponent* pNamingTexture = NULL;
+
+	std::map<std::wstring, CComponent*>::iterator iter = m_mapNamingTexture.find(name);
+	if (iter != m_mapNamingTexture.end())
+	{
+		pNamingTexture = iter->second;
+	}
+	return pNamingTexture;
+}
+
+CFont* CResourceManager::GetFont()
+{
+	return m_Font;
 }

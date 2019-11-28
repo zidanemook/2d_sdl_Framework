@@ -27,8 +27,8 @@ public:
 	~CObjMgr(void);
 
 private:
-	std::map<tstring, CObj*>	m_mapObject;
-//	std::set<tstring>			m_setDeleteList;
+	std::map<std::wstring, CObj*>	m_mapObject;
+//	std::set<std::wstring>			m_setDeleteList;
 
 	CObj*						m_pSelfPlayer;
 
@@ -41,9 +41,9 @@ public:
 	void Destroy();
 
 public:
-	void AddObj(tstring& tsName, CObj* pObj);
-	void PopObj(tstring& tsName);
-//	void ReservePopObj(tstring& tsName);
+	void AddObj(std::wstring& tsName, CObj* pObj);
+	void PopObj(std::wstring& tsName);
+//	void ReservePopObj(std::wstring& tsName);
 	void Update();
 	CObj*	GetSelf();
 

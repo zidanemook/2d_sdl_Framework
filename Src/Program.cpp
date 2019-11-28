@@ -9,6 +9,7 @@
 #include "Manager/KeyManager.h"
 #include "Manager/ControlManager.h"
 #include "Manager/ObjMgr.h"
+#include "Manager/UIManager.h"
 #include "Game.h"
 #include "Logo.h"
 #include "Mainmenu.h"
@@ -129,25 +130,13 @@ void CProgram::HandleEvents()
 	case SDL_QUIT:
 	{
 		m_bIsRunning = false;
+		break;
 	}
-	case SDL_MOUSEMOTION:
-	{
-
-	}
-
-	case SDL_MOUSEBUTTONDOWN:
-	{
-
-	}
-
-	case SDL_MOUSEBUTTONUP:
-	{
-
-	}
-
-	break;
 
 	default:
+	{
+		UIMGR->HandleEvent(sdlEvent);
+	}
 		break;
 	}
 }
@@ -157,6 +146,7 @@ void CProgram::Update()
 	HandleEvents();
 	KEYMGR->UpdateKeyBoardState();
 	CTRLMGR->Update();
+	UIMGR->Update();
 	ModeMgr->Update();
 	OBJMGR->Update();
 	RdrMgr->Render();

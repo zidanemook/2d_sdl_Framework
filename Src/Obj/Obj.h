@@ -2,9 +2,9 @@
 #include "BaseMode.h"
 #include "Vector2D.h"
 
-static tstring& ComponentTypeToName(eComponentTypes eType)
+static std::wstring& ComponentTypeToName(eComponentTypes eType)
 {
-	tstring componenttypename[eComponentTypes_Max] = { _T(""), _T("Transform"), _T("Sprite"), _T("SingleTexture") };
+	std::wstring componenttypename[eComponentTypes_Max] = { _T(""), _T("Transform"), _T("Sprite"), _T("SingleTexture") };
 
 	if (eType <= eComponentTypes_None || eType >= eComponentTypes_Max)
 		return componenttypename[eComponentTypes_None];
@@ -31,8 +31,8 @@ public:
 	CComponent* GetComponent(eComponentTypes eType);
 
 public:
-	void				SetName(tstring& pszName);
-	tstring&			GetName();
+	void				SetName(std::wstring& pszName);
+	std::wstring&		GetName();
 	void				SetRenderLayer(eRenderLayer eLayer);
 	eRenderLayer		GetRenderLayer();
 	void				SetPos(const Vector2D& vPos);
@@ -53,7 +53,7 @@ public:
 	int					GetDestHeight();
 
 protected:
-	tstring				m_tsName;
+	std::wstring		m_wsName;
 	eRenderLayer		m_eRenderLayer;
 	bool				m_bShow;
 	eAnimationState		m_eAnimState;

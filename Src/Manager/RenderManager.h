@@ -20,7 +20,7 @@ public:
 	inline virtual void Free(void);
 
 	void Initialize();
-	void Set(const tstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* vpPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha);
+	void Set(const std::wstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* vpPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha);
 	bool IsInUse();
 	bool IsShow();
 	
@@ -28,7 +28,7 @@ public:
 	void operator=(CRenderCommand* pRenderCommand);
 	//void SetInUse(bool bInuse);
 
-	tstring&		GetName();
+	std::wstring&	GetName();
 	SDL_Texture*	GetTexture();
 	SDL_Rect*		GetSrcRect();
 	SDL_Rect*		GetDestRect();
@@ -39,7 +39,7 @@ public:
 	Uint8*			GetAlpha();
 
 protected:
-	tstring			m_tsName;
+	std::wstring	m_tsName;
 	SDL_Texture*	m_pTexture;
 	SDL_Rect*		m_pSrcRect;
 	SDL_Rect*		m_pDestRect;
@@ -86,8 +86,8 @@ public:
 	void RenderCopy(SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect);
 	void Render();
 	//Add when to render
-	void AddRenderCommand(const tstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* pvPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha);
-	//void DeleteRenderCommand(tstring& name, eRenderLayer RenderLayer);
+	void AddRenderCommand(const std::wstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* pvPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha);
+	//void DeleteRenderCommand(std::wstring& name, eRenderLayer RenderLayer);
 	void AddEmpty(eRenderLayer eLayer);
 	void Destroy();
 

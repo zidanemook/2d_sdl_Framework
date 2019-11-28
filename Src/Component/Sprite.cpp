@@ -137,7 +137,7 @@ void CSprite::SetTexture(CTexture* pTexture)
 	m_pTexture->AddRef();
 }
 
-eAnimationState CSprite::ToAnimationState(TCHAR* tszAnimState)
+eAnimationState CSprite::ToAnimationState(wchar_t* tszAnimState)
 {
 	if (_tcscmp(tszAnimState, _T("eAnimationState_Idle_Left")) == 0)
 	{

@@ -91,22 +91,22 @@ CComponent* CObj::GetComponent(eComponentTypes eType)
 	return NULL;
 }
 
-void CObj::SetName(tstring& pszName)
+void CObj::SetName(std::wstring& pszName)
 {
 	static int UniqueObjID = 0;
 
-	m_tsName = pszName;
+	m_wsName = pszName;
 	++UniqueObjID;
 
 	if (0 > UniqueObjID)
 		UniqueObjID = 0;
 
-	m_tsName += UniqueObjID;
+	m_wsName += UniqueObjID;
 }
 
-tstring& CObj::GetName()
+std::wstring& CObj::GetName()
 {
-	return m_tsName;
+	return m_wsName;
 }
 
 void CObj::SetRenderLayer(eRenderLayer eLayer)

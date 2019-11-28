@@ -39,8 +39,8 @@ void CPlayer::Init()
 {
 	CUnit::Init();
 
-	tstring tsName = _T("Player");
-	SetName(tsName);
+	std::wstring wsName = _T("Player");
+	SetName(wsName);
 	SetRenderLayer(eRenderLayer_Object);
 	//CComponent* pSingleTexture = dynamic_cast<CComponent*>(CSingleTexture::Create());
 	//dynamic_cast<CSingleTexture*>(pSingleTexture)->SetTexture(RSCMgr->GetTextureByName(GetName()));

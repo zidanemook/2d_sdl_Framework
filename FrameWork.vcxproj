@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\Creacion</OutDir>
+    <OutDir>..\FantasyInn_Release</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
   </PropertyGroup>
@@ -84,14 +84,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>.\Libraries\SDL2-2.0.8\include;.\Src\Game;.\Src\Header;.\Src\Util;.\Src\SuperClass;.\Src\GameMode;.\Src\SDLManager;.\Libraries\SDL2_image-2.0.1\include;.\Src\Resource;.\Src\Obj;.\Src\Component;.\Src\Obj\Dynamic;.\Src\RenderManager;.\Dependencies\JSON;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Libraries\SDL2-2.0.8\include;.\Src\Game;.\Src\Header;.\Src\Util;.\Src\SuperClass;.\Src\GameMode;.\Src\SDLManager;.\Libraries\SDL2_image-2.0.1\include;.\Src\Resource;.\Src\Obj;.\Src\Component;.\Src\Obj\Dynamic;.\Src\RenderManager;.\Dependencies\JSON;.\Libraries\SDL2_ttf-2.0.15\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>_DEBUG_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>.\Libraries\SDL2-2.0.8\lib\x86;.\Libraries\SDL2_image-2.0.1\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\Libraries\SDL2-2.0.8\lib\x86;.\Libraries\SDL2_image-2.0.1\lib\x86;.\Libraries\SDL2_ttf-2.0.15\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
@@ -169,11 +169,16 @@
     <ClCompile Include="Src\Manager\RenderManager.cpp" />
     <ClCompile Include="Src\Manager\ResourceManager.cpp" />
     <ClCompile Include="Src\Manager\SystemManager.cpp" />
+    <ClCompile Include="Src\Manager\UIManager.cpp" />
     <ClCompile Include="Src\Obj\Dynamic\Player.cpp" />
     <ClCompile Include="Src\Obj\Dynamic\Unit.cpp" />
     <ClCompile Include="Src\Obj\Obj.cpp" />
     <ClCompile Include="Src\Program.cpp" />
+    <ClCompile Include="Src\Resource\Font.cpp" />
     <ClCompile Include="Src\Resource\Texture.cpp" />
+    <ClCompile Include="Src\UI\ImageBox.cpp" />
+    <ClCompile Include="Src\UI\TextButton.cpp" />
+    <ClCompile Include="Src\UI\UIWnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\JSON\json.h" />
@@ -195,12 +200,17 @@
     <ClInclude Include="Src\Manager\RenderManager.h" />
     <ClInclude Include="Src\Manager\ResourceManager.h" />
     <ClInclude Include="Src\Manager\SystemManager.h" />
+    <ClInclude Include="Src\Manager\UIManager.h" />
     <ClInclude Include="Src\Obj\Dynamic\Player.h" />
     <ClInclude Include="Src\Obj\Dynamic\Unit.h" />
     <ClInclude Include="Src\Obj\Obj.h" />
     <ClInclude Include="Src\Program.h" />
+    <ClInclude Include="Src\Resource\Font.h" />
     <ClInclude Include="Src\Resource\Texture.h" />
     <ClInclude Include="Src\SuperClass\Base.h" />
+    <ClInclude Include="Src\UI\ImageBox.h" />
+    <ClInclude Include="Src\UI\TextButton.h" />
+    <ClInclude Include="Src\UI\UIWnd.h" />
     <ClInclude Include="Src\Util\Function.h" />
     <ClInclude Include="Src\Util\Vector2D.h" />
   </ItemGroup>

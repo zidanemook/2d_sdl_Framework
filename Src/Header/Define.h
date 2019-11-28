@@ -25,12 +25,6 @@ enum eComponentTypes
 	eComponentTypes_Max
 };
 
-#ifdef _UNICODE
-typedef std::wstring tstring;
-#else
-typedef std::string tstring;
-#endif
-
 enum eRenderLayer
 {
 	eRenderLayer_None,
@@ -127,6 +121,16 @@ enum eMoveDirection
 	eMoveDirection_Right_Down,
 	eMoveDirection_Down,
 	eMoveDirection_Left_Down
+};
+
+enum eUIType
+{
+	eUIType_None,
+	eUIType_ImageBox,
+	eUIType_TextButton,
+	eUIType_TextBox,//글자보여주고 스크롤기능도 있음
+	eUIType_ListBox,//목록보여주고 스크롤기능도 있음
+	eUIType_Max
 };
 
 #define  ONESECOND 1.0f

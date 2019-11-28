@@ -2,6 +2,7 @@
 #include "RenderManager.h"
 #include "Vector2D.h"
 #include "Function.h"
+#include "UIManager.h"
 
 //struct RenderFunc
 //{
@@ -67,7 +68,7 @@ void CRenderCommand::Initialize()
 	m_pAlpha = NULL;
 }
 
-void CRenderCommand::Set(const tstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* vpPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha)
+void CRenderCommand::Set(const std::wstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* vpPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha)
 {
 	if ( pTexture && ( eRenderLayer_None != RenderLayer) )
 	{
@@ -106,7 +107,7 @@ void CRenderCommand::operator=(CRenderCommand* pRenderCommand)
 //	m_bIsInUse = bInuse;
 //}
 
-tstring& CRenderCommand::GetName()
+std::wstring& CRenderCommand::GetName()
 {
 	return	m_tsName;
 }
@@ -283,10 +284,12 @@ void CRenderManager::Render()
 		}
 	}
 
+	UIMGR->Render();
+
 	RenderPresent();
 }
 
-void CRenderManager::AddRenderCommand(const tstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* pvPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha)
+void CRenderManager::AddRenderCommand(const std::wstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* pvPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha)
 {
 	if (true == (m_vRenderCommand[RenderLayer]).empty())
 		return;
@@ -304,7 +307,7 @@ void CRenderManager::AddRenderCommand(const tstring& name, SDL_Texture* pTexture
 	}
 }
 
-//void CRenderManager::DeleteRenderCommand(tstring& name, eRenderLayer RenderLayer)
+//void CRenderManager::DeleteRenderCommand(std::wstring& name, eRenderLayer RenderLayer)
 //{
 //	bool bResult = false;
 //	int iTailIndex = (m_iEmptyIndex[RenderLayer] - 1);//

@@ -50,14 +50,14 @@ void CObjMgr::Destroy()
 	}*/
 }
 
-void CObjMgr::AddObj(tstring& tsName, CObj* pObj)
+void CObjMgr::AddObj(std::wstring& tsName, CObj* pObj)
 {
 	m_mapObject.insert(std::make_pair(tsName, pObj));
 }
 
-void CObjMgr::PopObj(tstring& tsName)
+void CObjMgr::PopObj(std::wstring& tsName)
 {
-	std::map<tstring, CObj*>::iterator iter;
+	std::map<std::wstring, CObj*>::iterator iter;
 	iter = m_mapObject.find(tsName);
 
 	if (iter != m_mapObject.end())
@@ -78,7 +78,7 @@ void CObjMgr::Update()
 	if (m_pSelfPlayer)
 		m_pSelfPlayer->Update();
 
-	std::map<tstring, CObj*>::iterator iter = m_mapObject.begin();
+	std::map<std::wstring, CObj*>::iterator iter = m_mapObject.begin();
 	for (iter; iter != m_mapObject.end(); )
 	{
 		iter->second->Update();

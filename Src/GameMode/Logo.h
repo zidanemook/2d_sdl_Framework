@@ -33,7 +33,7 @@ private:
 
 public:
 	static CLogo* Create();
-	inline virtual void Free(void);
+	inline virtual void Free();
 
 	void Init();
 	virtual void Update();

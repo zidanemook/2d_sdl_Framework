@@ -41,14 +41,14 @@ SDL_Texture * CTexture::GetTexture()
 	return m_pTexture;
 }
 
-void CTexture::SetPath(const TCHAR* tszPath)
+void CTexture::SetPath(const wchar_t* wszPath)
 {
-	m_tsPath = tszPath;
+	m_wsPath = wszPath;
 }
 
-const TCHAR* CTexture::GetPath()
+const wchar_t* CTexture::GetPath()
 {
-	return m_tsPath.c_str();
+	return m_wsPath.c_str();
 }
 
 void CTexture::SetBlendMode(SDL_BlendMode BlendMode)
