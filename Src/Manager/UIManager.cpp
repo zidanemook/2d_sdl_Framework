@@ -4,15 +4,18 @@
 #include "../UI/UIWnd.h"
 #include "../UI/ImageBox.h"
 #include "../UI/TextButton.h"
+#include "../UI/UIMainMenu.h"
 
 CUIManager* CUIManager::m_pInst = NULL;
 
 CUIManager::CUIManager(void)
 {
+	m_pUIMainMenu = new CUIMainMenu();
 }
 
 CUIManager::~CUIManager(void)
 {
+	Safe_Delete(m_pUIMainMenu);
 }
 
 void CUIManager::Update()
@@ -23,15 +26,16 @@ void CUIManager::HandleEvent(SDL_Event& event)
 {
 	if (SDL_MOUSEMOTION <= event.type && SDL_MOUSEWHEEL >= event.type)
 	{
-		int x = event.motion.x;
-		int y = event.motion.y;
+		SDL_Point point;
+		point.x = event.motion.x;
+		point.y = event.motion.y;
 
 		std::list<CUIWnd*>::reverse_iterator riter = m_listRenderUI.rbegin();
 		for (riter; riter != m_listRenderUI.rend(); ++riter)
 		{
 			//가장 나중 출력되는 UI Rect 부터 순서대로 충돌하고 있는지 판단
 			
-			//if ()
+			if (PointToRectCollision(point, (*riter)->GetDestRect()))
 				(*riter)->HandleEvent(event);
 		}
 	}
@@ -124,7 +128,7 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 	{
 		pWnd->SetParent(pParent);
 		pParent->AddChildren(pWnd);
-		wsName = pParent->GetName();
+		wsName = pParent->GetName()+ _T("_");
 	}
 		
 	
@@ -132,9 +136,9 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 
 	std::wstring temp = MToW(((*iter)["Name"]).asString().c_str());
 	if(!temp.empty())
-		wsName += _T("_") + MToW(((*iter)["Name"]).asString().c_str());
-	else
-		wsName += _T("_") + MToW(((*iter)["UIType"]).asString().c_str());
+		wsName += MToW(((*iter)["Name"]).asString().c_str());
+	if (temp.empty())
+		wsName += MToW(((*iter)["UIType"]).asString().c_str());
 
 	pWnd->SetName(wsName.c_str());
 
@@ -194,7 +198,7 @@ eUIType CUIManager::StringTypeToEnumType(const wchar_t* tszType)
 	return eResult;
 }
 
-CUIWnd* CUIManager::GetUIWndByName(std::wstring& Name)
+CUIWnd* CUIManager::GetUIWndByName(const std::wstring& Name)
 {
 	std::map<std::wstring, CUIWnd*>::iterator iter = m_mapUI.find(Name);
 
@@ -202,4 +206,42 @@ CUIWnd* CUIManager::GetUIWndByName(std::wstring& Name)
 		return iter->second;
 
 	return NULL;
+}
+
+CUIWnd* CUIManager::GetRootUIWndByName(const std::wstring& Name)
+{
+	std::map<std::wstring, CUIWnd*>::iterator iter = m_mapRootUI.find(Name);
+
+	if (iter != m_mapRootUI.end())
+		return iter->second;
+
+	return NULL;
+}
+
+void CUIManager::AddToRenderList(CUIWnd* pWnd)
+{
+	if (pWnd)
+	{
+		m_listRenderUI.push_back(pWnd);
+	}
+		
+}
+
+void CUIManager::DeleteFromRenderListByName(const std::wstring& Name)
+{
+	std::list<CUIWnd*>::iterator iter = m_listRenderUI.begin();
+
+	for (iter; iter != m_listRenderUI.end(); ++iter)
+	{
+		if (Name == (*iter)->GetName())
+		{
+			iter = m_listRenderUI.erase(iter);
+			break;
+		}
+	}
+}
+
+CUIMainMenu* CUIManager::GetUIMainMenu()
+{
+	return m_pUIMainMenu;
 }

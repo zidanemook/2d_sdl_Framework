@@ -30,10 +30,14 @@ public:
 	bool Init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);
 
 	SDL_Window * GetWindow();
+	int			GetWindowWidth();
+	int			GetWindowHeight();
+	
 private:
 	SDL_Window * m_pWindow;
 	//SDL_Renderer *m_pRenderer;
-
+	int	m_iWidth;
+	int m_iHeight;
 };
 
 #define SysMgr	CSystemManager::GetInstance()

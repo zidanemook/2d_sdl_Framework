@@ -42,10 +42,7 @@ void CTextButton::Render()
 
 
 	//Font
-	m_destRect.h = m_FontTextureSize.y;
-	m_destRect.w = m_FontTextureSize.x;
-	m_destRect.x = m_Pos.x;//부모위치를 더해야 한다!
-	m_destRect.y = m_Pos.y;
+
 	RdrMgr->RenderCopy(m_pTexture, &m_srcRect, &m_destRect);
 	
 	CUIWnd::Render();
@@ -65,6 +62,9 @@ void CTextButton::SetText(const wchar_t* pwszText)
 	m_srcRect.w = m_FontTextureSize.x;
 	m_srcRect.x = 0;
 	m_srcRect.y = 0;
+
+	m_destRect.h = m_FontTextureSize.y;
+	m_destRect.w = m_FontTextureSize.x;
 }
 
 void CTextButton::SetText(const std::wstring& wstText)
@@ -77,6 +77,9 @@ void CTextButton::SetText(const std::wstring& wstText)
 	m_srcRect.w = m_FontTextureSize.x;
 	m_srcRect.x = 0;
 	m_srcRect.y = 0;
+
+	m_destRect.h = m_FontTextureSize.y;
+	m_destRect.w = m_FontTextureSize.x;
 }
 
 void CTextButton::SetIdleImage(CComponent* pImage)

@@ -136,6 +136,12 @@
     <ClCompile Include="Src\Resource\Font.cpp">
       <Filter>Src\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Src\UI\CMessageHandler.cpp">
+      <Filter>Src\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\UI\UIMainMenu.cpp">
+      <Filter>Src\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Util\Function.h">
@@ -233,6 +239,12 @@
     </ClInclude>
     <ClInclude Include="Src\Resource\Font.h">
       <Filter>Src\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UI\CMessageHandler.h">
+      <Filter>Src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UI\UIMainMenu.h">
+      <Filter>Src\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

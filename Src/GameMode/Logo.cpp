@@ -4,7 +4,9 @@
 #include "../Manager/ResourceManager.h"
 #include "../Manager/KeyManager.h"
 #include "../Manager/ModeManager.h"
+#include "../Manager/SystemManager.h"
 #include "../Component/SingleTexture.h"
+
 
 CLogo::CLogo()
 {
@@ -37,7 +39,19 @@ void CLogo::Free(void)
 void CLogo::Init()
 {
 	m_pLogo = CSingleTexture::Create();
-	m_pLogo->SetTexture(RSCMgr->GetTextureByName(_T("Logo")));
+	SDL_Rect srcRect;
+	srcRect.x = 0;
+	srcRect.y = 0;
+	srcRect.h = SysMgr->GetWindowHeight();
+	srcRect.w = SysMgr->GetWindowWidth();
+
+	SDL_Rect destRect;
+	destRect = srcRect;
+
+	CTexture* pTexture = RSCMgr->GetTextureByName(_T("Logo"));
+	
+	m_pLogo->Set(srcRect, destRect, eRenderLayer_UI, pTexture);
+	
 	
 }
 

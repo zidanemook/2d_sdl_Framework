@@ -34,21 +34,21 @@ inline void CImageBox::Free()
 
 void CImageBox::Render()
 {
-	SDL_Rect srcRect;
-	srcRect = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetSrcRect();
-	
-	SDL_Rect destRect;
-	destRect = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetDestRect();
-
 	CTexture* pTexture = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetTexture();
-	RdrMgr->RenderCopy(pTexture->GetTexture(), &srcRect, &destRect);
+	RdrMgr->RenderCopy(pTexture->GetTexture(), &m_srcRect, &m_destRect);
 
 	CUIWnd::Render();
 }
 
 void CImageBox::SetImage(CComponent* pTexture)
 {
+	if (!pTexture)
+		return;
+
 	m_pSingleTexture = pTexture;
+
+	m_srcRect = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetSrcRect();
+	m_destRect = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetDestRect();
 }
 
 CComponent* CImageBox::GetImage()

@@ -33,7 +33,12 @@ bool CSystemManager::Init(const char* title, int xpos, int ypos, int width, int 
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Window failed", NULL);
 		}
 		else
+		{
+			m_iWidth = width;
+			m_iHeight = height;
 			bResult = true;
+		}
+			
 	}
 	else
 	{
@@ -46,4 +51,14 @@ bool CSystemManager::Init(const char* title, int xpos, int ypos, int width, int 
 SDL_Window * CSystemManager::GetWindow()
 {
 	return m_pWindow;
+}
+
+int CSystemManager::GetWindowWidth()
+{
+	return m_iWidth;
+}
+
+int CSystemManager::GetWindowHeight()
+{
+	return m_iHeight;
 }

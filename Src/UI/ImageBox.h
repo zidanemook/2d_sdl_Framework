@@ -9,13 +9,12 @@ private:
 	~CImageBox();
 
 public:
-	static CImageBox* Create();
+	static CImageBox*	Create();
 	inline virtual void Free();
 	virtual void		Render();
 
 private:
 	CComponent* m_pSingleTexture;
-
 
 public:
 	void SetImage(CComponent* pTexture);

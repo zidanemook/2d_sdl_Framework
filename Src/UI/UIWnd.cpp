@@ -23,6 +23,30 @@ void CUIWnd::Render()
 
 void CUIWnd::HandleEvent(SDL_Event& event)
 {
+	if (SDL_MOUSEMOTION <= event.type && SDL_MOUSEWHEEL >= event.type)
+	{
+		SDL_Point point;
+		point.x = event.motion.x;
+		point.y = event.motion.y;
+
+		std::list<CUIWnd*>::reverse_iterator riter = m_listChildren.rbegin();
+		for (riter; riter != m_listChildren.rend(); ++riter)
+		{
+			//가장 나중 출력되는 UI Rect 부터 순서대로 충돌하고 있는지 판단
+
+			if (PointToRectCollision(point, (*riter)->GetDestRect()))
+			{
+				(*riter)->HandleEvent(event);
+				break;
+			}
+				
+		}
+	}
+}
+
+SDL_Rect& CUIWnd::GetDestRect()
+{
+	return m_destRect;
 }
 
 void CUIWnd::SetParent(CUIWnd* pWnd)
@@ -50,7 +74,14 @@ void CUIWnd::SetUIType(eUIType eType)
 
 void CUIWnd::SetPos(SDL_Point& Point)
 {
-	m_Pos = Point;
+	m_destRect.x = Point.x;
+	m_destRect.y = Point.y;
+
+	if (m_pParent)
+	{
+		m_destRect.x += m_pParent->GetPos().x;
+		m_destRect.y += m_pParent->GetPos().y;
+	}
 }
 
 CUIWnd* CUIWnd::GetParent()
@@ -83,7 +114,10 @@ eUIType CUIWnd::GetUIType()
 	return m_eUIType;
 }
 
-SDL_Point& CUIWnd::GetPos()
+SDL_Point CUIWnd::GetPos()
 {
-	return m_Pos;
+	SDL_Point point;
+	point.x = m_destRect.x;
+	point.y = m_destRect.y;
+	return point;
 }

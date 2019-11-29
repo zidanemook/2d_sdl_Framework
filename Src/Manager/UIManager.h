@@ -3,6 +3,7 @@
 #include "json.h"
 
 class CUIWnd;
+class CUIMainMenu;
 class CUIManager
 {
 private:
@@ -39,14 +40,23 @@ public:
 	void ParseImageBox(CUIWnd* pWnd, Json::ValueIterator& iter);
 	void ParseTextButton(CUIWnd* pWnd, Json::ValueIterator& iter);
 	eUIType StringTypeToEnumType(const wchar_t* tszType);
+	
+public:
+	CUIWnd* GetUIWndByName(const std::wstring& Name);
+	CUIWnd* GetRootUIWndByName(const std::wstring& Name);
+	void AddToRenderList(CUIWnd* pWnd);
+	void DeleteFromRenderListByName(const std::wstring& Name);
 
 public:
-	CUIWnd* GetUIWndByName(std::wstring& Name);
+	CUIMainMenu* GetUIMainMenu();
 
 private:
 	std::map<std::wstring, CUIWnd*> m_mapUI;//All UIWnd
 	std::map<std::wstring, CUIWnd*> m_mapRootUI;//All rootUIWNd
 	std::list<CUIWnd*> m_listRenderUI;//For Render;
+
+private:
+	CUIMainMenu* m_pUIMainMenu;
 };
 
 #define UIMGR CUIManager::GetInst()

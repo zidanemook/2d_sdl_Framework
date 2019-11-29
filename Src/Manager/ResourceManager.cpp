@@ -517,7 +517,7 @@ bool CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
 	}
 
 
-	return false;
+	return true;
 }
 
 SDL_Texture* CResourceManager::GetSDLTextureByName(const std::wstring& name)

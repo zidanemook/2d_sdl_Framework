@@ -25,8 +25,6 @@ private:
 	CComponent*			m_pClicked_Image;
 	CComponent*			m_pOnMouse_Image;
 
-	SDL_Rect			m_srcRect;
-	SDL_Rect			m_destRect;
 public:
 	void SetText(const wchar_t* pwszText);
 	void SetText(const std::wstring& wstText);

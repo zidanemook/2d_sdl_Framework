@@ -80,7 +80,17 @@ struct ReleaseListElement
 	}
 };
 
-static bool AABB(const SDL_Rect& recA, const SDL_Rect& recB)
+static bool PointToRectCollision(const SDL_Point& point, const SDL_Rect& rect)
+{
+	if ((point.x >= rect.x) && (point.x <= (rect.x + rect.w)) &&
+		(point.y >= rect.y) && (point.y <= (rect.y + rect.h)))
+	{
+		return true;
+	}
+	return false;
+}
+
+static bool RectToRectCollision(const SDL_Rect& recA, const SDL_Rect& recB)
 {
 	if (
 		recA.x + recA.w >= recB.x &&
