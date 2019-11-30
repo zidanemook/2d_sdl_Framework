@@ -17,14 +17,16 @@ public:
 	inline virtual void Free();
 
 public:
-	bool OpenFont(wchar_t* path, int size);
-	bool OpenFont(std::wstring wsPath);
-	void TextToTexture(const wchar_t* text, SDL_Color color, SDL_Texture** outTexture, SDL_Point& outPoint);
+	TTF_Font* OpenFont(wchar_t* path, int size);
+	bool OpenFont(std::wstring wsPath, int size);
+	void TextToTexture(const wchar_t* text, int iSize, SDL_Color color, SDL_Texture** outTexture, SDL_Point& outPoint);
 
 private:
 	//SDL_Texture*	m_pTexture;
 	//std::wstring	m_wsText;
 	//SDL_Point		m_Size;
-	TTF_Font*		m_Font;
+	//TTF_Font*		m_Font;
+
+	std::map<int, TTF_Font*>	m_mapFont;
 };
 

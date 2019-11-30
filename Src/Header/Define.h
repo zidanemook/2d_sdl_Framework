@@ -133,6 +133,19 @@ enum eUIType
 	eUIType_Max
 };
 
+enum eUITextAlignType
+{
+	eUITextAlignType_Horizontal_Center,
+	eUITextAlignType_Horizontal_Left,
+	eUITextAlignType_Horizontal_Right,
+	eUITextAlignType_Vertical_Center,
+	eUITextAlignType_Vertical_Left,
+	eUITextAlignType_Vertical_Right
+};
+
 #define  ONESECOND 1.0f
+
+#define NORMALFONT L"Resource/Font/KBLZ_M.ttf"
+
 
 #endif //Define_h

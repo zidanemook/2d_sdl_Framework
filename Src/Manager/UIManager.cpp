@@ -5,6 +5,7 @@
 #include "../UI/ImageBox.h"
 #include "../UI/TextButton.h"
 #include "../UI/UIMainMenu.h"
+#include "../Component/SingleTexture.h"
 
 CUIManager* CUIManager::m_pInst = NULL;
 
@@ -145,6 +146,11 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 	Point.x = (*iter)["XPos"].asInt();
 	Point.y = (*iter)["YPos"].asInt();
 	pWnd->SetPos(Point);
+
+	SDL_Point size;
+	size.x = (*iter)["XSize"].asInt();
+	size.y = (*iter)["YSize"].asInt();
+	pWnd->SetSize(size);
 }
 
 void CUIManager::ParseImageBox(CUIWnd* pWnd, Json::ValueIterator& iter)
@@ -167,35 +173,80 @@ void CUIManager::ParseTextButton(CUIWnd* pWnd, Json::ValueIterator& iter)
 	std::wstring Button_OnMouse_ImageName = MToW(((*iter)["Button_OnMouse_ImageName"]).asString().c_str());
 	pTextButton->SetOnMouseImage(RSCMgr->GetNamingTextureByName(Button_OnMouse_ImageName));
 
+	std::wstring FontType = MToW(((*iter)["Text"]["FontType"]).asString().c_str());
+
+	int FontSize = ((*iter)["Text"]["FontSize"]).asInt();
+	pTextButton->SetTextSize(FontSize);
+
+	std::wstring HorizontalAlign = MToW(((*iter)["Text"]["HorizontalAlign"]).asString().c_str());
+	pTextButton->SetHorizontalAlign(HorizontalAlignStringToEnum(HorizontalAlign.c_str()));
+
+	std::wstring VerticalAlign = MToW(((*iter)["Text"]["VerticalAlign"]).asString().c_str());
+	pTextButton->SetVerticalAlign(VerticalAlignStringToEnum(VerticalAlign.c_str()));
+
 	std::wstring Text = MToW(((*iter)["Text"]["Text"]).asString().c_str());
 	pTextButton->SetText(Text);
-
-	std::wstring FontType = MToW(((*iter)["Text"]["FontType"]).asString().c_str());
-	std::wstring FontSize = MToW(((*iter)["Text"]["FontSize"]).asString().c_str());
 }
 
-eUIType CUIManager::StringTypeToEnumType(const wchar_t* tszType)
+eUIType CUIManager::StringTypeToEnumType(const wchar_t* wszType)
 {
 	eUIType eResult = eUIType_None;
 
-	if (0 == _tcscmp(tszType, _T("ImageBox")))
+	if (0 == _tcscmp(wszType, _T("ImageBox")))
 	{
 		eResult = eUIType_ImageBox;
 	}
-	else if (0 == _tcscmp(tszType, _T("TextButton")))
+	else if (0 == _tcscmp(wszType, _T("TextButton")))
 	{
 		eResult = eUIType_TextButton;
 	}
-	else if (0 == _tcscmp(tszType, _T("TextBox")))
+	else if (0 == _tcscmp(wszType, _T("TextBox")))
 	{
 		eResult = eUIType_TextBox;
 	}
-	else if (0 == _tcscmp(tszType, _T("ListBox")))
+	else if (0 == _tcscmp(wszType, _T("ListBox")))
 	{
 		eResult = eUIType_ListBox;
 	}
 
 	return eResult;
+}
+
+eUITextAlignType CUIManager::VerticalAlignStringToEnum(const wchar_t* wszType)
+{
+	eUITextAlignType result = eUITextAlignType_Vertical_Center;
+	if (0 == _tcscmp(wszType, _T("center")))
+	{
+		result = eUITextAlignType_Vertical_Center;
+	}
+	else if (0 == _tcscmp(wszType, _T("left")))
+	{
+		result = eUITextAlignType_Vertical_Left;
+	}
+	else if (0 == _tcscmp(wszType, _T("right")))
+	{
+		result = eUITextAlignType_Vertical_Right;
+	}
+
+	return result;
+}
+
+eUITextAlignType CUIManager::HorizontalAlignStringToEnum(const wchar_t* wszType)
+{
+	eUITextAlignType result = eUITextAlignType_Horizontal_Center;
+	if (0 == _tcscmp(wszType, _T("center")))
+	{
+		result = eUITextAlignType_Horizontal_Center;
+	}
+	else if (0 == _tcscmp(wszType, _T("left")))
+	{
+		result = eUITextAlignType_Horizontal_Left;
+	}
+	else if (0 == _tcscmp(wszType, _T("right")))
+	{
+		result = eUITextAlignType_Horizontal_Right;
+	}
+	return result;
 }
 
 CUIWnd* CUIManager::GetUIWndByName(const std::wstring& Name)

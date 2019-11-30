@@ -25,12 +25,15 @@ public:
 	virtual void		Render();
 	virtual void		HandleEvent(SDL_Event& event);
 	virtual SDL_Rect&	GetDestRect();
+	virtual void		SetPos(SDL_Point& Point);
+
 public:
+	void			SetSize(SDL_Point& size);
 	void			SetParent(CUIWnd* pWnd);
 	void			AddChildren(CUIWnd* pWnd);
 	void			SetName(const wchar_t* pwszName);
 	void			SetUIType(eUIType eType);
-	void			SetPos(SDL_Point& Point);
+	
 
 	CUIWnd*			GetParent();
 	CUIWnd*			GetChildren(wchar_t* pwszName);

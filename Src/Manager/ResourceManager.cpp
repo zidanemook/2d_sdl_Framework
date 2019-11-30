@@ -42,7 +42,7 @@ bool CResourceManager::Init()
 	}
 
 	m_Font = CFont::Create();
-	m_Font->OpenFont(_T("Resource/Font/KBLZ_M.ttf"), 14);
+	m_Font->OpenFont( NORMALFONT, 14);
 
 	//wchar_t buffer[MAX_PATH];
 	//GetModuleFileName(NULL, buffer, MAX_PATH);

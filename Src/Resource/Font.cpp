@@ -30,33 +30,61 @@ inline void CFont::Free()
 {
 }
 
-bool CFont::OpenFont(wchar_t* path, int size)
+TTF_Font* CFont::OpenFont(wchar_t* path, int size)
 {
-	m_Font = TTF_OpenFont(WToM(path).c_str(), size);
-	if(!m_Font)
+	TTF_Font* pFont = TTF_OpenFont(WToM(path).c_str(), size);
+
+	if(!pFont)
+	{
+		wprintf(L"CFont::OpenFont Failed\n");
+		return NULL;
+	}
+
+	m_mapFont.insert(std::make_pair(size, pFont));
+
+	return pFont;
+}
+
+bool CFont::OpenFont(std::wstring wsPath, int size)
+{
+	TTF_Font* pFont = TTF_OpenFont(WToM(wsPath.c_str()).c_str(), size);
+
+	if (!pFont)
 	{
 		wprintf(L"CFont::OpenFont Failed\n");
 		return false;
 	}
-	
+
+	m_mapFont.insert(std::make_pair(size, pFont));
+
 	return true;
 }
 
-bool CFont::OpenFont(std::wstring wsPath)
-{
-	return false;
-}
-
-void CFont::TextToTexture(const wchar_t* text, SDL_Color color, SDL_Texture** outTexture, SDL_Point& outPoint)
+void CFont::TextToTexture(const wchar_t* text, int iSize, SDL_Color color, SDL_Texture** outTexture, SDL_Point& outPoint)
 {
 	if (NULL != (*outTexture))
 	{
 		SDL_DestroyTexture(*outTexture);
 		*outTexture = NULL;
 	}
+	
+	TTF_Font* pFont = NULL;
+
+	std::map<int, TTF_Font*>::iterator iter = m_mapFont.find(iSize);
+	if (iter == m_mapFont.end())
+	{
+		pFont = OpenFont(NORMALFONT, iSize);
+	}
+	else 
+	{
+		pFont = iter->second;
+	}
+
+	if (!pFont)
+		return;
 
 	//Render text surface
-	SDL_Surface* textSurface = TTF_RenderText_Solid(m_Font, WToM(text).c_str(), color);
+	SDL_Surface* textSurface = TTF_RenderText_Solid(pFont, WToM(text).c_str(), color);
 	if (textSurface == NULL)
 	{
 		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());

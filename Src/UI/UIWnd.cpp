@@ -49,6 +49,12 @@ SDL_Rect& CUIWnd::GetDestRect()
 	return m_destRect;
 }
 
+void CUIWnd::SetSize(SDL_Point& size)
+{
+	m_destRect.w = size.x;
+	m_destRect.h = size.y;
+}
+
 void CUIWnd::SetParent(CUIWnd* pWnd)
 {
 	m_pParent = pWnd;
@@ -74,13 +80,26 @@ void CUIWnd::SetUIType(eUIType eType)
 
 void CUIWnd::SetPos(SDL_Point& Point)
 {
-	m_destRect.x = Point.x;
-	m_destRect.y = Point.y;
+	
 
 	if (m_pParent)
 	{
-		m_destRect.x += m_pParent->GetPos().x;
-		m_destRect.y += m_pParent->GetPos().y;
+		m_destRect.x = Point.x + m_pParent->GetPos().x;
+		m_destRect.y = Point.y + m_pParent->GetPos().y;
+	}
+	else
+	{
+		m_destRect.x = Point.x;
+		m_destRect.y = Point.y;
+	}
+
+	SDL_Point point;
+	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
+	for (iter; iter != m_listChildren.end(); ++iter)
+	{
+		point.x = (*iter)->GetDestRect().x;
+		point.y = (*iter)->GetDestRect().y;
+		(*iter)->SetPos(point);
 	}
 }
 

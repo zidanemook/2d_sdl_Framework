@@ -39,7 +39,9 @@ public:
 	void ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, eUIType eType);//UI 공통변수 로드
 	void ParseImageBox(CUIWnd* pWnd, Json::ValueIterator& iter);
 	void ParseTextButton(CUIWnd* pWnd, Json::ValueIterator& iter);
-	eUIType StringTypeToEnumType(const wchar_t* tszType);
+	eUIType StringTypeToEnumType(const wchar_t* wszType);
+	eUITextAlignType VerticalAlignStringToEnum(const wchar_t* wszType);
+	eUITextAlignType HorizontalAlignStringToEnum(const wchar_t* wszType);
 	
 public:
 	CUIWnd* GetUIWndByName(const std::wstring& Name);
