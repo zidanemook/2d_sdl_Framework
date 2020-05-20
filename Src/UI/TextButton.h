@@ -2,6 +2,7 @@
 #include "UIWnd.h"
 
 class CComponent;
+class CSingleTexture;
 class CTextButton : public CUIWnd
 {
 private:
@@ -14,8 +15,14 @@ public:
 
 public:
 	virtual void		Render();
-	virtual void		HandleEvent(SDL_Event& event);
+	//virtual void		HandleEvent(SDL_Event& event);
 	virtual void		SetPos(SDL_Point& Point);
+
+	virtual void		OnMouseLeftButtonUp(SDL_Event& event);
+	virtual void		OnMouseLeftButtonDown(SDL_Event& event);
+	virtual void		OnMouseOver(SDL_Event& event);
+	virtual void		OnMouseOut(SDL_Event& event);
+	
 
 private:
 	std::wstring		m_Text;
@@ -26,6 +33,7 @@ private:
 	CComponent*			m_pIdle_Image;//Button Image
 	CComponent*			m_pClicked_Image;
 	CComponent*			m_pOnMouse_Image;
+	CSingleTexture*		m_pRenderTexture;
 	eUITextAlignType	m_VerticalAlign;
 	eUITextAlignType	m_HorizontalAlign;
 	SDL_Rect			m_FontSrcRect;

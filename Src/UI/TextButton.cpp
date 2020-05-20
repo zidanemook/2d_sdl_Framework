@@ -15,6 +15,12 @@ CTextButton::CTextButton()
 
 	m_VerticalAlign = eUITextAlignType_Vertical_Center;
 	m_HorizontalAlign = eUITextAlignType_Horizontal_Center;
+
+	m_pTexture = NULL;
+	m_pIdle_Image = NULL;
+	m_pClicked_Image = NULL;
+	m_pOnMouse_Image = NULL;
+	m_pRenderTexture = NULL;
 }
 
 CTextButton::~CTextButton()
@@ -43,9 +49,14 @@ void CTextButton::Render()
 {
 	//Button Image
 
-	CSingleTexture* pIdle = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
-	RdrMgr->RenderCopy(pIdle->GetTexture()->GetTexture(), &m_srcRect, &m_destRect);
-
+	if (m_pRenderTexture)
+	{
+		SDL_SetTextureBlendMode(m_pRenderTexture->GetTexture()->GetTexture(), m_pRenderTexture->GetBlendMode());
+		SDL_SetTextureAlphaMod(m_pRenderTexture->GetTexture()->GetTexture(), m_pRenderTexture->GetAlpha());
+		
+		RdrMgr->RenderCopy(m_pRenderTexture->GetTexture()->GetTexture(), &m_pRenderTexture->GetSrcRect(), &m_destRect);
+	}
+		
 
 	//Font
 
@@ -54,9 +65,23 @@ void CTextButton::Render()
 	CUIWnd::Render();
 }
 
-void CTextButton::HandleEvent(SDL_Event& event)
-{
-}
+//void CTextButton::HandleEvent(SDL_Event& event)
+//{
+//	//on mouse
+//	if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == 1)
+//	{
+//		m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pClicked_Image);
+//	}
+//	else if(event.type == SDL_MOUSEMOTION)
+//	{
+//		m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pOnMouse_Image);
+//	}
+//	else
+//		m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
+//	
+//	//
+//	CUIWnd::HandleEvent(event);
+//}
 
 void CTextButton::SetPos(SDL_Point& Point)
 {
@@ -105,6 +130,26 @@ void CTextButton::SetPos(SDL_Point& Point)
 	CUIWnd::SetPos(Point);
 }
 
+void CTextButton::OnMouseLeftButtonUp(SDL_Event& event)
+{
+	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pOnMouse_Image);
+}
+
+void CTextButton::OnMouseLeftButtonDown(SDL_Event& event)
+{
+	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pClicked_Image);
+}
+
+void CTextButton::OnMouseOver(SDL_Event& event)
+{
+	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pOnMouse_Image);
+}
+
+void CTextButton::OnMouseOut(SDL_Event& event)
+{
+	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
+}
+
 //void CTextButton::SetText(const wchar_t* pwszText)
 //{
 //	m_Text = pwszText;
@@ -141,6 +186,8 @@ void CTextButton::SetIdleImage(CComponent* pImage)
 		return; 
 
 	m_pIdle_Image = pImage;
+
+	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
 
 	m_srcRect = dynamic_cast<CSingleTexture*>(m_pIdle_Image)->GetSrcRect();
 	SDL_Rect destRect = dynamic_cast<CSingleTexture*>(m_pIdle_Image)->GetDestRect();

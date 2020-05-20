@@ -136,10 +136,10 @@
     <ClCompile Include="Src\Resource\Font.cpp">
       <Filter>Src\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UI\CMessageHandler.cpp">
+    <ClCompile Include="Src\UI\UIMainMenu.cpp">
       <Filter>Src\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UI\UIMainMenu.cpp">
+    <ClCompile Include="Src\UI\MessageHandler.cpp">
       <Filter>Src\UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -240,10 +240,10 @@
     <ClInclude Include="Src\Resource\Font.h">
       <Filter>Src\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UI\CMessageHandler.h">
+    <ClInclude Include="Src\UI\UIMainMenu.h">
       <Filter>Src\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UI\UIMainMenu.h">
+    <ClInclude Include="Src\UI\MessageHandler.h">
       <Filter>Src\UI</Filter>
     </ClInclude>
   </ItemGroup>

@@ -25,7 +25,7 @@ unsigned long Safe_Release(T& pInstance)
 
 	if (NULL != pInstance)
 	{
-		dwRefCnt = pInstance->Release();
+		dwRefCnt = (unsigned long)pInstance->Release();
 
 		if (0 == dwRefCnt)
 			pInstance = NULL;
@@ -115,9 +115,9 @@ static std::string WToM(const wchar_t* wszWide)
 
 static std::wstring MToW(const char* szMulti)
 {
-	int nLen = MultiByteToWideChar(CP_ACP, 0, szMulti, strlen(szMulti), NULL, NULL);
+	int nLen = MultiByteToWideChar(CP_ACP, 0, szMulti, (int)strlen(szMulti), NULL, NULL);
 	std::wstring wstWide(nLen,0);
-	MultiByteToWideChar(CP_ACP, 0, szMulti, strlen(szMulti), &wstWide[0], nLen);
+	MultiByteToWideChar(CP_ACP, 0, szMulti, (int)strlen(szMulti), &wstWide[0], nLen);
 	return wstWide;
 }
 

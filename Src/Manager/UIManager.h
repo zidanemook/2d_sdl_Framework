@@ -48,6 +48,10 @@ public:
 	CUIWnd* GetRootUIWndByName(const std::wstring& Name);
 	void AddToRenderList(CUIWnd* pWnd);
 	void DeleteFromRenderListByName(const std::wstring& Name);
+	void SetFocusWnd(CUIWnd* pWnd);
+	CUIWnd* GetFocusWnd();
+	void SetPreFocusWnd(CUIWnd* pWnd);
+	CUIWnd* GetPreFocusWnd();
 
 public:
 	CUIMainMenu* GetUIMainMenu();
@@ -57,8 +61,12 @@ private:
 	std::map<std::wstring, CUIWnd*> m_mapRootUI;//All rootUIWNd
 	std::list<CUIWnd*> m_listRenderUI;//For Render;
 
+
 private:
-	CUIMainMenu* m_pUIMainMenu;
+	CUIMainMenu*	m_pUIMainMenu;
+	CUIWnd*			m_pFocusedWnd;
+	CUIWnd*			m_pPreFocuseWnd;
+	
 };
 
 #define UIMGR CUIManager::GetInst()

@@ -3,6 +3,7 @@
 #include "Vector2D.h"
 #include "Function.h"
 #include "UIManager.h"
+#include "FadeSystem.h"
 
 //struct RenderFunc
 //{
@@ -208,11 +209,11 @@ bool CRenderManager::Init(SDL_Window * pWindow)
 				for (int j = 0; j < UI_RENDER_COUNT; ++j)
 					(m_vRenderCommand[i]).push_back(CRenderCommand::Create());
 			}
-			else if (i == eRenderLayer_Fade)
-			{
-				for (int j = 0; j < FADE_RENDER_COUNT; ++j)
-					(m_vRenderCommand[i]).push_back(CRenderCommand::Create());
-			}
+			//else if (i == eRenderLayer_Fade)
+			//{
+			//	for (int j = 0; j < FADE_RENDER_COUNT; ++j)
+			//		(m_vRenderCommand[i]).push_back(CRenderCommand::Create());
+			//}
 			
 		}
 		
@@ -286,6 +287,8 @@ void CRenderManager::Render()
 
 	UIMGR->Render();
 
+	FadeSystem->Render();
+
 	RenderPresent();
 }
 
@@ -303,7 +306,7 @@ void CRenderManager::AddRenderCommand(const std::wstring& name, SDL_Texture* pTe
 	}
 	else
 	{
-		wprintf(L"CRenderManager::AddRenderCommand RenderLayer: %d EmptyIndex: %d vectorsize: %d Failed\n", RenderLayer, m_iEmptyIndex[RenderLayer], (m_vRenderCommand[RenderLayer]).size());
+		wprintf(L"CRenderManager::AddRenderCommand RenderLayer: %d EmptyIndex: %d vectorsize: %d Failed\n", RenderLayer, m_iEmptyIndex[RenderLayer], (int)(m_vRenderCommand[RenderLayer]).size());
 	}
 }
 
@@ -332,7 +335,7 @@ void CRenderManager::AddEmpty(eRenderLayer eLayer)
 {
 	(m_vRenderCommand[eLayer]).push_back(CRenderCommand::Create());
 	//(m_iEmptyIndex[eLayer])++;
-	wprintf(L"AddEmpty size: %d layer: %d\n", (m_vRenderCommand[eLayer]).size(), eLayer);
+	wprintf(L"AddEmpty size: %d layer: %d\n", (int)(m_vRenderCommand[eLayer]).size(), eLayer);
 }
 
 void CRenderManager::Destroy()

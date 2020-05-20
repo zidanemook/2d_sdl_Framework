@@ -17,8 +17,8 @@ public:
 	inline virtual void Free();
 
 public:
-	TTF_Font* OpenFont(wchar_t* path, int size);
-	bool OpenFont(std::wstring wsPath, int size);
+	//TTF_Font* OpenFont(wchar_t* path, int size);
+	TTF_Font* OpenFont(std::wstring wsPath, int size);
 	void TextToTexture(const wchar_t* text, int iSize, SDL_Color color, SDL_Texture** outTexture, SDL_Point& outPoint);
 
 private:

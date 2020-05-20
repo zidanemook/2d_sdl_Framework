@@ -30,22 +30,22 @@ inline void CFont::Free()
 {
 }
 
-TTF_Font* CFont::OpenFont(wchar_t* path, int size)
-{
-	TTF_Font* pFont = TTF_OpenFont(WToM(path).c_str(), size);
+//TTF_Font* CFont::OpenFont(wchar_t* path, int size)
+//{
+//	TTF_Font* pFont = TTF_OpenFont(WToM(path).c_str(), size);
+//
+//	if(!pFont)
+//	{
+//		wprintf(L"CFont::OpenFont Failed\n");
+//		return NULL;
+//	}
+//
+//	m_mapFont.insert(std::make_pair(size, pFont));
+//
+//	return pFont;
+//}
 
-	if(!pFont)
-	{
-		wprintf(L"CFont::OpenFont Failed\n");
-		return NULL;
-	}
-
-	m_mapFont.insert(std::make_pair(size, pFont));
-
-	return pFont;
-}
-
-bool CFont::OpenFont(std::wstring wsPath, int size)
+TTF_Font* CFont::OpenFont(std::wstring wsPath, int size)
 {
 	TTF_Font* pFont = TTF_OpenFont(WToM(wsPath.c_str()).c_str(), size);
 
@@ -57,7 +57,7 @@ bool CFont::OpenFont(std::wstring wsPath, int size)
 
 	m_mapFont.insert(std::make_pair(size, pFont));
 
-	return true;
+	return pFont;
 }
 
 void CFont::TextToTexture(const wchar_t* text, int iSize, SDL_Color color, SDL_Texture** outTexture, SDL_Point& outPoint)

@@ -12,6 +12,7 @@ CUIManager* CUIManager::m_pInst = NULL;
 CUIManager::CUIManager(void)
 {
 	m_pUIMainMenu = new CUIMainMenu();
+	m_pFocusedWnd = NULL;
 }
 
 CUIManager::~CUIManager(void)
@@ -25,7 +26,7 @@ void CUIManager::Update()
 
 void CUIManager::HandleEvent(SDL_Event& event)
 {
-	if (SDL_MOUSEMOTION <= event.type && SDL_MOUSEWHEEL >= event.type)
+	if (SDL_MOUSEMOTION <= event.type && SDL_MOUSEBUTTONUP >= event.type)
 	{
 		SDL_Point point;
 		point.x = event.motion.x;
@@ -37,8 +38,23 @@ void CUIManager::HandleEvent(SDL_Event& event)
 			//가장 나중 출력되는 UI Rect 부터 순서대로 충돌하고 있는지 판단
 			
 			if (PointToRectCollision(point, (*riter)->GetDestRect()))
+			{
 				(*riter)->HandleEvent(event);
+				break;
+			}
+				
 		}
+
+		//if (((CUIWnd*)(event.user.data1)))
+		//{
+		//	if (NULL == m_pFocusedWnd)
+		//		m_pFocusedWnd = (CUIWnd*)(event.user.data1);
+		//	else if (event.user.data1 != m_pFocusedWnd)
+		//	{
+		//		m_pFocusedWnd->HandleEvent(event);
+		//		m_pFocusedWnd = (CUIWnd*)(event.user.data1);
+		//	}
+		//}
 	}
 	
 }
@@ -129,7 +145,7 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 	{
 		pWnd->SetParent(pParent);
 		pParent->AddChildren(pWnd);
-		wsName = pParent->GetName()+ _T("_");
+		//wsName = pParent->GetName()+ _T("_");
 	}
 		
 	
@@ -137,9 +153,21 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 
 	std::wstring temp = MToW(((*iter)["Name"]).asString().c_str());
 	if(!temp.empty())
-		wsName += MToW(((*iter)["Name"]).asString().c_str());
+		wsName = MToW(((*iter)["Name"]).asString().c_str());
 	if (temp.empty())
+	{
+		if(pParent)
+			wsName = pParent->GetName() + _T("_");
 		wsName += MToW(((*iter)["UIType"]).asString().c_str());
+		wchar_t number[16];
+		_itow_s(((*iter)["XPos"]).asInt(), number, 10);
+		wsName += _T("_");
+		wsName += number;
+		_itow_s(((*iter)["YPos"]).asInt(), number, 10);
+		wsName += _T("_");
+		wsName += number;
+	}
+		
 
 	pWnd->SetName(wsName.c_str());
 
@@ -290,6 +318,27 @@ void CUIManager::DeleteFromRenderListByName(const std::wstring& Name)
 			break;
 		}
 	}
+}
+
+void CUIManager::SetFocusWnd(CUIWnd* pWnd)
+{
+	m_pPreFocuseWnd = m_pFocusedWnd;
+	m_pFocusedWnd = pWnd;
+}
+
+void CUIManager::SetPreFocusWnd(CUIWnd* pWnd)
+{
+	m_pPreFocuseWnd = pWnd;
+}
+
+CUIWnd* CUIManager::GetPreFocusWnd()
+{
+	return m_pPreFocuseWnd;
+}
+
+CUIWnd* CUIManager::GetFocusWnd()
+{
+	return m_pFocusedWnd;
 }
 
 CUIMainMenu* CUIManager::GetUIMainMenu()

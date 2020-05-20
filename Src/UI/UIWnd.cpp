@@ -1,8 +1,12 @@
 #include "stdafx.h"
 #include "UIWnd.h"
+#include "../Manager/UIManager.h"
 
 CUIWnd::CUIWnd()
 {
+	m_pParent = NULL;
+	m_pMessageHander = NULL;
+	m_evtState = eUIEventState_None;
 }
 
 CUIWnd::~CUIWnd()
@@ -23,25 +27,31 @@ void CUIWnd::Render()
 
 void CUIWnd::HandleEvent(SDL_Event& event)
 {
-	if (SDL_MOUSEMOTION <= event.type && SDL_MOUSEWHEEL >= event.type)
+	SDL_Point point;
+	point.x = event.motion.x;
+	point.y = event.motion.y;
+
+	bool collision = false;
+	std::list<CUIWnd*>::reverse_iterator riter = m_listChildren.rbegin();
+	for (riter; riter != m_listChildren.rend(); ++riter)
 	{
-		SDL_Point point;
-		point.x = event.motion.x;
-		point.y = event.motion.y;
-
-		std::list<CUIWnd*>::reverse_iterator riter = m_listChildren.rbegin();
-		for (riter; riter != m_listChildren.rend(); ++riter)
+		if (PointToRectCollision(point, (*riter)->GetDestRect()))
 		{
-			//가장 나중 출력되는 UI Rect 부터 순서대로 충돌하고 있는지 판단
-
-			if (PointToRectCollision(point, (*riter)->GetDestRect()))
-			{
-				(*riter)->HandleEvent(event);
-				break;
-			}
-				
+			(*riter)->HandleEvent(event);
+			collision = true;
+			break;
 		}
 	}
+
+	if (true == m_listChildren.empty() || collision==false)
+	{
+		
+		ProcessEvent(event);
+		UIMGR->SetFocusWnd(this);
+	}
+	
+	
+
 }
 
 SDL_Rect& CUIWnd::GetDestRect()
@@ -78,6 +88,11 @@ void CUIWnd::SetUIType(eUIType eType)
 	m_eUIType = eType;
 }
 
+void CUIWnd::SetMessageHandler(CMessageHandler* pHandler)
+{
+	m_pMessageHander = pHandler;
+}
+
 void CUIWnd::SetPos(SDL_Point& Point)
 {
 	
@@ -103,6 +118,47 @@ void CUIWnd::SetPos(SDL_Point& Point)
 	}
 }
 
+void CUIWnd::ProcessEvent(SDL_Event& event)
+{
+	CUIWnd* pWnd = UIMGR->GetPreFocusWnd();
+	if (pWnd)
+	{
+		if (pWnd != UIMGR->GetFocusWnd())
+		{
+			pWnd->OnMouseOut(event);
+			UIMGR->SetPreFocusWnd(UIMGR->GetFocusWnd());
+		}
+	}
+
+	if (event.type == SDL_MOUSEMOTION && event.button.button == 0)
+	{
+		OnMouseOver(event);
+		if (m_pMessageHander)
+			m_pMessageHander->OnMouseOver(event);
+	}
+	else if (event.button.button == SDL_BUTTON_LEFT && event.type == SDL_MOUSEBUTTONDOWN)
+	{
+		OnMouseLeftButtonDown(event);
+		if (m_pMessageHander)
+			m_pMessageHander->OnMouseLeftButtonDown(event);
+	}
+	else if (event.button.button == SDL_BUTTON_LEFT && event.type == SDL_MOUSEBUTTONUP)
+	{
+		OnMouseLeftButtonUp(event);
+		if (m_pMessageHander)
+			m_pMessageHander->OnMouseLeftButtonUp(event);
+	}
+	else if (event.button.button == SDL_BUTTON_RIGHT && event.type == SDL_MOUSEBUTTONUP)
+	{
+		OnMouseRightButtonUp(event);
+		if (m_pMessageHander)
+			m_pMessageHander->OnMouseRightButtonUp(event);
+	}
+
+	if (m_pParent)
+		m_pParent->ProcessEvent(event);
+}
+
 CUIWnd* CUIWnd::GetParent()
 {
 	return m_pParent;
@@ -123,7 +179,7 @@ CUIWnd* CUIWnd::GetChildren(wchar_t* pwszName)
 	return NULL;
 }
 
-std::wstring CUIWnd::GetName()
+std::wstring& CUIWnd::GetName()
 {
 	return m_strName;
 }

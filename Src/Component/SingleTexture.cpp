@@ -157,3 +157,13 @@ SDL_Rect& CSingleTexture::GetDestRect()
 	return m_DestRect;
 }
 
+SDL_BlendMode& CSingleTexture::GetBlendMode()
+{
+	return m_BlendMode;
+}
+
+Uint8 CSingleTexture::GetAlpha()
+{
+	return m_uiAlpha;
+}
+

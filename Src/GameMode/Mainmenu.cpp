@@ -82,6 +82,7 @@ void CMainmenu::Close()
 
 void CMainmenu::Closed()
 {
-	CBaseMode::Closed();
+	UIMGR->GetUIMainMenu()->SetShow(false);
 	m_pSkyBg->SetShow(false);
+	CBaseMode::Closed();
 }

@@ -143,6 +143,12 @@ enum eUITextAlignType
 	eUITextAlignType_Vertical_Right
 };
 
+enum eUIEventState
+{
+	eUIEventState_None,
+	eUIEventState_OnMouse,
+};
+
 #define  ONESECOND 1.0f
 
 #define NORMALFONT L"Resource/Font/KBLZ_M.ttf"

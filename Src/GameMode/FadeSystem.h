@@ -40,6 +40,8 @@ public:
 	void Initialize();
 	void OnRender();
 
+	void Render();
+
 	void StartFade(eFadeStage eFadeType, double fFadeTime = ONESECOND);
 	bool IsPlaying() { return m_bPlay; }
 

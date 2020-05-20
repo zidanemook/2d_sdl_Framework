@@ -71,12 +71,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\FantasyInn_Release</OutDir>
+    <OutDir>..\FantasyInn_Release\32\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\FantasyInn_Release</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\FantasyInn_Release\64\</OutDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -84,13 +88,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>.\Libraries\SDL2-2.0.8\include;.\Src\Game;.\Src\Header;.\Src\Util;.\Src\SuperClass;.\Src\GameMode;.\Src\SDLManager;.\Libraries\SDL2_image-2.0.1\include;.\Src\Resource;.\Src\Obj;.\Src\Component;.\Src\Obj\Dynamic;.\Src\RenderManager;.\Dependencies\JSON;.\Libraries\SDL2_ttf-2.0.15\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Libraries\SDL2-2.0.12\include;.\Src\Game;.\Src\Header;.\Src\Util;.\Src\SuperClass;.\Src\GameMode;.\Src\SDLManager;.\Libraries\SDL2_image-2.0.4\include;.\Src\Resource;.\Src\Obj;.\Src\Component;.\Src\Obj\Dynamic;.\Src\RenderManager;.\Dependencies\JSON;.\Libraries\SDL2_ttf-2.0.15\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>_DEBUG_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>.\Libraries\SDL2-2.0.8\lib\x86;.\Libraries\SDL2_image-2.0.1\lib\x86;.\Libraries\SDL2_ttf-2.0.15\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\Libraries\SDL2-2.0.12\lib\x86;.\Libraries\SDL2_image-2.0.4\lib\x86;.\Libraries\SDL2_ttf-2.0.15\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
@@ -102,12 +106,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\Libraries\SDL2-2.0.8\include;.\SuperClass;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Libraries\SDL2-2.0.12\include;.\Src\Game;.\Src\Header;.\Src\Util;.\Src\SuperClass;.\Src\GameMode;.\Src\SDLManager;.\Libraries\SDL2_image-2.0.4\include;.\Src\Resource;.\Src\Obj;.\Src\Component;.\Src\Obj\Dynamic;.\Src\RenderManager;.\Dependencies\JSON;.\Libraries\SDL2_ttf-2.0.15\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;_DEBUG_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>.\Libraries\SDL2-2.0.8\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\Libraries\SDL2-2.0.12\lib\x64;.\Libraries\SDL2_image-2.0.4\lib\x64;.\Libraries\SDL2_ttf-2.0.15\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -158,6 +165,7 @@
     <ClCompile Include="Src\Header\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Src\Main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -176,7 +184,7 @@
     <ClCompile Include="Src\Program.cpp" />
     <ClCompile Include="Src\Resource\Font.cpp" />
     <ClCompile Include="Src\Resource\Texture.cpp" />
-    <ClCompile Include="Src\UI\CMessageHandler.cpp" />
+    <ClCompile Include="Src\UI\MessageHandler.cpp" />
     <ClCompile Include="Src\UI\ImageBox.cpp" />
     <ClCompile Include="Src\UI\TextButton.cpp" />
     <ClCompile Include="Src\UI\UIMainMenu.cpp" />
@@ -210,7 +218,7 @@
     <ClInclude Include="Src\Resource\Font.h" />
     <ClInclude Include="Src\Resource\Texture.h" />
     <ClInclude Include="Src\SuperClass\Base.h" />
-    <ClInclude Include="Src\UI\CMessageHandler.h" />
+    <ClInclude Include="Src\UI\MessageHandler.h" />
     <ClInclude Include="Src\UI\ImageBox.h" />
     <ClInclude Include="Src\UI\TextButton.h" />
     <ClInclude Include="Src\UI\UIMainMenu.h" />

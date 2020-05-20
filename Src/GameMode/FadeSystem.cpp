@@ -2,6 +2,9 @@
 #include "FadeSystem.h"
 #include "SingleTexture.h"
 #include "../Manager/ResourceManager.h"
+#include "../Resource/Texture.h"
+#include "../Manager/RenderManager.h"
+#include "../Manager/SystemManager.h"
 
 CFadeSystem* CFadeSystem::m_pInst = nullptr;
 
@@ -11,7 +14,7 @@ CFadeSystem::CFadeSystem()
 	m_pBlack = CSingleTexture::Create();
 	m_pBlack->SetTexture(RSCMgr->GetTextureByName(_T("FadeInFadeOut")));
 	m_pBlack->SetBlendMode(SDL_BLENDMODE_BLEND);
-	m_pBlack->SetLayer(eRenderLayer_Fade);
+	//m_pBlack->SetLayer(eRenderLayer_Fade);
 }
 
 CFadeSystem::~CFadeSystem()
@@ -75,6 +78,25 @@ void CFadeSystem::OnRender()
 	}
 
 	m_pBlack->SetAlpha(Uint8(m_fCurrentAlpha * 255));
+
+
+	//CSingleTexture* pSingleTexture = dynamic_cast<CSingleTexture*>(m_pBlack);
+	
+}
+
+void CFadeSystem::Render()
+{
+	CTexture* pTexture = m_pBlack->GetTexture();
+	SDL_Rect srcRect;
+	srcRect.x = 0;
+	srcRect.y = 0;
+	srcRect.w = SysMgr->GetWindowWidth();
+	srcRect.h = SysMgr->GetWindowHeight();
+	SDL_Rect destRect = srcRect;
+	
+	SDL_SetTextureBlendMode(m_pBlack->GetTexture()->GetTexture(), m_pBlack->GetBlendMode());
+	SDL_SetTextureAlphaMod(m_pBlack->GetTexture()->GetTexture(), m_pBlack->GetAlpha());
+	RdrMgr->RenderCopy(pTexture->GetTexture(), &srcRect, &destRect);
 }
 
 void CFadeSystem::StartFade( eFadeStage eFadeType, double fFadeTime )

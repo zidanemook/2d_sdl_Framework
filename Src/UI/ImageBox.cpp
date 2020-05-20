@@ -34,7 +34,10 @@ inline void CImageBox::Free()
 
 void CImageBox::Render()
 {
-	CTexture* pTexture = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetTexture();
+	CSingleTexture* pSingleTexture = dynamic_cast<CSingleTexture*>(m_pSingleTexture);
+	CTexture* pTexture = pSingleTexture->GetTexture();
+	SDL_SetTextureBlendMode(pSingleTexture->GetTexture()->GetTexture(), pSingleTexture->GetBlendMode());
+	SDL_SetTextureAlphaMod(pSingleTexture->GetTexture()->GetTexture(), pSingleTexture->GetAlpha());
 	RdrMgr->RenderCopy(pTexture->GetTexture(), &m_srcRect, &m_destRect);
 
 	CUIWnd::Render();
