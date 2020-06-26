@@ -51,7 +51,11 @@ void CSprite::Update()
 	{
 		m_fTime += deltaTime;
 		
-		m_iCurrentFrame = int(m_fTime / m_fSecondPerFrame[m_eAnimationState]);
+		if (m_fSecondPerFrame[m_eAnimationState] != 0.0f)
+			m_iCurrentFrame = int(m_fTime / m_fSecondPerFrame[m_eAnimationState]);
+		else
+			m_iCurrentFrame = 0;
+
 		if (m_iCurrentFrame >= m_Animation[m_eAnimationState].m_iFrameTotalCount)
 			m_iCurrentFrame = min(m_iCurrentFrame - m_Animation[m_eAnimationState].m_iFrameTotalCount, m_Animation[m_eAnimationState].m_iFrameTotalCount -1);
 
@@ -89,10 +93,12 @@ void CSprite::SetShow(bool set)
 		if (m_pTexture)
 		{
 			if (m_pOwner)
-				RdrMgr->AddRenderCommand(m_pOwner->GetName(), m_pTexture->GetTexture(), &m_SrcRect, &m_DestRect, m_pOwner->GetRenderLayer(), m_pOwner->GetPos(), &m_bShow, &m_BlendMode, &m_uiAlpha);
+			{
+				RdrMgr->AddRenderCommand(m_pOwner->GetName(), m_pTexture, &m_SrcRect, &m_DestRect, m_pOwner->GetRenderLayer(),  &m_bShow, &m_BlendMode, &m_uiAlpha);
+			}
 			else
 			{
-				RdrMgr->AddRenderCommand(m_pTexture->GetPath(), m_pTexture->GetTexture(), &m_SrcRect, &m_DestRect, eRenderLayer_Object, &m_vDestPos, &m_bShow, &m_BlendMode, &m_uiAlpha);
+				RdrMgr->AddRenderCommand(m_pTexture->GetName(), m_pTexture, &m_SrcRect, &m_DestRect, eRenderLayer_Object, &m_bShow, &m_BlendMode, &m_uiAlpha);
 			}
 		}
 	}
@@ -125,8 +131,6 @@ void CSprite::SetAnimData(eAnimationState eAnimState, int iOriginX, int iOriginY
 		m_DestRect.w = HorizontalFramePixelSize;
 		m_DestRect.h = VerticalFramePixelSize;
 	
-		m_vDestPos = Vector2D(float(m_DestRect.x), float(m_DestRect.y));
-
 		m_fSecondPerFrame[eAnimState] = ONESECOND / float(m_Animation[eAnimState].m_iFramePerSecond);
 	}
 }

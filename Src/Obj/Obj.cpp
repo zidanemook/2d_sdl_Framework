@@ -9,7 +9,7 @@
 
 CObj::CObj()
 {
-	m_eRenderLayer = eRenderLayer_None;
+	m_eRenderLayer = eRenderLayer_Object;
 	m_bShow = true;
 	m_eAnimState = eAnimationState_Idle_Down;
 	m_fMoveSpeed = 1.f;
@@ -64,7 +64,7 @@ void CObj::AddComponent(CComponent* pComponent)
 
 	if (m_Component[pComponent->GetComponentType()])
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "AddComponent failed", NULL);
+		errormsg("AddComponent failed");
 		return;
 	}
 	

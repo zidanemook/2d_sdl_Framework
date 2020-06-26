@@ -27,13 +27,11 @@ enum eComponentTypes
 
 enum eRenderLayer
 {
-	eRenderLayer_None,
 	eRenderLayer_Ground,
 	eRenderLayer_Object,
 	eRenderLayer_Effect,
-	eRenderLayer_UI,
-	eRenderLayer_Fade,
-	eRenderLayer_Max
+	eRenderLayer_Max,
+	eRenderLayer_UI
 };
 
 enum eKeyFunc

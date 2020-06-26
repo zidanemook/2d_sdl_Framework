@@ -60,8 +60,10 @@ TTF_Font* CFont::OpenFont(std::wstring wsPath, int size)
 	return pFont;
 }
 
-void CFont::TextToTexture(const wchar_t* text, int iSize, SDL_Color color, SDL_Texture** outTexture, SDL_Point& outPoint)
+bool CFont::TextToTexture(const wchar_t* text, int iSize, SDL_Color color, SDL_Texture** outTexture, SDL_Point& outPoint)
 {
+	bool bResult = false;
+
 	if (NULL != (*outTexture))
 	{
 		SDL_DestroyTexture(*outTexture);
@@ -81,13 +83,14 @@ void CFont::TextToTexture(const wchar_t* text, int iSize, SDL_Color color, SDL_T
 	}
 
 	if (!pFont)
-		return;
+		return bResult;
 
 	//Render text surface
 	SDL_Surface* textSurface = TTF_RenderText_Solid(pFont, WToM(text).c_str(), color);
 	if (textSurface == NULL)
 	{
 		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+		return bResult;
 	}
 	else
 	{
@@ -96,6 +99,7 @@ void CFont::TextToTexture(const wchar_t* text, int iSize, SDL_Color color, SDL_T
 		if ((*outTexture) == NULL)
 		{
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+			return bResult;
 		}
 		else
 		{
@@ -107,4 +111,7 @@ void CFont::TextToTexture(const wchar_t* text, int iSize, SDL_Color color, SDL_T
 		//Get rid of old surface
 		SDL_FreeSurface(textSurface);
 	}
+
+	bResult = true;
+	return bResult;
 }

@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "RenderManager.h"
+#include "ResourceManager.h"
 #include "Vector2D.h"
 #include "Function.h"
-#include "UIManager.h"
-#include "FadeSystem.h"
+#include "ObjMgr.h"
+#include "Texture.h"
+//nclude "UIManager.h"
+
 
 //struct RenderFunc
 //{
@@ -61,7 +64,7 @@ void CRenderCommand::Initialize()
 	m_pTexture = nullptr;
 	m_pSrcRect = nullptr;
 	m_pDestRect = nullptr;
-	m_eRenderLayer = eRenderLayer_None;
+	m_eRenderLayer = eRenderLayer_Ground;
 	m_bIsInUse = false;
 	m_pvPos = NULL;
 	m_pbShow = NULL;
@@ -69,9 +72,9 @@ void CRenderCommand::Initialize()
 	m_pAlpha = NULL;
 }
 
-void CRenderCommand::Set(const std::wstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* vpPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha)
+void CRenderCommand::Set(const std::wstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha)
 {
-	if ( pTexture && ( eRenderLayer_None != RenderLayer) )
+	if ( pTexture )
 	{
 		m_tsName = tsName;
 		m_pTexture = pTexture;
@@ -100,7 +103,7 @@ bool CRenderCommand::IsShow()
 
 void CRenderCommand::operator=(CRenderCommand* pRenderCommand)
 {
-	Set(pRenderCommand->GetName(), pRenderCommand->GetTexture(), pRenderCommand->GetSrcRect(), pRenderCommand->GetDestRect(), pRenderCommand->GetRenderLayer(), pRenderCommand->GetPos(), pRenderCommand->GetShow(), pRenderCommand->GetBlendMode(), pRenderCommand->GetAlpha());
+	Set(pRenderCommand->GetName(), pRenderCommand->GetTexture(), pRenderCommand->GetSrcRect(), pRenderCommand->GetDestRect(), pRenderCommand->GetRenderLayer(), pRenderCommand->GetShow(), pRenderCommand->GetBlendMode(), pRenderCommand->GetAlpha());
 }
 
 //void CRenderCommand::SetInUse(bool bInuse)
@@ -171,9 +174,6 @@ CRenderManager::~CRenderManager()
 
 bool CRenderManager::Init(SDL_Window * pWindow)
 {
-	for (int i = eRenderLayer_None; i < eRenderLayer_Max; ++i)
-		m_iEmptyIndex[i] = 0;
-
 	bool bResult = false;
 
 	m_pRenderer = SDL_CreateRenderer(pWindow, -1, 0);
@@ -183,42 +183,7 @@ bool CRenderManager::Init(SDL_Window * pWindow)
 		bResult = true;
 	}
 	else
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Renderer failed", NULL);
-
-	if (true == bResult)
-	{
-		for (int i = eRenderLayer_None; i < eRenderLayer_Max; ++i)
-		{
-			if (i == eRenderLayer_Ground)
-			{
-				for (int j = 0; j < GROUND_RENDER_COUNT; ++j)
-					(m_vRenderCommand[i]).push_back(CRenderCommand::Create());
-			}
-			else if (i == eRenderLayer_Object)
-			{
-				for (int j = 0; j < OBJECT_RENDER_COUNT; ++j)
-					(m_vRenderCommand[i]).push_back(CRenderCommand::Create());
-			}
-			else if (i == eRenderLayer_Effect)
-			{
-				for (int j = 0; j < EFFECT_RENDER_COUNT; ++j)
-					(m_vRenderCommand[i]).push_back(CRenderCommand::Create());
-			}
-			else if (i == eRenderLayer_UI)
-			{
-				for (int j = 0; j < UI_RENDER_COUNT; ++j)
-					(m_vRenderCommand[i]).push_back(CRenderCommand::Create());
-			}
-			//else if (i == eRenderLayer_Fade)
-			//{
-			//	for (int j = 0; j < FADE_RENDER_COUNT; ++j)
-			//		(m_vRenderCommand[i]).push_back(CRenderCommand::Create());
-			//}
-			
-		}
-		
-	}
-
+		errormsg("Renderer failed");
 
 	return bResult;
 }
@@ -240,111 +205,70 @@ void CRenderManager::RenderCopy(SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_R
 
 void CRenderManager::Render()
 {
-	RenderClear();
+	//RenderClear();
 	CRenderCommand* pRenderCommand = NULL;
 
-	for (int Layer = 0; Layer < eRenderLayer_Max; ++Layer)
+	for (int i = eRenderLayer::eRenderLayer_Ground; i < eRenderLayer::eRenderLayer_Max; ++i)
 	{
-		if(eRenderLayer_Ground <= Layer && eRenderLayer_Effect >= Layer )
-			std::sort((m_vRenderCommand[Layer]).begin(), (m_vRenderCommand[Layer]).end(), YSorting);
-
-		//for (size_t i = 0; i != (m_vRenderCommand[Layer]).size(); ++i)
-		for(int i = 0; i < m_iEmptyIndex[Layer]; ++i)
+		if (i == eRenderLayer_Object)
 		{
-			pRenderCommand = m_vRenderCommand[Layer][i];
+			m_RenderCommand[i].sort(YSorting);
+		}
+
+		for (RENITER iter = m_RenderCommand[i].begin(); iter != m_RenderCommand[i].end(); )
+		{
+			pRenderCommand = *iter;
+
 			if (pRenderCommand)
 			{
-				if (true == pRenderCommand->IsInUse())
+				if (pRenderCommand->IsShow())
 				{
-					if (false == pRenderCommand->IsShow() || (NULL == pRenderCommand->GetTexture()))
-					{
-						int iTailIndex = (m_iEmptyIndex[Layer] - 1);
-						if (0 > iTailIndex)
-							iTailIndex = 0;
+					SDL_SetTextureBlendMode(pRenderCommand->GetTexture(), *(pRenderCommand->GetBlendMode()));
+					SDL_SetTextureAlphaMod(pRenderCommand->GetTexture(), *(pRenderCommand->GetAlpha()));
 
-						if (iTailIndex == 0)//출력대상이 1개인경우 시작도0번 꼬리도0번이므로 자기자신만 초기화
-						{
-							pRenderCommand->Initialize();
-						}
-						else//출력대상중 꼬리에 있는걸 삭제해야할 대상에 덮어씌우고 꼬리는 초기화.
-						{
-							*(pRenderCommand) = *(m_vRenderCommand[Layer][iTailIndex]);
-							m_vRenderCommand[Layer][iTailIndex]->Initialize();
-						}
-						(m_iEmptyIndex[Layer])--;
-					}
-					else
-					{
-						SDL_SetTextureBlendMode(pRenderCommand->GetTexture(), *(pRenderCommand->GetBlendMode()));
-						SDL_SetTextureAlphaMod(pRenderCommand->GetTexture(), *(pRenderCommand->GetAlpha()));
-
-						SDL_RenderCopy(m_pRenderer, pRenderCommand->GetTexture(), pRenderCommand->GetSrcRect(), pRenderCommand->GetDestRect());
-					}
+					SDL_RenderCopy(m_pRenderer, pRenderCommand->GetTexture(), pRenderCommand->GetSrcRect(), pRenderCommand->GetDestRect());
+					iter++;
 				}
+				else
+				{
+					if (i == eRenderLayer_Object)
+						OBJMGR->DeleteProcess((*iter)->GetName());
+					//else if()
+
+					iter = m_RenderCommand[i].erase(iter);
+				}
+					
 			}
+			else
+				iter++;
 		}
 	}
+	
 
-	UIMGR->Render();
-
-	FadeSystem->Render();
-
-	RenderPresent();
+	//RenderPresent();
 }
 
-void CRenderManager::AddRenderCommand(const std::wstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* pvPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha)
+void CRenderManager::AddRenderCommand(const std::wstring& name, CTexture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha)
 {
-	if (true == (m_vRenderCommand[RenderLayer]).empty())
-		return;
+	CRenderCommand* pcommand = new CRenderCommand;
 
-	if (false == m_vRenderCommand[RenderLayer][m_iEmptyIndex[RenderLayer]]->IsInUse())
+	if (pTexture && false == pTexture->GetLoaded())
 	{
-		m_vRenderCommand[RenderLayer][m_iEmptyIndex[RenderLayer]]->Set(name, pTexture, pSrcRect, pDestRect, RenderLayer, pvPos, bpShow, pBlendMode, puiAlpha);
-		(m_iEmptyIndex[RenderLayer])++;
-		if ((int)(m_vRenderCommand[RenderLayer]).size() <= m_iEmptyIndex[RenderLayer])
-			AddEmpty(RenderLayer);
+		RSCMgr->LoadTexture(pTexture->GetName(), pTexture->GetPath(), true);
 	}
-	else
-	{
-		wprintf(L"CRenderManager::AddRenderCommand RenderLayer: %d EmptyIndex: %d vectorsize: %d Failed\n", RenderLayer, m_iEmptyIndex[RenderLayer], (int)(m_vRenderCommand[RenderLayer]).size());
-	}
-}
 
-//void CRenderManager::DeleteRenderCommand(std::wstring& name, eRenderLayer RenderLayer)
-//{
-//	bool bResult = false;
-//	int iTailIndex = (m_iEmptyIndex[RenderLayer] - 1);//
-//	for (size_t i = 0; (m_vRenderCommand[RenderLayer]).size(); ++i)//이부분 어떻게 최적화??
-//	{
-//		if ( name == m_vRenderCommand[RenderLayer][i]->GetName() )
-//		{
-//			m_vRenderCommand[RenderLayer][i] = m_vRenderCommand[RenderLayer][iTailIndex];
-//			m_vRenderCommand[RenderLayer][iTailIndex]->Initialize();
-//			(m_iEmptyIndex[RenderLayer])--;
-//			bResult = true;
-//			break;
-//		}
-//	}
-//
-//	if (false == bResult)
-//		wprintf(L"DeleteRenderCommand failed name: %s layer: %d \n", name.c_str(), RenderLayer);
-//	//
-//}
-
-void CRenderManager::AddEmpty(eRenderLayer eLayer)
-{
-	(m_vRenderCommand[eLayer]).push_back(CRenderCommand::Create());
-	//(m_iEmptyIndex[eLayer])++;
-	wprintf(L"AddEmpty size: %d layer: %d\n", (int)(m_vRenderCommand[eLayer]).size(), eLayer);
+	pcommand->Set(name, pTexture->GetTexture(), pSrcRect, pDestRect, RenderLayer, bpShow, pBlendMode, puiAlpha);
+	m_RenderCommand[RenderLayer].push_back( pcommand);
 }
 
 void CRenderManager::Destroy()
 {
-	for (int i = eRenderLayer_None; i < eRenderLayer_Max; ++i)
+	for (int i = eRenderLayer::eRenderLayer_Ground; i < eRenderLayer::eRenderLayer_Max; ++i)
 	{
-		for_each(m_vRenderCommand[i].begin(), m_vRenderCommand[i].end(), ReleaseListElement());
-		m_vRenderCommand[i].clear();
+		for_each(m_RenderCommand[i].begin(), m_RenderCommand[i].end(), ReleaseListElement());
+		m_RenderCommand[i].clear();
 	}
+	
 }
 
 SDL_Renderer* CRenderManager::GetRenderer()

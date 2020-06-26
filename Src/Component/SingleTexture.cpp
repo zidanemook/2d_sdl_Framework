@@ -7,7 +7,7 @@
 
 CSingleTexture::CSingleTexture()
 {
-	m_RendereLayer = eRenderLayer_None;
+	m_RendereLayer = eRenderLayer_Ground;
 	m_pTexture = CTexture::Create();
 	m_bShow = false;
 	
@@ -104,10 +104,12 @@ void CSingleTexture::SetShow(bool set)
 		if(m_pTexture)
 		{
 			if (m_pOwner)
-				RdrMgr->AddRenderCommand(m_pOwner->GetName(), m_pTexture->GetTexture(), NULL, NULL, m_RendereLayer, m_pOwner->GetPos(),&m_bShow, &m_BlendMode, &m_uiAlpha);
+			{
+				RdrMgr->AddRenderCommand(m_pOwner->GetName(), m_pTexture, NULL, NULL, m_RendereLayer, &m_bShow, &m_BlendMode, &m_uiAlpha);
+			}
 			else
 			{
-				RdrMgr->AddRenderCommand(m_pTexture->GetPath(), m_pTexture->GetTexture(), NULL, NULL, m_RendereLayer, &m_vDestPos, &m_bShow, &m_BlendMode, &m_uiAlpha);
+				RdrMgr->AddRenderCommand(m_pTexture->GetName(), m_pTexture, NULL, NULL, m_RendereLayer, &m_bShow, &m_BlendMode, &m_uiAlpha);
 			}	
 		}
 	}	
@@ -162,7 +164,7 @@ SDL_BlendMode& CSingleTexture::GetBlendMode()
 	return m_BlendMode;
 }
 
-Uint8 CSingleTexture::GetAlpha()
+Uint8& CSingleTexture::GetAlpha()
 {
 	return m_uiAlpha;
 }

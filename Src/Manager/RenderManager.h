@@ -8,6 +8,7 @@
 #define UI_RENDER_COUNT		100
 #define FADE_RENDER_COUNT	1
 
+class CTexture;
 class Vector2D;
 class CRenderCommand : public CBase
 {
@@ -20,7 +21,7 @@ public:
 	inline virtual void Free(void);
 
 	void Initialize();
-	void Set(const std::wstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* vpPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha);
+	void Set(const std::wstring& tsName, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha);
 	bool IsInUse();
 	bool IsShow();
 	
@@ -52,7 +53,6 @@ protected:
 
 	friend class CRenderManager;
 };
-
 
 class CRenderManager
 {
@@ -86,9 +86,7 @@ public:
 	void RenderCopy(SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect);
 	void Render();
 	//Add when to render
-	void AddRenderCommand(const std::wstring& name, SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, Vector2D* pvPos, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha);
-	//void DeleteRenderCommand(std::wstring& name, eRenderLayer RenderLayer);
-	void AddEmpty(eRenderLayer eLayer);
+	void AddRenderCommand(const std::wstring& name, CTexture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect, eRenderLayer RenderLayer, bool* bpShow, SDL_BlendMode* pBlendMode, Uint8* puiAlpha);
 	void Destroy();
 
 public:
@@ -97,12 +95,11 @@ public:
 private:
 	SDL_Renderer *m_pRenderer;
 
-	std::vector<CRenderCommand*> m_vRenderCommand[eRenderLayer_Max];
-
-	//Indicates the next element of the last element in use.
-	int m_iEmptyIndex[eRenderLayer_Max];// 출력대상중 꼬리에 있는것 다음에 빈곳
+	std::list<CRenderCommand*> m_RenderCommand[eRenderLayer_Max];//
+	
 };
 
+#define	RENITER	std::list<CRenderCommand*>::iterator
 #define RdrMgr CRenderManager::GetInstance()
 #define SDLRdr	RdrMgr->GetRenderer()
 

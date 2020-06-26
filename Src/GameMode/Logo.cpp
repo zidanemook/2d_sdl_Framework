@@ -50,7 +50,7 @@ void CLogo::Init()
 
 	CTexture* pTexture = RSCMgr->GetTextureByName(_T("Logo"));
 	
-	m_pLogo->Set(srcRect, destRect, eRenderLayer_UI, pTexture);
+	m_pLogo->Set(srcRect, destRect, eRenderLayer_Object, pTexture);
 	
 	
 }

@@ -63,8 +63,14 @@ bool CResourceManager::Init()
 	if (false == LoadNamingTextureJSONFile(_T("Resource/Data/UI/NamingTexture.json")))
 		return false;
 
-	if(false == LoadUIJSONFile(_T("Resource/Data/UI/MainMenu.json")))
+	if (false == LoadRootNameAndPath(_T("Resource/Data/UI/RootNameAndPath.csv")))
+	{
 		return false;
+	}
+		
+
+	//if(false == LoadUIJSONFile(_T("Resource/Data/UI/MainMenu.json")))
+		//return false;
 
 	return true;
 }
@@ -378,7 +384,7 @@ bool CResourceManager::LoadSerialSpriteTextureCSVFile(const wchar_t* file)
 	return true;
 }
 
-bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepath)
+bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepath, bool loadimmediately /*= false*/)
 {
 	IMG_Init(IMG_INIT_PNG);
 
@@ -389,33 +395,105 @@ bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepa
 	filepath = tszfilepath;
 #endif
 
-	if (m_mapTexture.find(name) != m_mapTexture.end())
+	std::map<std::wstring, CTexture*>::iterator iter;
+	iter = m_mapTexture.find(name);
+
+	if (iter != m_mapTexture.end())
 	{
-		//char szMessage[MAX_PATH] = { 0, };
-		//sprintf_s(szMessage, "%s is already exist\n", filepath.c_str());
-		//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
-		return false;
+		if (loadimmediately && (false == iter->second->GetLoaded()))
+		{
+			CTexture* pTex = iter->second;
+			if (pTex)
+			{
+				pTex->SetTexture(IMG_LoadTexture(SDLRdr, filepath.c_str()));
+				if (pTex->GetTexture())
+				{
+					pTex->SetLoaded(true);
+				}
+				else
+				{
+					errormsg(filepath.c_str());
+					Safe_Release(pTex);
+					return false;
+				}
+			}
+		}
 	}
-
-	CTexture* pTex = CTexture::Create();
-	pTex->SetTexture(IMG_LoadTexture(SDLRdr, filepath.c_str()));
-
-	if (!pTex->GetTexture())
+	else
 	{
-		char szMessage[MAX_PATH] = { 0, };
-		sprintf_s(szMessage, "%s load failed\n", filepath.c_str());
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+		CTexture* pTex = CTexture::Create();
 
-		Safe_Release(pTex);
-		return false;
+		if (loadimmediately)
+		{
+			pTex->SetTexture(IMG_LoadTexture(SDLRdr, filepath.c_str()));
+			if (pTex->GetTexture())
+			{
+				pTex->SetLoaded(true);
+			}
+			else
+			{
+				errormsg(filepath.c_str());
+				Safe_Release(pTex);
+				return false;
+			}
+		}
+
+		pTex->SetName(name);
+		pTex->SetPath(tszfilepath);
+		m_mapTexture.insert(std::make_pair(name, pTex));
 	}
-
-	pTex->SetPath(tszfilepath);
-
-	m_mapTexture.insert(std::make_pair(name, pTex));
-
+	
 	return true;
 	
+}
+
+bool CResourceManager::LoadRootNameAndPath(const wchar_t* file)
+{
+	std::wifstream wif(file);
+
+	if (wif.is_open())
+	{
+		wif.imbue(std::locale("kor"));
+
+		wchar_t wszBuf[1024] = { 0, };
+
+		wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
+
+		while (!wif.eof())
+		{
+			wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
+
+			wchar_t seps[] = TEXT(",");
+			wchar_t* token;
+			wchar_t pStr[MAX_PATH];
+			wchar_t* next_token = NULL;
+
+			if (0 >= _tcsclen(wszBuf))
+				continue;
+
+			_tcscpy_s(pStr, wszBuf);
+			token = _tcstok_s(pStr, seps, &next_token);
+			if (!token) return false;
+			wchar_t tszIndex[MAX_PATH] = { 0, };
+			_tcscpy_s(tszIndex, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			wchar_t tszName[MAX_PATH] = { 0, };
+			_tcscpy_s(tszName, token);
+
+			token = _tcstok_s(NULL, seps, &next_token);
+			if (!token) return false;
+			wchar_t tszPath[MAX_PATH] = { 0, };
+			_tcscpy_s(tszPath, token);
+
+			m_mapNameAndPath.insert(std::make_pair(tszName, tszPath));
+		}
+	}
+	else
+		return false;
+
+	return true;
 }
 
 bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
@@ -434,9 +512,7 @@ bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 
 		if (false == reader.parse(ifs, value))
 		{
-			char szMessage[MAX_PATH] = { 0, };
-			sprintf_s(szMessage, "%s load failed\n", filepath.c_str());
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+			errormsg(filepath.c_str());
 			return false;
 		}
 		
@@ -455,9 +531,7 @@ bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 
 			if (!pTexture)
 			{
-				char szMessage[MAX_PATH] = { 0, };
-				sprintf_s(szMessage, "%s find fail plz add to singletexture.csv\n", root[i][1].asString().c_str());
-				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+				errormsg(root[i][1].asString().c_str());
 				return false;
 			}
 			//dynamic_cast<CSingleTexture*>(pSingleTexture)->SetTexture(pTexture);
@@ -480,7 +554,7 @@ bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 			destRect.y = 0;
 
 			dynamic_cast<CSingleTexture*>(pSingleTexture)->SetShow(false);
-			dynamic_cast<CSingleTexture*>(pSingleTexture)->Set(srcRect, destRect, eRenderLayer_UI, pTexture);
+			dynamic_cast<CSingleTexture*>(pSingleTexture)->Set(srcRect, destRect, eRenderLayer_Object, pTexture);
 
 			m_mapNamingTexture.insert(std::make_pair(Name, pSingleTexture));
 		}
@@ -505,40 +579,41 @@ bool CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
 
 		if (false == reader.parse(ifs, value))
 		{
-			char szMessage[MAX_PATH] = { 0, };
-			sprintf_s(szMessage, "%s load failed\n", filepath.c_str());
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+			errormsg(filepath.c_str());
+
 			return false;
 		}
 		
-		UIMGR->ParseUI(value);
-
-		
+		UIMGR->ParseUI(value);		
 	}
-
 
 	return true;
 }
 
-SDL_Texture* CResourceManager::GetSDLTextureByName(const std::wstring& name)
+bool CResourceManager::LoadUIJSONFilebyName(const wchar_t* tszname)
 {
-	std::map<std::wstring, CTexture*>::iterator iter = m_mapTexture.find(name);
-	if (iter != m_mapTexture.end())
-	{
-		if (iter->second)
-			return iter->second->GetTexture();
-	}
+	std::map<std::wstring, std::wstring>::iterator iter = m_mapNameAndPath.find(tszname);
 
-	return nullptr;
+	if (iter != m_mapNameAndPath.end())
+	{
+		if (LoadUIJSONFile(iter->second.c_str()))
+			return true;
+	}
+	
+	return false;
 }
+
 
 CTexture* CResourceManager::GetTextureByName(const std::wstring& name)
 {
 	std::map<std::wstring, CTexture*>::iterator iter = m_mapTexture.find(name);
 	if (iter != m_mapTexture.end())
 	{
-		if (iter->second)
-			return iter->second;
+		CTexture* pTexture = iter->second;
+		if (pTexture)
+		{
+			return pTexture;
+		}		
 	}
 
 	return nullptr;

@@ -1,0 +1,38 @@
+﻿  stdafx.cpp
+  jsoncpp.cpp
+  Component.cpp
+  SingleTexture.cpp
+  Sprite.cpp
+  Transform.cpp
+  BaseMode.cpp
+  FadeSystem.cpp
+  Game.cpp
+  Logo.cpp
+  Mainmenu.cpp
+  Main.cpp
+  CEditorManager.cpp
+  ControlManager.cpp
+  KeyManager.cpp
+  ModeManager.cpp
+  ObjMgr.cpp
+  RenderManager.cpp
+  ResourceManager.cpp
+  SystemManager.cpp
+  UIManager.cpp
+  컴파일하고 있습니다...
+  Player.cpp
+  Unit.cpp
+  Obj.cpp
+  Program.cpp
+  Font.cpp
+  Texture.cpp
+  MessageHandler.cpp
+  ImageBox.cpp
+  TextButton.cpp
+  UIMainMenu.cpp
+  UIWnd.cpp
+  코드를 생성하고 있습니다.
+  Previous IPDB not found, fall back to full compilation.
+  All 2425 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  코드를 생성했습니다.
+  FrameWork.vcxproj -> F:\GitHub\2d_sdl_Framework\..\FantasyInn_Release\64\FrameWork.exe

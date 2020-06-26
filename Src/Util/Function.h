@@ -121,5 +121,21 @@ static std::wstring MToW(const char* szMulti)
 	return wstWide;
 }
 
+static void errormsg(const char* szMsg)
+{
+	char szMessage[1024] = { 0, };
+	sprintf_s(szMessage, "%s\n", szMsg);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+}
+
+static void errormsg(const wchar_t* wszMsg)
+{
+	char szMessage[1024] = { 0, };
+	sprintf_s(szMessage, "%s\n", WToM(wszMsg).c_str());
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", szMessage, NULL);
+}
+
+
+
 
 #endif //Function_h

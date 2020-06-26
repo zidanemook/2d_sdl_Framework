@@ -97,6 +97,7 @@ void CFadeSystem::Render()
 	SDL_SetTextureBlendMode(m_pBlack->GetTexture()->GetTexture(), m_pBlack->GetBlendMode());
 	SDL_SetTextureAlphaMod(m_pBlack->GetTexture()->GetTexture(), m_pBlack->GetAlpha());
 	RdrMgr->RenderCopy(pTexture->GetTexture(), &srcRect, &destRect);
+	RdrMgr->RenderPresent();
 }
 
 void CFadeSystem::StartFade( eFadeStage eFadeType, double fFadeTime )

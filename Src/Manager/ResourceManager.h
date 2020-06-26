@@ -47,13 +47,14 @@ public:
 	bool LoadSpriteTextureCSVFile(const wchar_t* file);
 	bool LoadSerialSpriteTextureCSVFile(const wchar_t* file);
 
-	bool LoadTexture(const wchar_t* name, const wchar_t* tszfilepath);
+	bool LoadTexture(const wchar_t* name, const wchar_t* tszfilepath, bool loadimmediately = false);
+	bool LoadRootNameAndPath(const wchar_t* file);
 
 	//JSON
 	bool LoadNamingTextureJSONFile(const wchar_t* tszfilepath);
 	bool LoadUIJSONFile(const wchar_t* tszfilepath);
+	bool LoadUIJSONFilebyName(const wchar_t* tszname);
 
-	SDL_Texture*	GetSDLTextureByName(const std::wstring& name);
 	CTexture*		GetTextureByName(const std::wstring& name);
 	CComponent*		GetSpriteComponent(const wchar_t* path);
 	CComponent*		GetNamingTextureByName(const std::wstring& name);
@@ -69,6 +70,7 @@ private:
 	std::map<std::wstring, CTexture*>		m_mapTexture;//Name or Path, Texture
 	std::map<std::wstring, CComponent*>		m_mapSpriteComponent;//For Sprite animation
 	std::map<std::wstring, CComponent*>		m_mapNamingTexture;
+	std::map<std::wstring, std::wstring>	m_mapNameAndPath;//UI RootName And Path
 
 	CFont*			m_Font;
 };

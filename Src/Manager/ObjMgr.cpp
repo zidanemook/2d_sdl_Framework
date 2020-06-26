@@ -24,15 +24,6 @@ void CObjMgr::Initialize()
 	m_pSelfPlayer->Init();
 }
 
-void CObjMgr::Progress()
-{
-	/*for(int i = 0; i < OBJ_END; ++i)
-	{
-		for(iter = m_List[i].begin(); iter != m_List[i].end(); ++iter)
-			(*iter)->Progress();
-	}*/
-}
-
 void CObjMgr::Destroy()
 {
 	for_each(m_mapObject.begin(), m_mapObject.end(), ReleaseMapElement());
@@ -55,14 +46,15 @@ void CObjMgr::AddObj(std::wstring& tsName, CObj* pObj)
 	m_mapObject.insert(std::make_pair(tsName, pObj));
 }
 
-void CObjMgr::PopObj(std::wstring& tsName)
+
+
+void CObjMgr::DeleteProcess(std::wstring& tsName)
 {
 	std::map<std::wstring, CObj*>::iterator iter;
 	iter = m_mapObject.find(tsName);
 
 	if (iter != m_mapObject.end())
 	{
-		iter->second->SetShow(false);
 		iter->second->Release();
 		iter = m_mapObject.erase(iter);
 	}
@@ -85,8 +77,6 @@ void CObjMgr::Update()
 		if (iter->second->IsDead())
 		{
 			iter->second->SetShow(false);
-			iter->second->Release();
-			iter = m_mapObject.erase(iter);
 		}
 		else
 			++iter;

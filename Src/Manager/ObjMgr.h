@@ -28,7 +28,7 @@ public:
 
 private:
 	std::map<std::wstring, CObj*>	m_mapObject;
-//	std::set<std::wstring>			m_setDeleteList;
+	std::list<CObj*>				m_listDeleteList;
 
 	CObj*						m_pSelfPlayer;
 
@@ -37,12 +37,13 @@ private:
 
 public:
 	void Initialize();
-	void Progress();
+
 	void Destroy();
 
 public:
 	void AddObj(std::wstring& tsName, CObj* pObj);
-	void PopObj(std::wstring& tsName);
+
+	void DeleteProcess(std::wstring& tsName);//
 //	void ReservePopObj(std::wstring& tsName);
 	void Update();
 	CObj*	GetSelf();

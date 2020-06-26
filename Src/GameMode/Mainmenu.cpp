@@ -53,7 +53,7 @@ void CMainmenu::Init()
 
 	CTexture* pTexture = RSCMgr->GetTextureByName(_T("SkyBg"));
 
-	m_pSkyBg->Set(srcRect, destRect, eRenderLayer_UI, pTexture);
+	m_pSkyBg->Set(srcRect, destRect, eRenderLayer_Object, pTexture);
 	
 	
 }

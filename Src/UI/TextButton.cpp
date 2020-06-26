@@ -16,11 +16,11 @@ CTextButton::CTextButton()
 	m_VerticalAlign = eUITextAlignType_Vertical_Center;
 	m_HorizontalAlign = eUITextAlignType_Horizontal_Center;
 
-	m_pTexture = NULL;
+	m_pFontTexture = CSingleTexture::Create();
 	m_pIdle_Image = NULL;
 	m_pClicked_Image = NULL;
 	m_pOnMouse_Image = NULL;
-	m_pRenderTexture = NULL;
+	m_pImageTexture = NULL;
 }
 
 CTextButton::~CTextButton()
@@ -49,18 +49,20 @@ void CTextButton::Render()
 {
 	//Button Image
 
-	if (m_pRenderTexture)
+	if (m_pImageTexture)
 	{
-		SDL_SetTextureBlendMode(m_pRenderTexture->GetTexture()->GetTexture(), m_pRenderTexture->GetBlendMode());
-		SDL_SetTextureAlphaMod(m_pRenderTexture->GetTexture()->GetTexture(), m_pRenderTexture->GetAlpha());
+
+		RSCMgr->LoadTexture(m_pImageTexture->GetTexture()->GetName(), m_pImageTexture->GetTexture()->GetPath(), true);
+
+
+		SDL_SetTextureBlendMode(m_pImageTexture->GetTexture()->GetTexture(), m_pImageTexture->GetBlendMode());
+		SDL_SetTextureAlphaMod(m_pImageTexture->GetTexture()->GetTexture(), m_pImageTexture->GetAlpha());
 		
-		RdrMgr->RenderCopy(m_pRenderTexture->GetTexture()->GetTexture(), &m_pRenderTexture->GetSrcRect(), &m_destRect);
+		RdrMgr->RenderCopy(m_pImageTexture->GetTexture()->GetTexture(), &m_pImageTexture->GetSrcRect(), &m_destRect);
 	}
 		
-
 	//Font
-
-	RdrMgr->RenderCopy(m_pTexture, &m_FontSrcRect, &m_FontDestRect);
+	RdrMgr->RenderCopy(m_pFontTexture->GetTexture()->GetTexture(), &m_FontSrcRect, &m_FontDestRect);
 	
 	CUIWnd::Render();
 }
@@ -70,14 +72,14 @@ void CTextButton::Render()
 //	//on mouse
 //	if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == 1)
 //	{
-//		m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pClicked_Image);
+//		m_pImageTexture = dynamic_cast<CSingleTexture*>(m_pClicked_Image);
 //	}
 //	else if(event.type == SDL_MOUSEMOTION)
 //	{
-//		m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pOnMouse_Image);
+//		m_pImageTexture = dynamic_cast<CSingleTexture*>(m_pOnMouse_Image);
 //	}
 //	else
-//		m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
+//		m_pImageTexture = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
 //	
 //	//
 //	CUIWnd::HandleEvent(event);
@@ -132,52 +134,43 @@ void CTextButton::SetPos(SDL_Point& Point)
 
 void CTextButton::OnMouseLeftButtonUp(SDL_Event& event)
 {
-	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pOnMouse_Image);
+	m_pImageTexture = dynamic_cast<CSingleTexture*>(m_pOnMouse_Image);
 }
 
 void CTextButton::OnMouseLeftButtonDown(SDL_Event& event)
 {
-	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pClicked_Image);
+	m_pImageTexture = dynamic_cast<CSingleTexture*>(m_pClicked_Image);
 }
 
 void CTextButton::OnMouseOver(SDL_Event& event)
 {
-	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pOnMouse_Image);
+	m_pImageTexture = dynamic_cast<CSingleTexture*>(m_pOnMouse_Image);
 }
 
 void CTextButton::OnMouseOut(SDL_Event& event)
 {
-	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
+	m_pImageTexture = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
 }
-
-//void CTextButton::SetText(const wchar_t* pwszText)
-//{
-//	m_Text = pwszText;
-//
-//	RSFONT->TextToTexture(pwszText, m_iTextSize, m_Color, &m_pTexture, m_FontTextureSize);
-//
-//	m_FontSrcRect.h = m_FontTextureSize.y;
-//	m_FontSrcRect.w = m_FontTextureSize.x;
-//	m_FontSrcRect.x = 0;
-//	m_FontSrcRect.y = 0;
-//
-//	m_FontDestRect.h = m_FontTextureSize.y;
-//	m_FontDestRect.w = m_FontTextureSize.x;
-//}
 
 void CTextButton::SetText(const std::wstring& wstText)
 {
 	m_Text = wstText;
 
-	RSFONT->TextToTexture(wstText.c_str(), m_iTextSize, m_Color, &m_pTexture, m_FontTextureSize);
+	CSingleTexture* pTexture = dynamic_cast<CSingleTexture*>(m_pFontTexture);
 
-	m_FontSrcRect.h = m_FontTextureSize.y;
-	m_FontSrcRect.w = m_FontTextureSize.x;
-	m_FontSrcRect.x = 0;
-	m_FontSrcRect.y = 0;
+	if (RSFONT->TextToTexture(wstText.c_str(), m_iTextSize, m_Color, pTexture->GetTexture()->GetTexturePointer(), m_FontTextureSize))
+	{
+		pTexture->GetTexture()->SetLoaded(true);
+		m_FontSrcRect.h = m_FontTextureSize.y;
+		m_FontSrcRect.w = m_FontTextureSize.x;
+		m_FontSrcRect.x = 0;
+		m_FontSrcRect.y = 0;
 
-	m_FontDestRect.h = m_FontTextureSize.y;
-	m_FontDestRect.w = m_FontTextureSize.x;
+		m_FontDestRect.h = m_FontTextureSize.y;
+		m_FontDestRect.w = m_FontTextureSize.x;
+
+		pTexture->Set(m_FontSrcRect, m_FontDestRect, eRenderLayer::eRenderLayer_UI, pTexture->GetTexture());
+	}
 }
 
 void CTextButton::SetIdleImage(CComponent* pImage)
@@ -187,7 +180,7 @@ void CTextButton::SetIdleImage(CComponent* pImage)
 
 	m_pIdle_Image = pImage;
 
-	m_pRenderTexture = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
+	m_pImageTexture = dynamic_cast<CSingleTexture*>(m_pIdle_Image);
 
 	m_srcRect = dynamic_cast<CSingleTexture*>(m_pIdle_Image)->GetSrcRect();
 	SDL_Rect destRect = dynamic_cast<CSingleTexture*>(m_pIdle_Image)->GetDestRect();
@@ -221,6 +214,35 @@ void CTextButton::SetVerticalAlign(eUITextAlignType eType)
 void CTextButton::SetHorizontalAlign(eUITextAlignType eType)
 {
 	m_HorizontalAlign = eType;
+}
+
+void CTextButton::SetShow(bool bSet)
+{
+	m_bShow = bSet;
+
+	if (false == m_pImageTexture->GetTexture()->GetLoaded())
+	{
+		RSCMgr->LoadTexture(m_pImageTexture->GetTexture()->GetName(), m_pImageTexture->GetTexture()->GetPath(), true);
+	}
+
+	//if (true == bSet)
+	//{
+	//	CSingleTexture* pSingleTexture = dynamic_cast<CSingleTexture*>(m_pImageTexture);
+
+	//	if (pSingleTexture && pSingleTexture->GetTexture())
+	//	{
+	//		RdrMgr->AddRenderCommand(GetName(), pSingleTexture->GetTexture(), &m_srcRect, &m_destRect, eRenderLayer_UI, &m_bShow, &pSingleTexture->GetBlendMode(), &pSingleTexture->GetAlpha());
+	//	}
+
+	//	CSingleTexture* pTexture = dynamic_cast<CSingleTexture*>(m_pFontTexture);
+
+	//	if (pTexture && pTexture->GetTexture())
+	//	{
+	//		RdrMgr->AddRenderCommand(GetName(), pTexture->GetTexture(), &m_FontSrcRect, &m_FontDestRect, eRenderLayer_UI, &m_bShow, &pTexture->GetBlendMode(), &pTexture->GetAlpha());
+	//	}
+	//}
+
+	CUIWnd::SetShow(bSet);
 }
 
 std::wstring& CTextButton::GetText()

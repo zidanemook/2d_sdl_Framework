@@ -7,6 +7,7 @@ CUIWnd::CUIWnd()
 	m_pParent = NULL;
 	m_pMessageHander = NULL;
 	m_evtState = eUIEventState_None;
+	m_bmovable = false;
 }
 
 CUIWnd::~CUIWnd()
@@ -93,10 +94,32 @@ void CUIWnd::SetMessageHandler(CMessageHandler* pHandler)
 	m_pMessageHander = pHandler;
 }
 
+void CUIWnd::SetMovable(bool set)
+{
+	m_bmovable = set;
+}
+
+void CUIWnd::SetShow(bool set)
+{
+	m_bShow = set;
+
+	if (m_bShow)
+		UIMGR->AddToRenderList(this);
+	else
+		UIMGR->DeleteFromRenderListByName(this->GetName());
+
+	if (m_listChildren.empty())
+	return;
+
+	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
+	for (iter; iter != m_listChildren.end(); ++iter)
+	{
+		(*iter)->SetShow(set);
+	}
+}
+
 void CUIWnd::SetPos(SDL_Point& Point)
 {
-	
-
 	if (m_pParent)
 	{
 		m_destRect.x = Point.x + m_pParent->GetPos().x;
@@ -195,4 +218,14 @@ SDL_Point CUIWnd::GetPos()
 	point.x = m_destRect.x;
 	point.y = m_destRect.y;
 	return point;
+}
+
+bool CUIWnd::GetMovable()
+{
+	return m_bmovable;
+}
+
+bool CUIWnd::GetShow()
+{
+	return m_bShow;
 }

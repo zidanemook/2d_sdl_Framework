@@ -33,7 +33,7 @@ public:
 	SDL_Rect& GetSrcRect();
 	SDL_Rect& GetDestRect();
 	SDL_BlendMode& GetBlendMode();
-	Uint8			GetAlpha();
+	Uint8&			GetAlpha();
 
 private:
 	eRenderLayer	m_RendereLayer;

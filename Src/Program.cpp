@@ -10,6 +10,7 @@
 #include "Manager/ControlManager.h"
 #include "Manager/ObjMgr.h"
 #include "Manager/UIManager.h"
+#include "FadeSystem.h"
 #include "Game.h"
 #include "Logo.h"
 #include "Mainmenu.h"
@@ -68,7 +69,7 @@ void CProgram::Init()
 {
 	m_bIsRunning = true;
 	//Window, Device
-	if (false == SysMgr->Init("Framework", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 720, false))
+	if (false == SysMgr->Init("Framework", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1080, 720, false))
 	{
 		m_bIsRunning = false;
 		return;
@@ -77,7 +78,7 @@ void CProgram::Init()
 	{
 		if (false == RdrMgr->Init(SysMgr->GetWindow()))
 		{
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Init RenderManager Failed", "Init RenderManager Failed", NULL);
+			errormsg("RdrMgr->Init");
 			m_bIsRunning = false;
 			return;
 		}
@@ -86,7 +87,7 @@ void CProgram::Init()
 
 	if (false == RSCMgr->Init())
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Loading Resource Failed", "Loading resource failed. Please check resource folder", NULL);
+		errormsg("RSCMgr->Init");
 		m_bIsRunning = false;
 		return;
 	}
@@ -149,7 +150,12 @@ void CProgram::Update()
 	UIMGR->Update();
 	ModeMgr->Update();
 	OBJMGR->Update();
+
+	RdrMgr->RenderClear();
 	RdrMgr->Render();
+	UIMGR->Render();
+	FadeSystem->Render();
+	RdrMgr->RenderPresent();
 	
 	NOW = SDL_GetPerformanceCounter();
 	deltaTime = ((NOW - LAST) / (float)SDL_GetPerformanceFrequency());

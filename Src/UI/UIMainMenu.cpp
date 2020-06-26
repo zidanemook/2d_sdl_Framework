@@ -43,10 +43,20 @@ void CUIMainMenu::OnMouseLeftButtonUp(SDL_Event& event)
 {
 	CUIWnd* pWnd = UIMGR->GetFocusWnd();
 
-	if (pWnd && pWnd->GetName() == _T("MainMenu_BG_New"))
+	if (pWnd)
 	{
-		ModeMgr->ChangeMode(eModeTypes_Play);
+		if( pWnd->GetName() == _T("MainMenu_BG_New") )
+		{
+			ModeMgr->ChangeMode(eModeTypes_Play);
+		}
+		else if (pWnd->GetName() == _T("MainMenu_BG_Exit"))
+		{
+			SDL_Event sdlevent;
+			sdlevent.type = SDL_QUIT;
+			SDL_PushEvent(&sdlevent);
+		}
 	}
+
 }
 
 void CUIMainMenu::SetShow(bool bSet)
@@ -56,7 +66,7 @@ void CUIMainMenu::SetShow(bool bSet)
 
 	if (!m_pRootWnd)
 	{
-		m_pRootWnd = UIMGR->GetUIWndByName(_T("MainMenu_BG"));
+		m_pRootWnd = UIMGR->GetUIWndByName(_T("MainMenu"));
 		m_pRootWnd->SetMessageHandler(this);
 		SDL_Rect rect = m_pRootWnd->GetDestRect();
 		SDL_Point point;
@@ -66,9 +76,5 @@ void CUIMainMenu::SetShow(bool bSet)
 	}
 
 	m_bShow = bSet;
-
-	if (m_bShow)
-		UIMGR->AddToRenderList(m_pRootWnd);
-	else
-		UIMGR->DeleteFromRenderListByName(m_pRootWnd->GetName());
+	m_pRootWnd->SetShow(bSet);
 }

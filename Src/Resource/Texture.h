@@ -30,14 +30,20 @@ public:
 public:
 	void			SetTexture(SDL_Texture * pTex);
 	SDL_Texture*	GetTexture();
+	SDL_Texture**	GetTexturePointer();
 	void			SetPath(const wchar_t* wszPath);
 	const wchar_t*	GetPath();
 	void			SetBlendMode(SDL_BlendMode BlendMode);
 	void			SetAlpha(Uint8 alpha);
+	void			SetLoaded(bool bSet);
+	bool			GetLoaded();
+	void			SetName(const wchar_t* wszName);
+	const wchar_t*	GetName();
 
 private:
 	SDL_Texture*	m_pTexture;
 	std::wstring	m_wsPath;
-
+	bool			m_bLoaded;
+	std::wstring	m_wstrname;
 };
 

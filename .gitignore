@@ -37,8 +37,10 @@ Win32/*
 # Guitar
 *.bak
 x64/Debug/FrameWork.log
+x64/Debug/FrameWork.tlog/*.tlog
 x64/Debug/FrameWork.tlog/CL.command.1.tlog
 x64/Debug/FrameWork.Build.CppClean.log
+x64/Debug/FrameWork_debug.Build.CppClean.log
 x64/Debug/FrameWork.tlog/FrameWork.lastbuildstate
 x64/Debug/FrameWork.tlog/unsuccessfulbuild
 x64/Debug/FrameWork.vcxproj.FileListAbsolute.txt

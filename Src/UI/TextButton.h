@@ -22,18 +22,17 @@ public:
 	virtual void		OnMouseLeftButtonDown(SDL_Event& event);
 	virtual void		OnMouseOver(SDL_Event& event);
 	virtual void		OnMouseOut(SDL_Event& event);
-	
 
 private:
 	std::wstring		m_Text;
-	SDL_Texture*		m_pTexture;//Font
+	CSingleTexture*		m_pFontTexture;//Font
 	SDL_Point			m_FontTextureSize;
 	int					m_iTextSize;
 	SDL_Color			m_Color;
 	CComponent*			m_pIdle_Image;//Button Image
 	CComponent*			m_pClicked_Image;
 	CComponent*			m_pOnMouse_Image;
-	CSingleTexture*		m_pRenderTexture;
+	CSingleTexture*		m_pImageTexture;
 	eUITextAlignType	m_VerticalAlign;
 	eUITextAlignType	m_HorizontalAlign;
 	SDL_Rect			m_FontSrcRect;
@@ -50,5 +49,8 @@ public:
 	void SetHorizontalAlign(eUITextAlignType eType);
 
 	std::wstring& GetText();
+
+public:
+	virtual void SetShow(bool bSet);
 };
 

@@ -19,6 +19,8 @@ protected:
 	SDL_Rect			m_srcRect;
 	SDL_Rect			m_destRect;
 	eUIEventState		m_evtState;
+	bool				m_bmovable;
+	bool				m_bShow;
 
 	CMessageHandler*	m_pMessageHander;
 
@@ -28,6 +30,7 @@ public:
 	virtual SDL_Rect&	GetDestRect();
 	virtual void		SetPos(SDL_Point& Point);
 	virtual void		ProcessEvent(SDL_Event& event);
+	virtual void		SetShow(bool set);
 
 public:
 	virtual void OnMouseLeftButtonUp(SDL_Event& event) {};
@@ -44,12 +47,15 @@ public:
 	void			SetName(const wchar_t* pwszName);
 	void			SetUIType(eUIType eType);
 	void			SetMessageHandler(CMessageHandler* pHandler);
+	void			SetMovable(bool set);
 
 	CUIWnd*			GetParent();
 	CUIWnd*			GetChildren(wchar_t* pwszName);
 	std::wstring&	GetName();
 	eUIType			GetUIType();
 	SDL_Point		GetPos();
+	bool			GetMovable();
+	bool			GetShow();
 	
 private:
 

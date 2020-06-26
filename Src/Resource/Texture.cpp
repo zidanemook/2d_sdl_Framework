@@ -4,6 +4,7 @@
 
 
 CTexture::CTexture()
+	: m_bLoaded(false), m_pTexture(NULL)
 {
 }
 
@@ -41,6 +42,11 @@ SDL_Texture * CTexture::GetTexture()
 	return m_pTexture;
 }
 
+SDL_Texture** CTexture::GetTexturePointer()
+{
+	return &m_pTexture;
+}
+
 void CTexture::SetPath(const wchar_t* wszPath)
 {
 	m_wsPath = wszPath;
@@ -59,4 +65,24 @@ void CTexture::SetBlendMode(SDL_BlendMode BlendMode)
 void CTexture::SetAlpha(Uint8 alpha)
 {
 	SDL_SetTextureAlphaMod(m_pTexture, alpha);
+}
+
+void CTexture::SetLoaded(bool bSet)
+{
+	m_bLoaded = bSet;
+}
+
+bool CTexture::GetLoaded()
+{
+	return m_bLoaded;
+}
+
+void CTexture::SetName(const wchar_t* wszName)
+{
+	m_wstrname = wszName;
+}
+
+const wchar_t* CTexture::GetName()
+{
+	return m_wstrname.c_str();
 }

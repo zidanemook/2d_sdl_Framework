@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UIManager.h"
 #include "ResourceManager.h"
+#include "RenderManager.h"
 #include "../UI/UIWnd.h"
 #include "../UI/ImageBox.h"
 #include "../UI/TextButton.h"
@@ -22,6 +23,7 @@ CUIManager::~CUIManager(void)
 
 void CUIManager::Update()
 {
+
 }
 
 void CUIManager::HandleEvent(SDL_Event& event)
@@ -145,16 +147,15 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 	{
 		pWnd->SetParent(pParent);
 		pParent->AddChildren(pWnd);
-		//wsName = pParent->GetName()+ _T("_");
 	}
 		
 	
 	pWnd->SetUIType(eType);
 
-	std::wstring temp = MToW(((*iter)["Name"]).asString().c_str());
-	if(!temp.empty())
+	//std::wstring temp = MToW(((*iter)["Name"]).asString().c_str());
+	//if(!temp.empty())
 		wsName = MToW(((*iter)["Name"]).asString().c_str());
-	if (temp.empty())
+	if (wsName.empty())
 	{
 		if(pParent)
 			wsName = pParent->GetName() + _T("_");
@@ -179,6 +180,9 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 	size.x = (*iter)["XSize"].asInt();
 	size.y = (*iter)["YSize"].asInt();
 	pWnd->SetSize(size);
+
+	bool bmovable = (*iter)["movable"].asBool();
+	pWnd->SetMovable(bmovable);
 }
 
 void CUIManager::ParseImageBox(CUIWnd* pWnd, Json::ValueIterator& iter)
@@ -283,6 +287,15 @@ CUIWnd* CUIManager::GetUIWndByName(const std::wstring& Name)
 
 	if (iter != m_mapUI.end())
 		return iter->second;
+	else
+	{
+		if (RSCMgr->LoadUIJSONFilebyName(Name.c_str()))
+		{
+			iter = m_mapUI.find(Name);
+			return iter->second;
+		}
+	}
+		
 
 	return NULL;
 }
@@ -303,7 +316,7 @@ void CUIManager::AddToRenderList(CUIWnd* pWnd)
 	{
 		m_listRenderUI.push_back(pWnd);
 	}
-		
+
 }
 
 void CUIManager::DeleteFromRenderListByName(const std::wstring& Name)
