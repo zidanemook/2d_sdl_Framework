@@ -29,7 +29,7 @@ bool CFadeSystem::Create()
 
 void CFadeSystem::Destroy()
 {
-
+	m_pBlack->Release();
 }
 
 void CFadeSystem::Initialize()//여러번 호출될수 있다!!

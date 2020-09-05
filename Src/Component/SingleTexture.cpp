@@ -52,7 +52,9 @@ CSingleTexture* CSingleTexture::Create(CTexture* pTexture)
 
 void CSingleTexture::Free(void)
 {
-	m_pTexture->Release();
+	if (m_pTexture && 0 == m_pTexture->Release())
+		m_pTexture = NULL;
+
 	m_bShow = false;
 }
 
@@ -85,7 +87,7 @@ eRenderLayer CSingleTexture::GetLayer()
 void CSingleTexture::SetTexture(CTexture* pTexture)
 {
 	m_pTexture = pTexture;
-//	pTexture->AddRef();
+	pTexture->AddRef();
 }
 
 bool CSingleTexture::GetShow()
@@ -120,7 +122,7 @@ void CSingleTexture::Set(SDL_Rect& srcRect, SDL_Rect& destRect, eRenderLayer eLa
 	m_SrcRect = srcRect;
 	m_DestRect = destRect;
 	m_RendereLayer = eLayer;
-	m_pTexture = pTexture;
+	SetTexture(pTexture);
 	m_vDestPos = Vector2D(float(destRect.x), float(destRect.y));
 }
 
