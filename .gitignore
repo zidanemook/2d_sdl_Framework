@@ -46,3 +46,10 @@ x64/Debug/FrameWork.tlog/unsuccessfulbuild
 x64/Debug/FrameWork.vcxproj.FileListAbsolute.txt
 x64/Debug/vc142.idb
 x64/Debug/vc142.pdb
+x64/Release/FrameWork.log
+x64/Release/FrameWork.tlog/CL.command.1.tlog
+x64/Release/FrameWork.tlog/CL.read.1.tlog
+x64/Release/FrameWork.tlog/CL.write.1.tlog
+x64/Release/FrameWork.tlog/FrameWork.write.1u.tlog
+x64/Release/FrameWork.tlog/link.delete.1.tlog
+x64/Release/FrameWork.tlog/link.read.1.tlog
