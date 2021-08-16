@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Program.h"
-#include "Define.h"
 
 #include "Manager/ModeManager.h"
 #include "Manager/SystemManager.h"
@@ -71,7 +70,7 @@ void CProgram::Init()
 {
 	m_bIsRunning = true;
 	//Window, Device
-	if (false == SYSMGR->Init("Framework", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1080, 720, false))
+	if (false == SYSMGR->Init("Framework", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, false))
 	{
 		m_bIsRunning = false;
 		return;

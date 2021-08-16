@@ -6,6 +6,9 @@
 #define PUSHKEY			0x040
 #define HOLDKEY			0x080
 
+#define DEFAULT_SCREEN_WIDTH	1080
+#define DEFAULT_SCREEN_HEIGHT	720
+
 enum eModeTypes
 {
 	eModeTypes_None,

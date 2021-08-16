@@ -1,9 +1,18 @@
 #pragma once
 
+/*!
+ * \class classname
+ *
+ * \brief
+ *
+ * \author mook
+ * \date 8¿ù 2021
+ */
+
 class CTerrainManager
 {
 private:
-	static CTerrainManager* m_pInst;
+	static CTerrainManager*		m_pInst;
 
 public:
 	static CTerrainManager* GetInst(void)

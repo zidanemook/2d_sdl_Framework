@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "Define.h"
 #include "Function.h"
 #include "ResourceManager.h"
 #include "RenderManager.h"
@@ -418,7 +417,7 @@ bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepa
 				}
 			}
 		}*/
-		log("duplicate %s (LoadTexture)", filepath.c_str());
+		log("duplicate %s (LoadTexture)\n", filepath.c_str());
 
 	}
 	else

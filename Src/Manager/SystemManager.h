@@ -27,12 +27,15 @@ public:
 	~CSystemManager();
 
 public:
-	bool Init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);
+	bool Init(const char* title, int xpos, int ypos, bool fullscreen);
 
 	SDL_Window * GetWindow();
 	int			GetWindowWidth();
 	int			GetWindowHeight();
-	
+	bool		LoadConfig(const wchar_t* wszfilepath);
+	bool		SaveConfig();
+	std::wstring	GetConfigPath();
+
 private:
 	SDL_Window * m_pWindow;
 	//SDL_Renderer *m_pRenderer;
