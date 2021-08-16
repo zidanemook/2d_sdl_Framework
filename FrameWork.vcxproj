@@ -179,6 +179,7 @@
     </ClCompile>
     <ClCompile Include="Src\Manager\CEditorManager.cpp" />
     <ClCompile Include="Src\Manager\ControlManager.cpp" />
+    <ClCompile Include="Src\Manager\CTerrainManager.cpp" />
     <ClCompile Include="Src\Manager\KeyManager.cpp" />
     <ClCompile Include="Src\Manager\ModeManager.cpp" />
     <ClCompile Include="Src\Manager\ObjMgr.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Src\Header\stdafx.h" />
     <ClInclude Include="Src\Manager\CEditorManager.h" />
     <ClInclude Include="Src\Manager\ControlManager.h" />
+    <ClInclude Include="Src\Manager\CTerrainManager.h" />
     <ClInclude Include="Src\Manager\KeyManager.h" />
     <ClInclude Include="Src\Manager\ModeManager.h" />
     <ClInclude Include="Src\Manager\ObjMgr.h" />

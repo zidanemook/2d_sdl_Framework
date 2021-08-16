@@ -40,4 +40,4 @@ private:
 	int m_iHeight;
 };
 
-#define SysMgr	CSystemManager::GetInstance()
+#define SYSMGR	CSystemManager::GetInstance()

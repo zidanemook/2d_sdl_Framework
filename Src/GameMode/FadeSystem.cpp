@@ -90,8 +90,8 @@ void CFadeSystem::Render()
 	SDL_Rect srcRect;
 	srcRect.x = 0;
 	srcRect.y = 0;
-	srcRect.w = SysMgr->GetWindowWidth();
-	srcRect.h = SysMgr->GetWindowHeight();
+	srcRect.w = SYSMGR->GetWindowWidth();
+	srcRect.h = SYSMGR->GetWindowHeight();
 	SDL_Rect destRect = srcRect;
 	
 	SDL_SetTextureBlendMode(m_pBlack->GetTexture()->GetTexture(), m_pBlack->GetBlendMode());

@@ -64,7 +64,7 @@ void CObj::AddComponent(CComponent* pComponent)
 
 	if (m_Component[pComponent->GetComponentType()])
 	{
-		errormsg("AddComponent failed");
+		log("AddComponent failed");
 		return;
 	}
 	

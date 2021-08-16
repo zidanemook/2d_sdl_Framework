@@ -30,7 +30,7 @@ bool CSystemManager::Init(const char* title, int xpos, int ypos, int width, int 
 		m_pWindow = SDL_CreateWindow(title, xpos, ypos, width, height, iFlag);
 		if (!m_pWindow)
 		{
-			errormsg("Window failed");
+			log("Window failed");
 		}
 		else
 		{
@@ -42,7 +42,7 @@ bool CSystemManager::Init(const char* title, int xpos, int ypos, int width, int 
 	}
 	else
 	{
-		errormsg( "Sub system failed" );
+		log( "Sub system failed" );
 	}
 
 	return bResult;

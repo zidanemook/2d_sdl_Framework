@@ -176,14 +176,14 @@ bool CRenderManager::Init(SDL_Window * pWindow)
 {
 	bool bResult = false;
 
-	m_pRenderer = SDL_CreateRenderer(pWindow, -1, 0);
+	m_pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (m_pRenderer)
 	{
 		SDL_SetRenderDrawColor(m_pRenderer, 255, 0, 0, 255);
 		bResult = true;
 	}
 	else
-		errormsg("Renderer failed");
+		log("SDL_CreateRenderer failed\n");
 
 	return bResult;
 }
@@ -254,7 +254,7 @@ void CRenderManager::AddRenderCommand(const std::wstring& name, CTexture* pTextu
 
 	if (pTexture && false == pTexture->GetLoaded())
 	{
-		RSCMgr->LoadTexture(pTexture->GetName(), pTexture->GetPath(), true);
+		RSCMgr->LoadTexture(pTexture->GetName(), pTexture->GetPath());
 	}
 
 	pcommand->Set(name, pTexture->GetTexture(), pSrcRect, pDestRect, RenderLayer, bpShow, pBlendMode, puiAlpha);

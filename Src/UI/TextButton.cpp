@@ -51,10 +51,6 @@ void CTextButton::Render()
 
 	if (m_pImageTexture)
 	{
-
-		RSCMgr->LoadTexture(m_pImageTexture->GetTexture()->GetName(), m_pImageTexture->GetTexture()->GetPath(), true);
-
-
 		SDL_SetTextureBlendMode(m_pImageTexture->GetTexture()->GetTexture(), m_pImageTexture->GetBlendMode());
 		SDL_SetTextureAlphaMod(m_pImageTexture->GetTexture()->GetTexture(), m_pImageTexture->GetAlpha());
 		
@@ -222,7 +218,7 @@ void CTextButton::SetShow(bool bSet)
 
 	if (false == m_pImageTexture->GetTexture()->GetLoaded())
 	{
-		RSCMgr->LoadTexture(m_pImageTexture->GetTexture()->GetName(), m_pImageTexture->GetTexture()->GetPath(), true);
+		RSCMgr->LoadTexture(m_pImageTexture->GetTexture()->GetName(), m_pImageTexture->GetTexture()->GetPath());
 	}
 
 	//if (true == bSet)

@@ -42,8 +42,8 @@ void CLogo::Init()
 	SDL_Rect srcRect;
 	srcRect.x = 0;
 	srcRect.y = 0;
-	srcRect.h = SysMgr->GetWindowHeight();
-	srcRect.w = SysMgr->GetWindowWidth();
+	srcRect.h = SYSMGR->GetWindowHeight();
+	srcRect.w = SYSMGR->GetWindowWidth();
 
 	SDL_Rect destRect;
 	destRect = srcRect;

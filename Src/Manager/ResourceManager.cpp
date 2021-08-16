@@ -384,7 +384,7 @@ bool CResourceManager::LoadSerialSpriteTextureCSVFile(const wchar_t* file)
 	return true;
 }
 
-bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepath, bool loadimmediately /*= false*/)
+bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepath)
 {
 	IMG_Init(IMG_INIT_PNG);
 
@@ -400,7 +400,7 @@ bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepa
 
 	if (iter != m_mapTexture.end())
 	{
-		if (loadimmediately && (false == iter->second->GetLoaded()))
+		/*if (false == iter->second->GetLoaded())
 		{
 			CTexture* pTex = iter->second;
 			if (pTex)
@@ -417,25 +417,24 @@ bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepa
 					return false;
 				}
 			}
-		}
+		}*/
+		log("duplicate %s (LoadTexture)", filepath.c_str());
+
 	}
 	else
 	{
 		CTexture* pTex = CTexture::Create();
 
-		if (loadimmediately)
+		pTex->SetTexture(IMG_LoadTexture(SDLRdr, filepath.c_str()));
+		if (pTex->GetTexture())
 		{
-			pTex->SetTexture(IMG_LoadTexture(SDLRdr, filepath.c_str()));
-			if (pTex->GetTexture())
-			{
-				pTex->SetLoaded(true);
-			}
-			else
-			{
-				errormsg(filepath.c_str());
-				Safe_Release(pTex);
-				return false;
-			}
+			pTex->SetLoaded(true);
+		}
+		else
+		{
+			log("%s load failed(IMG_LoadTexture)\n", filepath.c_str() );
+			Safe_Release(pTex);
+			return false;
 		}
 
 		pTex->SetName(name);
@@ -512,7 +511,7 @@ bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 
 		if (false == reader.parse(ifs, value))
 		{
-			errormsg(filepath.c_str());
+			log("%s load failed (LoadNamingTextureJSONFile)\n", filepath.c_str());
 			return false;
 		}
 		
@@ -531,7 +530,7 @@ bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 
 			if (!pTexture)
 			{
-				errormsg(root[i][1].asString().c_str());
+				log(root[i][1].asString().c_str());
 				return false;
 			}
 			//dynamic_cast<CSingleTexture*>(pSingleTexture)->SetTexture(pTexture);
@@ -579,7 +578,7 @@ bool CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
 
 		if (false == reader.parse(ifs, value))
 		{
-			errormsg(filepath.c_str());
+			log("%s load failed (LoadUIJSONFile)\n", filepath.c_str());
 
 			return false;
 		}

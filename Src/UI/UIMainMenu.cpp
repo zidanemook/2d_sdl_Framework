@@ -70,8 +70,8 @@ void CUIMainMenu::SetShow(bool bSet)
 		m_pRootWnd->SetMessageHandler(this);
 		SDL_Rect rect = m_pRootWnd->GetDestRect();
 		SDL_Point point;
-		point.x = (SysMgr->GetWindowWidth() - rect.w)/2;
-		point.y = (SysMgr->GetWindowHeight() - rect.h)/2;
+		point.x = (SYSMGR->GetWindowWidth() - rect.w)/2;
+		point.y = (SYSMGR->GetWindowHeight() - rect.h)/2;
 		m_pRootWnd->SetPos(point);
 	}
 

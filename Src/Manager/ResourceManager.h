@@ -47,7 +47,7 @@ public:
 	bool LoadSpriteTextureCSVFile(const wchar_t* file);
 	bool LoadSerialSpriteTextureCSVFile(const wchar_t* file);
 
-	bool LoadTexture(const wchar_t* name, const wchar_t* tszfilepath, bool loadimmediately = false);
+	bool LoadTexture(const wchar_t* name, const wchar_t* tszfilepath);
 	bool LoadRootNameAndPath(const wchar_t* file);
 
 	//JSON

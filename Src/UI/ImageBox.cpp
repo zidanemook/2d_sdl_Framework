@@ -51,7 +51,7 @@ void CImageBox::SetShow(bool bSet)
 	CSingleTexture* pSingleTexture = dynamic_cast<CSingleTexture*>(m_pSingleTexture);
 	if (false == pSingleTexture->GetTexture()->GetLoaded())
 	{
-		RSCMgr->LoadTexture(pSingleTexture->GetTexture()->GetName(), pSingleTexture->GetTexture()->GetPath(), true);
+		RSCMgr->LoadTexture(pSingleTexture->GetTexture()->GetName(), pSingleTexture->GetTexture()->GetPath());
 
 	}
 

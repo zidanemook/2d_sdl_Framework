@@ -10,6 +10,7 @@
 #include "Manager/ControlManager.h"
 #include "Manager/ObjMgr.h"
 #include "Manager/UIManager.h"
+#include "Manager/CTerrainManager.h"
 #include "FadeSystem.h"
 #include "Game.h"
 #include "Logo.h"
@@ -56,29 +57,30 @@ void CProgram::Free(void)
 
 
 	//manager
+	TERMGR->DestroyInst();
 	OBJMGR->DestroyInstance();
 	ModeMgr->DestroyInstance();
 	CTRLMGR->DestroyInst();
 	KEYMGR->DestroyInst();
 	RSCMgr->DestroyInstance();
 	RdrMgr->DestroyInstance();
-	SysMgr->DestroyInstance();
+	SYSMGR->DestroyInstance();
 }
 
 void CProgram::Init()
 {
 	m_bIsRunning = true;
 	//Window, Device
-	if (false == SysMgr->Init("Framework", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1080, 720, false))
+	if (false == SYSMGR->Init("Framework", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1080, 720, false))
 	{
 		m_bIsRunning = false;
 		return;
 	}
 	else
 	{
-		if (false == RdrMgr->Init(SysMgr->GetWindow()))
+		if (false == RdrMgr->Init(SYSMGR->GetWindow()))
 		{
-			errormsg("RdrMgr->Init");
+			log("RdrMgr->Init");
 			m_bIsRunning = false;
 			return;
 		}
@@ -87,7 +89,7 @@ void CProgram::Init()
 
 	if (false == RSCMgr->Init())
 	{
-		errormsg("RSCMgr->Init");
+		log("RSCMgr->Init");
 		m_bIsRunning = false;
 		return;
 	}
@@ -96,6 +98,7 @@ void CProgram::Init()
 	CTRLMGR;
 	ModeMgr;
 	OBJMGR->Initialize();
+	TERMGR->Init();
 
 
 	//Add Mode
@@ -150,6 +153,7 @@ void CProgram::Update()
 	UIMGR->Update();
 	ModeMgr->Update();
 	OBJMGR->Update();
+	TERMGR->Update();
 
 	RdrMgr->RenderClear();
 	RdrMgr->Render();
