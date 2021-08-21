@@ -14,6 +14,7 @@
 #include "Game.h"
 #include "Logo.h"
 #include "Mainmenu.h"
+#include "Option.h"
 
 const int TargetFPS = 60;
 const float fFramedelaySecond = ONESECOND / float(TargetFPS);
@@ -108,12 +109,19 @@ void CProgram::Init()
 		ModeMgr->AddMode(eModeTypes_Logo, pLogo);
 		ModeMgr->ChangeMode(eModeTypes_Logo);
 
+		//Loading 캐릭터 애니메이션 아무거나 달리게 하기. 팁 띄우기
+
+
 		//MainMenu
 		CMainmenu* pMainmenu = CMainmenu::Create();
 		pMainmenu->Init();
 		ModeMgr->AddMode(eModeTypes_MainMenu, pMainmenu);
 
-		//Loading 캐릭터 애니메이션 아무거나 달리게 하기. 팁 띄우기
+		//Option
+		COption* pOption = COption::Create();
+		pOption->Init();
+		ModeMgr->AddMode(eModeTypes_Option, pOption);
+
 
 		//Game
 		CGame* pGame = CGame::Create();

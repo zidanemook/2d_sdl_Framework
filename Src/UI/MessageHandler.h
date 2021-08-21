@@ -8,7 +8,7 @@ public:
 	~CMessageHandler() {};
 
 public:
-	virtual void SetShow(bool bSet) {};
+	virtual void SetShow(bool bSet)=0;
 
 public:
 	virtual void OnMouseLeftButtonUp(SDL_Event& event) {};

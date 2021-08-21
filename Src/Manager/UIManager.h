@@ -4,6 +4,7 @@
 
 class CUIWnd;
 class CUIMainMenu;
+class CUIOption;
 class CUIManager
 {
 private:
@@ -33,8 +34,11 @@ public:
 	void Render();
 
 public:
+	CUIWnd* LoadUIFile(const std::wstring& UIFileName);
+
+public:
 	void AddUI(std::wstring& Name , CUIWnd* pWnd);
-	void ParseUI(Json::Value& value);
+	CUIWnd* ParseUI(Json::Value& value);
 	CUIWnd* ParseUIWnd(Json::ValueIterator& iter);
 	void ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, eUIType eType);//UI 공통변수 로드
 	void ParseImageBox(CUIWnd* pWnd, Json::ValueIterator& iter);
@@ -54,11 +58,12 @@ public:
 	CUIWnd* GetPreFocusWnd();
 
 public:
-	CUIMainMenu* GetUIMainMenu();
+	CUIMainMenu*	GetUIMainMenu();
+	CUIOption*		GetUIOption();
 
 private:
 	std::map<std::wstring, CUIWnd*> m_mapUI;//All UIWnd
-	std::map<std::wstring, CUIWnd*> m_mapRootUI;//All rootUIWNd
+	std::map<std::wstring, CUIWnd*> m_mapRootUI;//All rootUIWNd, FileName, RootWnd
 	std::list<CUIWnd*> m_listRenderUI;//For Render;
 
 
@@ -66,7 +71,7 @@ private:
 	CUIMainMenu*	m_pUIMainMenu;
 	CUIWnd*			m_pFocusedWnd;
 	CUIWnd*			m_pPreFocuseWnd;
-	
+	CUIOption*		m_pUIOption;
 };
 
 #define UIMGR CUIManager::GetInst()

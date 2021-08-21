@@ -41,6 +41,7 @@ private:
 	//SDL_Renderer *m_pRenderer;
 	int	m_iWidth;
 	int m_iHeight;
+	int m_iFlag;
 };
 
 #define SYSMGR	CSystemManager::GetInstance()

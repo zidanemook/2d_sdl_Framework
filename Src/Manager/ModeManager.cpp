@@ -49,7 +49,11 @@ bool CModeManager::ChangeMode( const int iModeID, bool bForceChange )
 {
 	CBaseMode* pChangeMode = GetMode( iModeID );
 	if( NULL == pChangeMode )
+	{
+		log("%d mode not exist\n", iModeID);
 		return false;
+	}
+		
 
 	if( m_pCurMode == pChangeMode && false == bForceChange )
 		return false;

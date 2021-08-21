@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UIWnd.h"
 #include "../Manager/UIManager.h"
+#include "../Manager/SystemManager.h"
 
 CUIWnd::CUIWnd()
 {
@@ -64,6 +65,14 @@ void CUIWnd::SetSize(SDL_Point& size)
 {
 	m_destRect.w = size.x;
 	m_destRect.h = size.y;
+}
+
+void CUIWnd::SetSizeRate(SDL_Point& size)
+{
+	float fscreenx = (float)SYSMGR->GetWindowWidth();
+	float fscreeny = (float)SYSMGR->GetWindowHeight();
+	m_destRect.w = (float)size.x/fscreenx*100.f;
+	m_destRect.h = (float)size.y/fscreeny*100.f;
 }
 
 void CUIWnd::SetParent(CUIWnd* pWnd)

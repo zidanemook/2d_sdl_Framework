@@ -13,8 +13,9 @@ enum eModeTypes
 {
 	eModeTypes_None,
 	eModeTypes_Logo,
-	eModeTypes_MainMenu,
 	eModeTypes_Loading,
+	eModeTypes_MainMenu,
+	eModeTypes_Option,
 	eModeTypes_Play,
 	eModeTypes_Max
 };

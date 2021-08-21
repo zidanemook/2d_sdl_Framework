@@ -24,10 +24,10 @@ CSystemManager::~CSystemManager()
 bool CSystemManager::Init(const char* title, int xpos, int ypos, bool fullscreen)
 {
 	bool bResult = false;
-	int iFlag = 0;
+
 	if (fullscreen)
 	{
-		iFlag = SDL_WINDOW_FULLSCREEN;
+		m_iFlag = SDL_WINDOW_FULLSCREEN;
 	}
 
 	//load config file
@@ -45,7 +45,7 @@ bool CSystemManager::Init(const char* title, int xpos, int ypos, bool fullscreen
 	{
 		//wprintf(L"Sub system initialized\n");
 
-		m_pWindow = SDL_CreateWindow(title, xpos, ypos, m_iWidth, m_iHeight, iFlag);
+		m_pWindow = SDL_CreateWindow(title, xpos, ypos, m_iWidth, m_iHeight, m_iFlag);
 		if (!m_pWindow)
 		{
 			log("Window failed\n");
@@ -98,6 +98,7 @@ bool CSystemManager::LoadConfig(const wchar_t* wszfilepath)
 
 		m_iWidth = value["screen_width"].asInt();
 		m_iHeight = value["screen_height"].asInt();
+		m_iFlag = value["screen_flag"].asInt();
 
 		return true;
 	}
@@ -113,6 +114,7 @@ bool CSystemManager::SaveConfig()
 	Json::Value value;
 	value["screen_width"] = m_iWidth;
 	value["screen_height"] = m_iHeight;
+	value["screen_flag"] = m_iFlag;
 
 	Json::StyledWriter writer;
 	std::string data = writer.write(value);

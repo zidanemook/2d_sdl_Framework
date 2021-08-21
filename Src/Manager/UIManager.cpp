@@ -6,19 +6,22 @@
 #include "../UI/ImageBox.h"
 #include "../UI/TextButton.h"
 #include "../UI/UIMainMenu.h"
+#include "../UI/UIOption.h"
 #include "../Component/SingleTexture.h"
 
 CUIManager* CUIManager::m_pInst = NULL;
 
 CUIManager::CUIManager(void)
 {
-	m_pUIMainMenu = new CUIMainMenu();
+	m_pUIMainMenu = CUIMainMenu::Create();
+	m_pUIOption = CUIOption::Create();
 	m_pFocusedWnd = NULL;
 }
 
 CUIManager::~CUIManager(void)
 {
-	Safe_Delete(m_pUIMainMenu);
+	m_pUIMainMenu->Release();
+	m_pUIOption->Release();
 }
 
 void CUIManager::Update()
@@ -70,35 +73,57 @@ void CUIManager::Render()
 	}
 }
 
+CUIWnd* CUIManager::LoadUIFile(const std::wstring& UIFileName)
+{
+	//ui파일확인
+	if (std::wstring::npos == UIFileName.find(L".json"))
+		return NULL;
+	
+	CUIWnd* newWnd = RSCMgr->LoadUIJSONFile(UIFileName.c_str());
+	if (newWnd)
+	{
+		m_mapRootUI.insert(make_pair(UIFileName, newWnd));
+	}
+
+	return newWnd;
+}
+
 void CUIManager::AddUI(std::wstring& Name, CUIWnd* pWnd)
 {
 	std::map<std::wstring, CUIWnd*>::iterator iterEnd = m_mapUI.end();
 
 	if(iterEnd == m_mapUI.find(Name))
 		m_mapUI.insert(make_pair(Name, pWnd));
+	else
+	{
+		log("%s UI NAME Duplicate!!", Name.c_str());
+	}
 }
 
-void CUIManager::ParseUI(Json::Value& value)
+CUIWnd* CUIManager::ParseUI(Json::Value& value)
 {
 	Json::Value root = value["Root"];
-	std::wstring RootName = MToW(value["RootName"].asString().c_str());
 
 	int rootsize = root.size();
 
+	CUIWnd* pWnd = NULL;
 	for (Json::ValueIterator it = root.begin(); it != root.end(); ++it)
 	{
 		if (it->isObject())
 		{
-			CUIWnd* pWnd = ParseUIWnd(it);
+			pWnd = ParseUIWnd(it);
 			if(pWnd)
 				AddUI(pWnd->GetName(), pWnd);
 		}
 	}
 
-	std::map<std::wstring, CUIWnd*>::iterator iter = m_mapUI.find(RootName);
-	if (iter != m_mapUI.end())
-		m_mapRootUI.insert(make_pair(iter->second->GetName(), iter->second));
-
+	//find root window in UIFile
+	while (pWnd && pWnd->GetParent())
+	{
+	 	pWnd = pWnd->GetParent();
+	}
+			
+	return pWnd;
 	
 }
 
@@ -176,10 +201,20 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 	Point.y = (*iter)["YPos"].asInt();
 	pWnd->SetPos(Point);
 
+	SDL_Point sizerate;
+	sizerate.x = (*iter)["XRate"].asInt();
+	sizerate.y = (*iter)["YRate"].asInt();
+	if(sizerate.x != 0 || sizerate.y != 0)
+		pWnd->SetSizeRate(sizerate);
+
 	SDL_Point size;
 	size.x = (*iter)["XSize"].asInt();
 	size.y = (*iter)["YSize"].asInt();
-	pWnd->SetSize(size);
+	if(size.x != 0 || size.y != 0)
+		pWnd->SetSize(size);
+
+
+	
 
 	bool bmovable = (*iter)["movable"].asBool();
 	pWnd->SetMovable(bmovable);
@@ -357,4 +392,9 @@ CUIWnd* CUIManager::GetFocusWnd()
 CUIMainMenu* CUIManager::GetUIMainMenu()
 {
 	return m_pUIMainMenu;
+}
+
+CUIOption* CUIManager::GetUIOption()
+{
+	return m_pUIOption;
 }

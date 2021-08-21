@@ -10,9 +10,12 @@
 #include "Component.h"
 #include <atlstr.h>
 #include <fstream>
+
 #include "json.h"//https://github.com/open-source-parsers/jsoncpp/wiki
 
 CResourceManager*		CResourceManager::m_pInst = nullptr;
+
+#define FILENAMEANDPATH "filenameandpath.bin"
 
 CResourceManager::CResourceManager()
 {
@@ -48,7 +51,12 @@ bool CResourceManager::Init()
 
 	//tstring ExePath = buffer;
 	
-	if (false == LoadScriptCSVFile(_T("Resource/Data/UI/Script.csv")))
+	if (false == InputFileNameAndPath())
+	{
+		FindAndResistFiles(L"Resource/");
+	}
+
+	if (false == LoadScriptCSVFile(_T("Script.csv")))
 		return false;
 
 	if (false == LoadSingleTextureCSVFile(_T("Resource/Data/SingleTexture.csv")))
@@ -62,10 +70,16 @@ bool CResourceManager::Init()
 	if (false == LoadNamingTextureJSONFile(_T("Resource/Data/UI/NamingTexture.json")))
 		return false;
 
-	if (false == LoadRootNameAndPath(_T("Resource/Data/UI/RootNameAndPath.csv")))
-	{
-		return false;
-	}
+	
+
+
+		
+
+	//Resource 폴더의 파일들을 알아서 m_mapNameAndPath 에 추가되게 하자
+	//if (false == LoadRootNameAndPath(_T("Resource/Data/UI/RootNameAndPath.csv")))
+	//{
+	//	return false;
+	//}
 		
 
 	//if(false == LoadUIJSONFile(_T("Resource/Data/UI/MainMenu.json")))
@@ -85,11 +99,187 @@ void CResourceManager::Destroy()
 
 	for_each(m_mapTexture.begin(), m_mapTexture.end(), ReleaseMapElement());
 	m_mapTexture.clear();
+
+	OutputFileNameAndPath();
+}
+
+void CResourceManager::FindAndResistFiles(const wchar_t* wszPath)
+{
+	std::wstring wstrFindPath = wszPath + std::wstring(L"*.*");
+
+	WIN32_FIND_DATAW _find_data;
+	HANDLE hFind = ::FindFirstFile(wstrFindPath.c_str(), &_find_data);
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			if (_find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				if (_find_data.cFileName[0] == '.')
+					continue;
+
+				std::wstring _path = wszPath + std::wstring(_find_data.cFileName) + std::wstring(L"/");
+				m_vecFolders.push_back(_path);
+
+				FindAndResistFiles(_path.c_str());
+			}
+			else
+			{
+				std::wstring _path = wszPath + std::wstring(_find_data.cFileName);
+				m_mapNameAndPath.insert(std::make_pair(std::wstring(_find_data.cFileName), _path));
+			}
+
+		} while (::FindNextFile(hFind, &_find_data) != 0);
+
+		::FindClose(hFind);
+	}
+}
+
+//void CResourceManager::FindAndResistFolders(const wchar_t* wszPath)
+//{
+//	std::wstring wstrFindPath = wszPath + std::wstring(L"*.*");
+//
+//	WIN32_FIND_DATAW _find_data;
+//	HANDLE hFind = ::FindFirstFile(wstrFindPath.c_str(), &_find_data);
+//	if (hFind != INVALID_HANDLE_VALUE)
+//	{
+//		do
+//		{
+//			if (_find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+//			{
+//				if (_find_data.cFileName[0] == '.')
+//					continue;
+//
+//				std::wstring _path = wszPath + std::wstring(_find_data.cFileName) + std::wstring(L"/");
+//				m_vecFolders.push_back( _path);
+//
+//				FindAndResistFolders(_path.c_str());
+//			}
+//
+//		} while (::FindNextFile(hFind, &_find_data) != 0);
+//
+//		::FindClose(hFind);
+//	}
+//}
+
+bool CResourceManager::InputFileNameAndPath()
+{
+	FILE* file=NULL;
+	fopen_s(&file, FILENAMEANDPATH, "r");
+	char* buffer = NULL;
+	if (NULL != file)
+	{
+		int size = 0;
+		fseek(file, 0, SEEK_END); // 파일 포인터를 파일의 끝으로 이동시킴
+		size = ftell(file);
+
+		buffer = new char[size+1];
+		memset(buffer, 0, size + 1);
+		fseek(file, 0, SEEK_SET);
+		
+		fread(buffer, size, 1, file);
+
+	
+
+		char seps[] = (",");
+		char* token = seps;
+		char pStr[MAX_PATH] = { 0, };
+		char* next_token = buffer;
+		
+		while (next_token != NULL)
+		{
+			token = strtok_s(next_token, seps, &next_token);
+
+			if (!token)
+				break;
+
+			char szKey[MAX_PATH] = { 0, };
+			strcpy_s(szKey, token);
+
+			token = strtok_s(next_token, seps, &next_token);
+			char szFilePaht[MAX_PATH] = { 0, };
+			strcpy_s(szFilePaht, token);
+
+			m_mapNameAndPath.insert(std::make_pair(MToW(szKey), MToW(szFilePaht)));
+		}
+
+		Safe_Delete(buffer);
+		return true;
+	}
+	else
+		return false;
+}
+
+void CResourceManager::OutputFileNameAndPath()
+{
+	// Get module path name
+	//wchar_t _cliexepath[_MAX_PATH];
+	//::GetModuleFileName(NULL, _cliexepath, _MAX_PATH);
+
+	//std::wstring cliexepath = _cliexepath;
+	//size_t slashpos = cliexepath.find_last_of(L"/");
+	//std::wstring filenameandpath = cliexepath.substr(0, slashpos);
+
+	FILE* file = NULL;
+	fopen_s(&file, FILENAMEANDPATH, "w");
+	
+	if (NULL != file)
+	{
+
+		std::map<std::wstring, std::wstring>::iterator iter = m_mapNameAndPath.begin();
+		for (iter; iter != m_mapNameAndPath.end(); ++iter)
+		{
+			fprintf(file, "%s,%s,", WToM(iter->first.c_str()).c_str(), WToM(iter->second.c_str()).c_str());
+		}
+		
+		fclose(file);
+	}
+	else
+	{
+		log("%s write failed\n", FILENAMEANDPATH);
+	}
+
+	//FILENAMEANDPATH
+}
+
+std::wstring CResourceManager::FindPath(const wchar_t* filename)
+{
+	std::map<std::wstring, std::wstring>::iterator iter = m_mapNameAndPath.find(filename);
+
+	if (iter != m_mapNameAndPath.end())
+		return iter->second;
+	else
+	{
+		if (true == m_vecFolders.empty())
+		{
+			FindAndResistFiles(L"Resource/");
+		}
+
+		//m_vecFolders 사용해서 파일이 있는곳을 알아내서 반환
+		std::wstring _pathfilename;
+		for (size_t i = 0; i != m_vecFolders.size(); ++i)
+		{
+			_pathfilename = m_vecFolders[i] + filename;
+
+			SDL_RWops* file = SDL_RWFromFile(WToM(_pathfilename.c_str()).c_str(), "r+b");
+			if (file)
+			{
+				m_mapNameAndPath.insert(std::make_pair(filename, _pathfilename));
+				return _pathfilename;
+			}
+		}
+
+		log("%s not exist\n", WToM(_pathfilename.c_str()).c_str());
+		return std::wstring(L"");
+	}
+	
 }
 
 bool CResourceManager::LoadScriptCSVFile(const wchar_t* file)
 {
-	std::wifstream wif(file);
+	std::wstring filepath = FindPath(file);
+
+	std::wifstream wif(filepath.c_str());
 
 	if (wif.is_open())
 	{
@@ -561,12 +751,14 @@ bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 	return true;
 }
 
-bool CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
+CUIWnd* CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
 {
-	std::string filepath;
-	filepath = WToM(tszfilepath);
+	std::wstring wstrfilepath = RSCMgr->FindPath(tszfilepath);
 
-	std::ifstream ifs(filepath);
+	std::string strfilepath;
+	strfilepath = WToM(wstrfilepath.c_str());
+
+	std::ifstream ifs(strfilepath);
 
 	if (ifs.is_open())
 	{
@@ -577,15 +769,15 @@ bool CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
 
 		if (false == reader.parse(ifs, value))
 		{
-			log("%s load failed (LoadUIJSONFile)\n", filepath.c_str());
+			log("%s load failed (LoadUIJSONFile)\n", strfilepath.c_str());
 
 			return false;
 		}
 		
-		UIMGR->ParseUI(value);		
+		return UIMGR->ParseUI(value);		
 	}
 
-	return true;
+	return NULL;
 }
 
 bool CResourceManager::LoadUIJSONFilebyName(const wchar_t* tszname)

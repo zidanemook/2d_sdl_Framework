@@ -42,6 +42,7 @@ public:
 
 public:
 	void			SetSize(SDL_Point& size);
+	void			SetSizeRate(SDL_Point& size);
 	void			SetParent(CUIWnd* pWnd);
 	void			AddChildren(CUIWnd* pWnd);
 	void			SetName(const wchar_t* pwszName);

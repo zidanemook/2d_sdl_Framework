@@ -176,7 +176,7 @@ bool CRenderManager::Init(SDL_Window * pWindow)
 {
 	bool bResult = false;
 
-	m_pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	m_pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
 	if (m_pRenderer)
 	{
 		SDL_SetRenderDrawColor(m_pRenderer, 255, 0, 0, 255);

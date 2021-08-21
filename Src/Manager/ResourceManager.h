@@ -9,6 +9,14 @@
 
 #pragma once
 
+typedef struct _stFileNameAndPath
+{
+	std::string filename;
+	std::string filepath;
+
+}stFileNameAndPath;
+
+class CUIWnd;
 class CTexture;
 class CComponent;
 class CFont;
@@ -41,6 +49,12 @@ public:
 	bool Init();
 	void Destroy();
 
+	void FindAndResistFiles(const wchar_t* wszPath);
+	//void FindAndResistFolders(const wchar_t* wszPath);
+	bool InputFileNameAndPath();
+	void OutputFileNameAndPath();
+	std::wstring FindPath(const wchar_t* filename);
+
 	//CSV
 	bool LoadScriptCSVFile(const wchar_t* file);
 	bool LoadSingleTextureCSVFile(const wchar_t* file);
@@ -52,7 +66,7 @@ public:
 
 	//JSON
 	bool LoadNamingTextureJSONFile(const wchar_t* tszfilepath);
-	bool LoadUIJSONFile(const wchar_t* tszfilepath);
+	CUIWnd* LoadUIJSONFile(const wchar_t* tszfilepath);
 	bool LoadUIJSONFilebyName(const wchar_t* tszname);
 
 	CTexture*		GetTextureByName(const std::wstring& name);
@@ -70,7 +84,8 @@ private:
 	std::map<std::wstring, CTexture*>		m_mapTexture;//Name or Path, Texture
 	std::map<std::wstring, CComponent*>		m_mapSpriteComponent;//For Sprite animation
 	std::map<std::wstring, CComponent*>		m_mapNamingTexture;
-	std::map<std::wstring, std::wstring>	m_mapNameAndPath;//UI RootName And Path
+	std::vector<std::wstring>				m_vecFolders;// to find file //if file not registerd use this to find file
+	std::map<std::wstring, std::wstring>	m_mapNameAndPath;// fileName And Path
 
 	CFont*			m_Font;
 };

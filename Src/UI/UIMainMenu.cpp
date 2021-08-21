@@ -22,7 +22,7 @@ CUIMainMenu* CUIMainMenu::Create()
 
 	if (!pInstance)
 	{
-		wprintf(L"CTextButton::Create Failed\n");
+		wprintf(L"CUIMainMenu::Create Failed\n");
 
 		Safe_Release(pInstance);
 	}
@@ -55,6 +55,10 @@ void CUIMainMenu::OnMouseLeftButtonUp(SDL_Event& event)
 			sdlevent.type = SDL_QUIT;
 			SDL_PushEvent(&sdlevent);
 		}
+		else if (pWnd->GetName() == _T("MainMenu_BG_Option"))
+		{
+			ModeMgr->ChangeMode(eModeTypes_Option);
+		}
 	}
 
 }
@@ -66,7 +70,7 @@ void CUIMainMenu::SetShow(bool bSet)
 
 	if (!m_pRootWnd)
 	{
-		m_pRootWnd = UIMGR->GetUIWndByName(_T("MainMenu"));
+		m_pRootWnd = UIMGR->LoadUIFile(_T("MainMenu.json"));
 		m_pRootWnd->SetMessageHandler(this);
 		SDL_Rect rect = m_pRootWnd->GetDestRect();
 		SDL_Point point;
