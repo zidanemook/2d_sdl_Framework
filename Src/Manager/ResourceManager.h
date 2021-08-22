@@ -67,7 +67,7 @@ public:
 	//JSON
 	bool LoadNamingTextureJSONFile(const wchar_t* tszfilepath);
 	CUIWnd* LoadUIJSONFile(const wchar_t* tszfilepath);
-	bool LoadUIJSONFilebyName(const wchar_t* tszname);
+
 
 	CTexture*		GetTextureByName(const std::wstring& name);
 	CComponent*		GetSpriteComponent(const wchar_t* path);

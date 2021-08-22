@@ -1,6 +1,8 @@
 #ifndef Define_h
 #define Define_h
 
+
+
 #define FREEKEY			0x010
 #define PULLKEY			0x020
 #define PUSHKEY			0x040

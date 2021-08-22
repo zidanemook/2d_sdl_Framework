@@ -221,23 +221,6 @@ void CTextButton::SetShow(bool bSet)
 		RSCMgr->LoadTexture(m_pImageTexture->GetTexture()->GetName(), m_pImageTexture->GetTexture()->GetPath());
 	}
 
-	//if (true == bSet)
-	//{
-	//	CSingleTexture* pSingleTexture = dynamic_cast<CSingleTexture*>(m_pImageTexture);
-
-	//	if (pSingleTexture && pSingleTexture->GetTexture())
-	//	{
-	//		RdrMgr->AddRenderCommand(GetName(), pSingleTexture->GetTexture(), &m_srcRect, &m_destRect, eRenderLayer_UI, &m_bShow, &pSingleTexture->GetBlendMode(), &pSingleTexture->GetAlpha());
-	//	}
-
-	//	CSingleTexture* pTexture = dynamic_cast<CSingleTexture*>(m_pFontTexture);
-
-	//	if (pTexture && pTexture->GetTexture())
-	//	{
-	//		RdrMgr->AddRenderCommand(GetName(), pTexture->GetTexture(), &m_FontSrcRect, &m_FontDestRect, eRenderLayer_UI, &m_bShow, &pTexture->GetBlendMode(), &pTexture->GetAlpha());
-	//	}
-	//}
-
 	CUIWnd::SetShow(bSet);
 }
 

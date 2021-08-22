@@ -2,6 +2,7 @@
 #include "UIOption.h"
 #include "../Manager/UIManager.h"
 #include "../Manager/SystemManager.h"
+#include "../Manager/ModeManager.h"
 #include "UIWnd.h"
 
 CUIOption::CUIOption()
@@ -37,6 +38,16 @@ void CUIOption::OnMouseOver(SDL_Event& event)
 
 void CUIOption::OnMouseLeftButtonUp(SDL_Event& event)
 {
+	CUIWnd* pWnd = UIMGR->GetFocusWnd();
+
+	if (pWnd)
+	{
+		if (pWnd->GetName() == _T("Option_BG_Return"))
+		{
+			ModeMgr->ChangeMode(eModeTypes_MainMenu);
+		}
+	
+	}
 }
 
 void CUIOption::SetShow(bool bSet)

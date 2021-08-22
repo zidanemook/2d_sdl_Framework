@@ -85,7 +85,7 @@ void CImageBox::SetImage(CComponent* pTexture)
 	m_pSingleTexture = pTexture;
 
 	m_srcRect = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetSrcRect();
-	m_destRect = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetDestRect();
+	//m_destRect = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetDestRect();
 }
 
 CComponent* CImageBox::GetImage()

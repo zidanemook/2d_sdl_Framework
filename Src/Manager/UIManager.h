@@ -5,6 +5,7 @@
 class CUIWnd;
 class CUIMainMenu;
 class CUIOption;
+class CUIMessageBox;
 class CUIManager
 {
 private:
@@ -49,7 +50,7 @@ public:
 	
 public:
 	CUIWnd* GetUIWndByName(const std::wstring& Name);
-	CUIWnd* GetRootUIWndByName(const std::wstring& Name);
+	CUIWnd* GetRootUIWnd(const std::wstring& FileName);
 	void AddToRenderList(CUIWnd* pWnd);
 	void DeleteFromRenderListByName(const std::wstring& Name);
 	void SetFocusWnd(CUIWnd* pWnd);
@@ -60,6 +61,7 @@ public:
 public:
 	CUIMainMenu*	GetUIMainMenu();
 	CUIOption*		GetUIOption();
+	CUIMessageBox*	GetUIMessageBox();
 
 private:
 	std::map<std::wstring, CUIWnd*> m_mapUI;//All UIWnd
@@ -72,6 +74,7 @@ private:
 	CUIWnd*			m_pFocusedWnd;
 	CUIWnd*			m_pPreFocuseWnd;
 	CUIOption*		m_pUIOption;
+	CUIMessageBox*	m_pUIMessageBox;
 };
 
 #define UIMGR CUIManager::GetInst()

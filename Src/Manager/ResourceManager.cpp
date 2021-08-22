@@ -17,6 +17,8 @@ CResourceManager*		CResourceManager::m_pInst = nullptr;
 
 #define FILENAMEANDPATH "filenameandpath.bin"
 
+#pragma warning(disable : 4996)
+
 CResourceManager::CResourceManager()
 {
 }
@@ -62,8 +64,6 @@ bool CResourceManager::Init()
 	if (false == LoadSingleTextureCSVFile(_T("Resource/Data/SingleTexture.csv")))
 		return false;
 
-	//if (false == LoadSpriteTextureCSVFile(_T("Resource/Data/SpriteTexture.csv")))
-	//	return false;
 	if (false == LoadSerialSpriteTextureCSVFile(_T("Resource/Data/SpriteTexture.csv")))
 		return false;
 
@@ -164,8 +164,9 @@ void CResourceManager::FindAndResistFiles(const wchar_t* wszPath)
 
 bool CResourceManager::InputFileNameAndPath()
 {
+	bool result = false;
 	FILE* file=NULL;
-	fopen_s(&file, FILENAMEANDPATH, "r");
+	fopen_s(&file, FILENAMEANDPATH, "rb");
 	char* buffer = NULL;
 	if (NULL != file)
 	{
@@ -204,10 +205,12 @@ bool CResourceManager::InputFileNameAndPath()
 		}
 
 		Safe_Delete(buffer);
-		return true;
+		fclose(file);
+
+		result = true;
 	}
-	else
-		return false;
+
+	return result;
 }
 
 void CResourceManager::OutputFileNameAndPath()
@@ -216,22 +219,17 @@ void CResourceManager::OutputFileNameAndPath()
 	//wchar_t _cliexepath[_MAX_PATH];
 	//::GetModuleFileName(NULL, _cliexepath, _MAX_PATH);
 
-	//std::wstring cliexepath = _cliexepath;
-	//size_t slashpos = cliexepath.find_last_of(L"/");
-	//std::wstring filenameandpath = cliexepath.substr(0, slashpos);
-
 	FILE* file = NULL;
-	fopen_s(&file, FILENAMEANDPATH, "w");
+	file = _fsopen( FILENAMEANDPATH, "wb", _SH_DENYNO);
 	
 	if (NULL != file)
 	{
-
 		std::map<std::wstring, std::wstring>::iterator iter = m_mapNameAndPath.begin();
 		for (iter; iter != m_mapNameAndPath.end(); ++iter)
 		{
 			fprintf(file, "%s,%s,", WToM(iter->first.c_str()).c_str(), WToM(iter->second.c_str()).c_str());
 		}
-		
+
 		fclose(file);
 	}
 	else
@@ -239,7 +237,6 @@ void CResourceManager::OutputFileNameAndPath()
 		log("%s write failed\n", FILENAMEANDPATH);
 	}
 
-	//FILENAMEANDPATH
 }
 
 std::wstring CResourceManager::FindPath(const wchar_t* filename)
@@ -317,6 +314,8 @@ bool CResourceManager::LoadScriptCSVFile(const wchar_t* file)
 
 			m_mapScript.insert(std::make_pair(tszName, tszMessage));
 		}
+
+		wif.close();
 	}
 	else
 		return false;
@@ -348,22 +347,24 @@ bool CResourceManager::LoadSingleTextureCSVFile(const wchar_t* file)
 			_tcscpy_s(pStr, wszBuf);
 			//token = wcstok_s(pStr, seps, &next_token);
 			token = _tcstok_s(pStr, seps, &next_token);
-			if (!token) return false;
+			if (!token) break;
 			wchar_t tszIndex[MAX_PATH] = { 0, };
 			_tcscpy_s(tszIndex, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
-			if (!token) return false;
+			if (!token) break;
 			wchar_t tszName[MAX_PATH] = { 0, };
 			_tcscpy_s(tszName, token);
 
 			token = _tcstok_s(NULL, seps, &next_token);
-			if (!token) return false;
+			if (!token) break;
 			wchar_t tszPath[MAX_PATH] = { 0, };
 			_tcscpy_s(tszPath, token);
 
 			LoadTexture(tszName, tszPath);
 		}
+
+		wif.close();
 	}
 	else
 		return false;
@@ -465,6 +466,8 @@ bool CResourceManager::LoadSpriteTextureCSVFile(const wchar_t* file)
 			}
 			
 		}
+
+		wif.close();
 	}
 	else
 		return false;
@@ -566,6 +569,8 @@ bool CResourceManager::LoadSerialSpriteTextureCSVFile(const wchar_t* file)
 			}
 
 		}
+
+		wif.close();
 	}
 	else
 		return false;
@@ -677,6 +682,8 @@ bool CResourceManager::LoadRootNameAndPath(const wchar_t* file)
 
 			m_mapNameAndPath.insert(std::make_pair(tszName, tszPath));
 		}
+
+		wif.close();
 	}
 	else
 		return false;
@@ -736,8 +743,8 @@ bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 			srcRect.y = iStart_Pos_Y;
 
 			SDL_Rect destRect;
-			destRect.h = srcRect.h;
-			destRect.w = srcRect.w;
+			destRect.h = 0;
+			destRect.w = 0;
 			destRect.x = 0;
 			destRect.y = 0;
 
@@ -746,6 +753,12 @@ bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 
 			m_mapNamingTexture.insert(std::make_pair(Name, pSingleTexture));
 		}
+
+		ifs.close();
+	}
+	else
+	{
+		log("%s load failed\n", filepath.c_str());
 	}
 
 	return true;
@@ -753,12 +766,14 @@ bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 
 CUIWnd* CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
 {
+	CUIWnd* pWnd = NULL;
+
 	std::wstring wstrfilepath = RSCMgr->FindPath(tszfilepath);
 
 	std::string strfilepath;
 	strfilepath = WToM(wstrfilepath.c_str());
 
-	std::ifstream ifs(strfilepath);
+	std::ifstream ifs(strfilepath.c_str());
 
 	if (ifs.is_open())
 	{
@@ -770,27 +785,20 @@ CUIWnd* CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
 		if (false == reader.parse(ifs, value))
 		{
 			log("%s load failed (LoadUIJSONFile)\n", strfilepath.c_str());
-
+			ifs.close();
 			return false;
 		}
 		
-		return UIMGR->ParseUI(value);		
+		pWnd = UIMGR->ParseUI(value);
+
+		ifs.close();
 	}
-
-	return NULL;
-}
-
-bool CResourceManager::LoadUIJSONFilebyName(const wchar_t* tszname)
-{
-	std::map<std::wstring, std::wstring>::iterator iter = m_mapNameAndPath.find(tszname);
-
-	if (iter != m_mapNameAndPath.end())
+	else
 	{
-		if (LoadUIJSONFile(iter->second.c_str()))
-			return true;
+		log("%s open failed(errmsg: %s)\n", strfilepath.c_str(), strerror(errno));
 	}
-	
-	return false;
+
+	return pWnd;
 }
 
 

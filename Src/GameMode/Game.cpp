@@ -5,6 +5,9 @@
 #include "../Manager/ResourceManager.h"
 #include "../Manager/RenderManager.h"
 #include "../Manager/ControlManager.h"
+#include "../Manager/KeyManager.h"
+#include "../Manager/UIManager.h"
+#include "../UI/UIMessageBox.h"
 #include "Unit.h"
 #include "Texture.h"
 #include "SingleTexture.h"
@@ -37,6 +40,7 @@ CGame* CGame::Create()
 
 void CGame::Free(void)
 {
+	UIMGR->GetUIMessageBox()->SetShow(false);
 	OBJMGR->GetSelf()->SetShow(false);
 }
 
@@ -47,7 +51,10 @@ void CGame::Init()
 
 void CGame::Update()
 {
-	
+	if (KEYMGR->CheckKey(eKeyFunc_Esc, PUSHKEY))
+	{
+		UIMGR->GetUIMessageBox()->SetShow(true);
+	}
 }
 
 void CGame::Open()
@@ -64,5 +71,4 @@ void CGame::Close()
 void CGame::Closed()
 {
 	CBaseMode::Closed();
-	OBJMGR->GetSelf()->SetShow(false);
 }

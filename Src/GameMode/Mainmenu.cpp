@@ -8,6 +8,7 @@
 #include "../Manager/SystemManager.h"
 #include "../UI/UIMainMenu.h"
 #include "../Component/SingleTexture.h"
+#include "../UI/UIMessageBox.h"
 
 CMainmenu::CMainmenu()
 {

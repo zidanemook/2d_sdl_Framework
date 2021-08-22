@@ -101,6 +101,8 @@ bool CSystemManager::LoadConfig(const wchar_t* wszfilepath)
 		m_iFlag = value["screen_flag"].asInt();
 
 		return true;
+
+		ifs.close();
 	}
 
 	return false;

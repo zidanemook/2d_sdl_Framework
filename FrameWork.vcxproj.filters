@@ -154,6 +154,12 @@
     <ClCompile Include="Src\UI\UIOption.cpp">
       <Filter>Src\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Src\UI\UIMessageBox.cpp">
+      <Filter>Src\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\UI\TextBox.cpp">
+      <Filter>Src\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Util\Function.h">
@@ -268,6 +274,12 @@
       <Filter>Src\Mode</Filter>
     </ClInclude>
     <ClInclude Include="Src\UI\UIOption.h">
+      <Filter>Src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UI\UIMessageBox.h">
+      <Filter>Src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UI\TextBox.h">
       <Filter>Src\UI</Filter>
     </ClInclude>
   </ItemGroup>

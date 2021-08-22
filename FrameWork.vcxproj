@@ -194,6 +194,8 @@
     <ClCompile Include="Src\Program.cpp" />
     <ClCompile Include="Src\Resource\Font.cpp" />
     <ClCompile Include="Src\Resource\Texture.cpp" />
+    <ClCompile Include="Src\UI\TextBox.cpp" />
+    <ClCompile Include="Src\UI\UIMessageBox.cpp" />
     <ClCompile Include="Src\UI\MessageHandler.cpp" />
     <ClCompile Include="Src\UI\ImageBox.cpp" />
     <ClCompile Include="Src\UI\TextButton.cpp" />
@@ -234,6 +236,8 @@
     <ClInclude Include="Src\Resource\Font.h" />
     <ClInclude Include="Src\Resource\Texture.h" />
     <ClInclude Include="Src\SuperClass\Base.h" />
+    <ClInclude Include="Src\UI\TextBox.h" />
+    <ClInclude Include="Src\UI\UIMessageBox.h" />
     <ClInclude Include="Src\UI\MessageHandler.h" />
     <ClInclude Include="Src\UI\ImageBox.h" />
     <ClInclude Include="Src\UI\TextButton.h" />

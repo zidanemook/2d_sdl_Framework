@@ -7,6 +7,8 @@
 #include "../UI/TextButton.h"
 #include "../UI/UIMainMenu.h"
 #include "../UI/UIOption.h"
+#include "../UI/UIMessageBox.h"
+#include "../UI/TextBox.h"
 #include "../Component/SingleTexture.h"
 
 CUIManager* CUIManager::m_pInst = NULL;
@@ -15,6 +17,7 @@ CUIManager::CUIManager(void)
 {
 	m_pUIMainMenu = CUIMainMenu::Create();
 	m_pUIOption = CUIOption::Create();
+	m_pUIMessageBox = CUIMessageBox::Create();
 	m_pFocusedWnd = NULL;
 }
 
@@ -22,6 +25,7 @@ CUIManager::~CUIManager(void)
 {
 	m_pUIMainMenu->Release();
 	m_pUIOption->Release();
+	m_pUIMessageBox->Release();
 }
 
 void CUIManager::Update()
@@ -79,7 +83,14 @@ CUIWnd* CUIManager::LoadUIFile(const std::wstring& UIFileName)
 	if (std::wstring::npos == UIFileName.find(L".json"))
 		return NULL;
 	
-	CUIWnd* newWnd = RSCMgr->LoadUIJSONFile(UIFileName.c_str());
+	CUIWnd* newWnd = NULL;
+	std::map<std::wstring, CUIWnd*>::iterator iter = m_mapRootUI.find(UIFileName);
+	if (m_mapRootUI.end() != iter)
+	{
+		return iter->second;
+	}
+
+	newWnd = RSCMgr->LoadUIJSONFile(UIFileName.c_str());
 	if (newWnd)
 	{
 		m_mapRootUI.insert(make_pair(UIFileName, newWnd));
@@ -147,6 +158,14 @@ CUIWnd* CUIManager::ParseUIWnd( Json::ValueIterator& iter)
 	case eUIType_TextButton:
 	{
 		pWnd = CTextButton::Create();
+		ParseCommonAttribute(pWnd, iter, eType);
+		ParseTextButton(pWnd, iter);
+		break;
+	}
+
+	case eUIType_TextBox:
+	{
+		pWnd = CTextBox::Create();
 		ParseCommonAttribute(pWnd, iter, eType);
 		ParseTextButton(pWnd, iter);
 		break;
@@ -322,22 +341,13 @@ CUIWnd* CUIManager::GetUIWndByName(const std::wstring& Name)
 
 	if (iter != m_mapUI.end())
 		return iter->second;
-	else
-	{
-		if (RSCMgr->LoadUIJSONFilebyName(Name.c_str()))
-		{
-			iter = m_mapUI.find(Name);
-			return iter->second;
-		}
-	}
-		
 
 	return NULL;
 }
 
-CUIWnd* CUIManager::GetRootUIWndByName(const std::wstring& Name)
+CUIWnd* CUIManager::GetRootUIWnd(const std::wstring& FileName)
 {
-	std::map<std::wstring, CUIWnd*>::iterator iter = m_mapRootUI.find(Name);
+	std::map<std::wstring, CUIWnd*>::iterator iter = m_mapRootUI.find(FileName);
 
 	if (iter != m_mapRootUI.end())
 		return iter->second;
@@ -397,4 +407,9 @@ CUIMainMenu* CUIManager::GetUIMainMenu()
 CUIOption* CUIManager::GetUIOption()
 {
 	return m_pUIOption;
+}
+
+CUIMessageBox* CUIManager::GetUIMessageBox()
+{
+	return m_pUIMessageBox;
 }
