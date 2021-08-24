@@ -61,16 +61,22 @@ void CTextBox::Render()
 
 void CTextBox::SetPos(SDL_Point& Point)
 {
-	if (m_pParent)
+	CSingleTexture* pTexture = dynamic_cast<CSingleTexture*>(m_pFontTexture);
+	if (true == pTexture->GetTexture()->GetLoaded())
 	{
-		m_FontDestRect.x = m_pParent->GetPos().x + Point.x;
-		m_FontDestRect.y = m_pParent->GetPos().y + Point.y;
+		if (m_pParent)
+		{
+			m_FontDestRect.x = m_pParent->GetPos().x + m_relativePos.x + (m_destRect.w - m_FontDestRect.w) / 2;
+			m_FontDestRect.y = m_pParent->GetPos().y + m_relativePos.y + (m_destRect.h - m_FontDestRect.h) / 2;
+		}
+		else
+		{
+			m_FontDestRect.x = (m_destRect.w - m_FontDestRect.w) / 2;
+			m_FontDestRect.y = (m_destRect.y - m_FontDestRect.y) / 2;
+		}
 	}
-	else
-	{
-		m_FontDestRect.x = Point.x;
-		m_FontDestRect.y = Point.y;
-	}
+
+	CUIWnd::SetPos(Point);
 }
 
 void CTextBox::SetText(const std::wstring& wstText)
@@ -89,6 +95,17 @@ void CTextBox::SetText(const std::wstring& wstText)
 
 		m_FontDestRect.h = m_FontTextureSize.y;
 		m_FontDestRect.w = m_FontTextureSize.x;
+
+		if (m_pParent)
+		{
+			m_FontDestRect.x = m_pParent->GetPos().x + m_relativePos.x + (m_destRect.w - m_FontDestRect.w) / 2;
+			m_FontDestRect.y = m_pParent->GetPos().y + m_relativePos.y + (m_destRect.h - m_FontDestRect.h) / 2;
+		}
+		else
+		{
+			m_FontDestRect.x = (m_destRect.w - m_FontDestRect.w) / 2;
+			m_FontDestRect.y = (m_destRect.y - m_FontDestRect.y) / 2;
+		}
 
 		pTexture->Set(m_FontSrcRect, m_FontDestRect, eRenderLayer::eRenderLayer_UI, pTexture->GetTexture());
 	}

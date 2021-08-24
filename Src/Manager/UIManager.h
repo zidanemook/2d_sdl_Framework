@@ -44,6 +44,7 @@ public:
 	void ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, eUIType eType);//UI 공통변수 로드
 	void ParseImageBox(CUIWnd* pWnd, Json::ValueIterator& iter);
 	void ParseTextButton(CUIWnd* pWnd, Json::ValueIterator& iter);
+	void ParseTextBox(CUIWnd* pWnd, Json::ValueIterator& iter);
 	eUIType StringTypeToEnumType(const wchar_t* wszType);
 	eUITextAlignType VerticalAlignStringToEnum(const wchar_t* wszType);
 	eUITextAlignType HorizontalAlignStringToEnum(const wchar_t* wszType);
@@ -57,6 +58,8 @@ public:
 	CUIWnd* GetFocusWnd();
 	void SetPreFocusWnd(CUIWnd* pWnd);
 	CUIWnd* GetPreFocusWnd();
+	void SetStickMouseWnd(CUIWnd* pWnd);
+	void StciMouseProcess(SDL_Event& event);
 
 public:
 	CUIMainMenu*	GetUIMainMenu();
@@ -73,8 +76,11 @@ private:
 	CUIMainMenu*	m_pUIMainMenu;
 	CUIWnd*			m_pFocusedWnd;
 	CUIWnd*			m_pPreFocuseWnd;
+	CUIWnd*			m_pStickMouseWnd;
 	CUIOption*		m_pUIOption;
 	CUIMessageBox*	m_pUIMessageBox;
+
+	SDL_Point		m_ptDiff;//StickedWindow and MousePoint
 };
 
 #define UIMGR CUIManager::GetInst()

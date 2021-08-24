@@ -2,10 +2,11 @@
 #include "UIMessageBox.h"
 #include "../Manager/UIManager.h"
 #include "../Manager/SystemManager.h"
+#include "../Manager/ModeManager.h"
 #include "UIWnd.h"
 
 CUIMessageBox::CUIMessageBox()
-	:m_pRootWnd(NULL)
+	:m_pRootWnd(NULL), m_eFuntionType(eUIMessageBoxFuntionType_None)
 {
 
 }
@@ -33,13 +34,33 @@ inline void CUIMessageBox::Free()
 {
 }
 
-void CUIMessageBox::OnMouseOver(SDL_Event& event)
-{
-}
-
 void CUIMessageBox::OnMouseLeftButtonUp(SDL_Event& event)
 {
+	CUIWnd* pWnd = UIMGR->GetFocusWnd();
+
+	if (pWnd)
+	{
+		if (eUIMessageBoxFuntionType_ReturnToMainMenu == m_eFuntionType)
+		{
+			if (pWnd->GetName() == _T("MessageBox_Button_A"))
+			{
+				SetShow(false);
+				ModeMgr->ChangeMode(eModeTypes_MainMenu);
+			}
+			else if (pWnd->GetName() == _T("MessageBox_Button_B"))
+			{
+				SetShow(false);
+			}
+			else if (pWnd->GetName() == _T("MessageBox_Exit_Button"))
+			{
+				SetShow(false);
+			}
+		}
+		
+	}
 }
+
+
 
 void CUIMessageBox::SetShow(bool bSet)
 {
@@ -51,13 +72,31 @@ void CUIMessageBox::SetShow(bool bSet)
 		m_pRootWnd = UIMGR->LoadUIFile(_T("MessageBox.json"));
 		m_pRootWnd->SetMessageHandler(this);
 		SDL_Rect rect = m_pRootWnd->GetDestRect();
-		SDL_Point point;
-		point.x = (SYSMGR->GetWindowWidth() - rect.w) / 2;
-		point.y = (SYSMGR->GetWindowHeight() - rect.h) / 2;
-		m_pRootWnd->SetPos(point);
+
 	}
 
 	m_bShow = bSet;
 	m_pRootWnd->SetShow(bSet);
+
+	if (false == bSet)
+	{
+		m_eFuntionType = eUIMessageBoxFuntionType_None;
+	}
+	
+}
+
+bool CUIMessageBox::GetShow()
+{
+	return m_bShow;
+}
+
+void CUIMessageBox::SetFunctionType(eUIMessageBoxFuntionType eType)
+{
+	m_eFuntionType = eType;
+}
+
+eUIMessageBoxFuntionType CUIMessageBox::GetFunctionType()
+{
+	return m_eFuntionType;
 }
 

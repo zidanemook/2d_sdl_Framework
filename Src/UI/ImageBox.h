@@ -13,6 +13,9 @@ public:
 	inline virtual void Free();
 	virtual void		Render();
 	void	SetShow(bool bSet);
+	virtual void OnMouseLeftButtonUp(SDL_Event& event);
+	virtual void OnMouseLeftButtonDown(SDL_Event& event);
+
 
 private:
 	CComponent* m_pSingleTexture;

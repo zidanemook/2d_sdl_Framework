@@ -17,6 +17,7 @@ public:
 	virtual void OnMouseRightButtonDown(SDL_Event& event) {};
 	virtual void OnMouseOver(SDL_Event& event) {};
 	virtual void OnMouseOut(SDL_Event& event) {};
+	virtual void OnMouseMove(SDL_Event& event) {};
 
 protected:
 	bool	m_bShow;

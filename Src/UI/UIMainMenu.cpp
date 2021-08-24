@@ -72,11 +72,6 @@ void CUIMainMenu::SetShow(bool bSet)
 	{
 		m_pRootWnd = UIMGR->LoadUIFile(_T("MainMenu.json"));
 		m_pRootWnd->SetMessageHandler(this);
-		SDL_Rect rect = m_pRootWnd->GetDestRect();
-		SDL_Point point;
-		point.x = (SYSMGR->GetWindowWidth() - rect.w)/2;
-		point.y = (SYSMGR->GetWindowHeight() - rect.h)/2;
-		m_pRootWnd->SetPos(point);
 	}
 
 	m_bShow = bSet;

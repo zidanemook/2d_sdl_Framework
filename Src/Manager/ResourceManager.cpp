@@ -165,50 +165,45 @@ void CResourceManager::FindAndResistFiles(const wchar_t* wszPath)
 bool CResourceManager::InputFileNameAndPath()
 {
 	bool result = false;
-	FILE* file=NULL;
-	fopen_s(&file, FILENAMEANDPATH, "rb");
-	char* buffer = NULL;
-	if (NULL != file)
-	{
-		int size = 0;
-		fseek(file, 0, SEEK_END); // 파일 포인터를 파일의 끝으로 이동시킴
-		size = ftell(file);
-
-		buffer = new char[size+1];
-		memset(buffer, 0, size + 1);
-		fseek(file, 0, SEEK_SET);
-		
-		fread(buffer, size, 1, file);
-
 	
+	std::ifstream ifs(FILENAMEANDPATH);
 
-		char seps[] = (",");
-		char* token = seps;
-		char pStr[MAX_PATH] = { 0, };
-		char* next_token = buffer;
-		
-		while (next_token != NULL)
+	if (ifs.is_open())
+	{
+		ifs.imbue(std::locale("kor"));
+
+		char szBuf[1024] = { 0, };
+
+		ifs.getline((CHAR*)szBuf, _countof(szBuf));
+
+		while (!ifs.eof())
 		{
-			token = strtok_s(next_token, seps, &next_token);
+			ifs.getline((CHAR*)szBuf, _countof(szBuf));
 
-			if (!token)
-				break;
+			char seps[] = ",";
+			char* token;
+			char pStr[MAX_PATH];
+			char* next_token = NULL;
 
-			char szKey[MAX_PATH] = { 0, };
-			strcpy_s(szKey, token);
+			strcpy(pStr, szBuf);
+			//token = wcstok_s(pStr, seps, &next_token);
+			token = strtok_s(pStr, seps, &next_token);
+			if (!token) break;
+			char szFileName[MAX_PATH] = { 0, };
+			strcpy(szFileName, token);
 
-			token = strtok_s(next_token, seps, &next_token);
-			char szFilePaht[MAX_PATH] = { 0, };
-			strcpy_s(szFilePaht, token);
+			token = strtok_s(NULL, seps, &next_token);
+			if (!token) break;
+			char szFilePath[MAX_PATH] = { 0, };
+			strcpy(szFilePath, token);
 
-			m_mapNameAndPath.insert(std::make_pair(MToW(szKey), MToW(szFilePaht)));
+			m_mapNameAndPath.insert(std::make_pair(MToW(szFileName), MToW(szFilePath)));
 		}
 
-		Safe_Delete(buffer);
-		fclose(file);
-
-		result = true;
+		ifs.close();
 	}
+	else
+		result = false;
 
 	return result;
 }
@@ -219,15 +214,17 @@ void CResourceManager::OutputFileNameAndPath()
 	//wchar_t _cliexepath[_MAX_PATH];
 	//::GetModuleFileName(NULL, _cliexepath, _MAX_PATH);
 
+	//std::ofstream ofs(FILENAMEANDPATH);
+
 	FILE* file = NULL;
-	file = _fsopen( FILENAMEANDPATH, "wb", _SH_DENYNO);
+	file = _fsopen( FILENAMEANDPATH, "w", _SH_DENYNO);
 	
 	if (NULL != file)
 	{
 		std::map<std::wstring, std::wstring>::iterator iter = m_mapNameAndPath.begin();
 		for (iter; iter != m_mapNameAndPath.end(); ++iter)
 		{
-			fprintf(file, "%s,%s,", WToM(iter->first.c_str()).c_str(), WToM(iter->second.c_str()).c_str());
+			fprintf(file, "%s,%s\n", WToM(iter->first.c_str()).c_str(), WToM(iter->second.c_str()).c_str());
 		}
 
 		fclose(file);
@@ -640,57 +637,6 @@ bool CResourceManager::LoadTexture(const wchar_t* name, const wchar_t* tszfilepa
 	
 }
 
-bool CResourceManager::LoadRootNameAndPath(const wchar_t* file)
-{
-	std::wifstream wif(file);
-
-	if (wif.is_open())
-	{
-		wif.imbue(std::locale("kor"));
-
-		wchar_t wszBuf[1024] = { 0, };
-
-		wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
-
-		while (!wif.eof())
-		{
-			wif.getline((WCHAR*)wszBuf, _countof(wszBuf));
-
-			wchar_t seps[] = TEXT(",");
-			wchar_t* token;
-			wchar_t pStr[MAX_PATH];
-			wchar_t* next_token = NULL;
-
-			if (0 >= _tcsclen(wszBuf))
-				continue;
-
-			_tcscpy_s(pStr, wszBuf);
-			token = _tcstok_s(pStr, seps, &next_token);
-			if (!token) return false;
-			wchar_t tszIndex[MAX_PATH] = { 0, };
-			_tcscpy_s(tszIndex, token);
-
-			token = _tcstok_s(NULL, seps, &next_token);
-			if (!token) return false;
-			wchar_t tszName[MAX_PATH] = { 0, };
-			_tcscpy_s(tszName, token);
-
-			token = _tcstok_s(NULL, seps, &next_token);
-			if (!token) return false;
-			wchar_t tszPath[MAX_PATH] = { 0, };
-			_tcscpy_s(tszPath, token);
-
-			m_mapNameAndPath.insert(std::make_pair(tszName, tszPath));
-		}
-
-		wif.close();
-	}
-	else
-		return false;
-
-	return true;
-}
-
 bool CResourceManager::LoadNamingTextureJSONFile(const wchar_t* tszfilepath)
 {
 	std::string filepath;
@@ -768,7 +714,7 @@ CUIWnd* CResourceManager::LoadUIJSONFile(const wchar_t* tszfilepath)
 {
 	CUIWnd* pWnd = NULL;
 
-	std::wstring wstrfilepath = RSCMgr->FindPath(tszfilepath);
+	std::wstring wstrfilepath = FindPath(tszfilepath);
 
 	std::string strfilepath;
 	strfilepath = WToM(wstrfilepath.c_str());

@@ -4,6 +4,7 @@
 #include "SingleTexture.h"
 #include "../Manager/RenderManager.h"
 #include "../Manager/ResourceManager.h"
+#include "../Manager/UIManager.h"
 #include "../Resource/Texture.h"
 
 CImageBox::CImageBox()
@@ -65,17 +66,25 @@ void CImageBox::SetShow(bool bSet)
 	CUIWnd::SetShow(bSet);
 }
 
-//void CImageBox::Render()
-//{
-//	CheckLoaded();
-//	CSingleTexture* pSingleTexture = dynamic_cast<CSingleTexture*>(m_pSingleTexture);
-//	CTexture* pTexture = pSingleTexture->GetTexture();
-//	SDL_SetTextureBlendMode(pSingleTexture->GetTexture()->GetTexture(), pSingleTexture->GetBlendMode());
-//	SDL_SetTextureAlphaMod(pSingleTexture->GetTexture()->GetTexture(), pSingleTexture->GetAlpha());
-//	RdrMgr->RenderCopy(pTexture->GetTexture(), &m_srcRect, &m_destRect);
-//
-//	CUIWnd::Render();
-//}
+void CImageBox::OnMouseLeftButtonUp(SDL_Event& event)
+{	
+	if (m_bmovable && (this == UIMGR->GetFocusWnd()))
+	{
+		UIMGR->SetStickMouseWnd(NULL);
+	}
+
+	CUIWnd::OnMouseLeftButtonUp(event);
+}
+
+void CImageBox::OnMouseLeftButtonDown(SDL_Event& event)
+{
+	if (m_bmovable && (this == UIMGR->GetFocusWnd()))
+	{
+		UIMGR->SetStickMouseWnd(this);
+	}
+	
+	CUIWnd::OnMouseLeftButtonDown(event);
+}
 
 void CImageBox::SetImage(CComponent* pTexture)
 {
@@ -85,7 +94,6 @@ void CImageBox::SetImage(CComponent* pTexture)
 	m_pSingleTexture = pTexture;
 
 	m_srcRect = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetSrcRect();
-	//m_destRect = dynamic_cast<CSingleTexture*>(m_pSingleTexture)->GetDestRect();
 }
 
 CComponent* CImageBox::GetImage()

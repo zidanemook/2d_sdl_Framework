@@ -53,7 +53,8 @@ void CGame::Update()
 {
 	if (KEYMGR->CheckKey(eKeyFunc_Esc, PUSHKEY))
 	{
-		UIMGR->GetUIMessageBox()->SetShow(true);
+		UIMGR->GetUIMessageBox()->SetFunctionType(eUIMessageBoxFuntionType_ReturnToMainMenu);
+		UIMGR->GetUIMessageBox()->SetShow(!UIMGR->GetUIMessageBox()->GetShow());
 	}
 }
 

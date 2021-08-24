@@ -19,6 +19,7 @@ CUIManager::CUIManager(void)
 	m_pUIOption = CUIOption::Create();
 	m_pUIMessageBox = CUIMessageBox::Create();
 	m_pFocusedWnd = NULL;
+	m_pStickMouseWnd = NULL;
 }
 
 CUIManager::~CUIManager(void)
@@ -37,6 +38,8 @@ void CUIManager::HandleEvent(SDL_Event& event)
 {
 	if (SDL_MOUSEMOTION <= event.type && SDL_MOUSEBUTTONUP >= event.type)
 	{
+		StciMouseProcess(event);
+
 		SDL_Point point;
 		point.x = event.motion.x;
 		point.y = event.motion.y;
@@ -53,17 +56,6 @@ void CUIManager::HandleEvent(SDL_Event& event)
 			}
 				
 		}
-
-		//if (((CUIWnd*)(event.user.data1)))
-		//{
-		//	if (NULL == m_pFocusedWnd)
-		//		m_pFocusedWnd = (CUIWnd*)(event.user.data1);
-		//	else if (event.user.data1 != m_pFocusedWnd)
-		//	{
-		//		m_pFocusedWnd->HandleEvent(event);
-		//		m_pFocusedWnd = (CUIWnd*)(event.user.data1);
-		//	}
-		//}
 	}
 	
 }
@@ -167,7 +159,7 @@ CUIWnd* CUIManager::ParseUIWnd( Json::ValueIterator& iter)
 	{
 		pWnd = CTextBox::Create();
 		ParseCommonAttribute(pWnd, iter, eType);
-		ParseTextButton(pWnd, iter);
+		ParseTextBox(pWnd, iter);
 		break;
 	}
 
@@ -212,28 +204,31 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 		wsName += _T("_");
 		wsName += number;
 	}
-		
-
 	pWnd->SetName(wsName.c_str());
+
 
 	Point.x = (*iter)["XPos"].asInt();
 	Point.y = (*iter)["YPos"].asInt();
+
+	if (pParent)
+	{
+		pWnd->SetRelativePos(Point);
+	}
+
 	pWnd->SetPos(Point);
 
 	SDL_Point sizerate;
 	sizerate.x = (*iter)["XRate"].asInt();
 	sizerate.y = (*iter)["YRate"].asInt();
-	if(sizerate.x != 0 || sizerate.y != 0)
+	if (sizerate.x != 0 || sizerate.y != 0)
 		pWnd->SetSizeRate(sizerate);
 
 	SDL_Point size;
 	size.x = (*iter)["XSize"].asInt();
 	size.y = (*iter)["YSize"].asInt();
-	if(size.x != 0 || size.y != 0)
+	if (size.x != 0 || size.y != 0)
 		pWnd->SetSize(size);
 
-
-	
 
 	bool bmovable = (*iter)["movable"].asBool();
 	pWnd->SetMovable(bmovable);
@@ -259,7 +254,7 @@ void CUIManager::ParseTextButton(CUIWnd* pWnd, Json::ValueIterator& iter)
 	std::wstring Button_OnMouse_ImageName = MToW(((*iter)["Button_OnMouse_ImageName"]).asString().c_str());
 	pTextButton->SetOnMouseImage(RSCMgr->GetNamingTextureByName(Button_OnMouse_ImageName));
 
-	std::wstring FontType = MToW(((*iter)["Text"]["FontType"]).asString().c_str());
+	//std::wstring FontType = MToW(((*iter)["Text"]["FontType"]).asString().c_str());
 
 	int FontSize = ((*iter)["Text"]["FontSize"]).asInt();
 	pTextButton->SetTextSize(FontSize);
@@ -272,6 +267,28 @@ void CUIManager::ParseTextButton(CUIWnd* pWnd, Json::ValueIterator& iter)
 
 	std::wstring Text = MToW(((*iter)["Text"]["Text"]).asString().c_str());
 	pTextButton->SetText(Text);
+}
+
+void CUIManager::ParseTextBox(CUIWnd* pWnd, Json::ValueIterator& iter)
+{
+	CTextBox* pTextBox = dynamic_cast<CTextBox*>(pWnd);
+
+	std::wstring ImageName = MToW(((*iter)["ImageName"]).asString().c_str());
+	pTextBox->SetImage(RSCMgr->GetNamingTextureByName(ImageName));
+
+	//std::wstring FontType = MToW(((*iter)["Text"]["FontType"]).asString().c_str());
+
+	int FontSize = ((*iter)["Text"]["FontSize"]).asInt();
+	pTextBox->SetTextSize(FontSize);
+
+	std::wstring HorizontalAlign = MToW(((*iter)["Text"]["HorizontalAlign"]).asString().c_str());
+	pTextBox->SetHorizontalAlign(HorizontalAlignStringToEnum(HorizontalAlign.c_str()));
+
+	std::wstring VerticalAlign = MToW(((*iter)["Text"]["VerticalAlign"]).asString().c_str());
+	pTextBox->SetVerticalAlign(VerticalAlignStringToEnum(VerticalAlign.c_str()));
+
+	std::wstring Text = MToW(((*iter)["Text"]["Text"]).asString().c_str());
+	pTextBox->SetText(Text);
 }
 
 eUIType CUIManager::StringTypeToEnumType(const wchar_t* wszType)
@@ -392,6 +409,40 @@ void CUIManager::SetPreFocusWnd(CUIWnd* pWnd)
 CUIWnd* CUIManager::GetPreFocusWnd()
 {
 	return m_pPreFocuseWnd;
+}
+
+void CUIManager::SetStickMouseWnd(CUIWnd* pWnd)
+{
+	m_pStickMouseWnd = pWnd;
+
+	if(pWnd)
+	{
+		SDL_Point ptMouse;
+		SDL_GetMouseState(&ptMouse.x, &ptMouse.y);
+		SDL_Point ptWndPos = pWnd->GetPos();
+
+		m_ptDiff.x = ptWndPos.x - ptMouse.x;
+		m_ptDiff.y = ptWndPos.y - ptMouse.y;
+	}
+	else
+	{
+		m_ptDiff.x = 0;
+		m_ptDiff.y = 0;
+	}
+}
+
+void CUIManager::StciMouseProcess(SDL_Event& event)
+{
+	if (event.type == SDL_MOUSEMOTION && m_pStickMouseWnd)
+	{
+		SDL_Point ptMouse;
+		SDL_GetMouseState(&ptMouse.x, &ptMouse.y);
+		SDL_Point ptWnd;
+		ptWnd.x = ptMouse.x + m_ptDiff.x;
+		ptWnd.y = ptMouse.y + m_ptDiff.y;
+
+		m_pStickMouseWnd->SetPos(ptWnd);
+	}
 }
 
 CUIWnd* CUIManager::GetFocusWnd()

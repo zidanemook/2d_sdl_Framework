@@ -16,8 +16,9 @@ protected:
 
 	std::wstring		m_strName;//지정하지 않았으면 자동으로 이름짓도록할것
 	eUIType				m_eUIType;
-	SDL_Rect			m_srcRect;
-	SDL_Rect			m_destRect;
+	SDL_Rect			m_srcRect;//texture coordinate
+	SDL_Rect			m_destRect;//screen coordinate
+	SDL_Rect			m_relativePos;//parent coordinate
 	eUIEventState		m_evtState;
 	bool				m_bmovable;
 	bool				m_bShow;
@@ -28,17 +29,18 @@ public:
 	virtual void		Render();
 	virtual void		HandleEvent(SDL_Event& event);
 	virtual SDL_Rect&	GetDestRect();
+	virtual void		SetRelativePos(SDL_Point& pos);
 	virtual void		SetPos(SDL_Point& Point);
 	virtual void		ProcessEvent(SDL_Event& event);
 	virtual void		SetShow(bool set);
 
 public:
-	virtual void OnMouseLeftButtonUp(SDL_Event& event) {};
-	virtual void OnMouseLeftButtonDown(SDL_Event& event) {};
-	//virtual void OnMouseRightButtonUp() {};
-	//virtual void OnMouseRightButtonDown() {};
-	virtual void OnMouseOver(SDL_Event& event) {};
-	virtual void OnMouseOut(SDL_Event& event) {};
+	virtual void OnMouseLeftButtonUp(SDL_Event& event);
+	virtual void OnMouseLeftButtonDown(SDL_Event& event);
+	virtual void OnMouseRightButtonUp(SDL_Event& event);
+	virtual void OnMouseRightButtonDown(SDL_Event& event);
+	virtual void OnMouseOver(SDL_Event& event);
+	virtual void OnMouseOut(SDL_Event& event);
 
 public:
 	void			SetSize(SDL_Point& size);

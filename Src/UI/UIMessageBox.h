@@ -22,6 +22,13 @@
 #pragma once
 #include "MessageHandler.h"
 
+
+enum eUIMessageBoxFuntionType
+{
+	eUIMessageBoxFuntionType_None,
+	eUIMessageBoxFuntionType_ReturnToMainMenu
+};
+
 class CUIWnd;
 class CUIMessageBox : public CMessageHandler
 {
@@ -34,14 +41,19 @@ public:
 	inline virtual void Free();
 
 public:
-	virtual void OnMouseOver(SDL_Event& event);
 	virtual void OnMouseLeftButtonUp(SDL_Event& event);
+
 
 public:
 	virtual void SetShow(bool bSet);
+	bool		GetShow();
+
+public:
+	void SetFunctionType(eUIMessageBoxFuntionType eType);
+	eUIMessageBoxFuntionType GetFunctionType();
 
 private:
 	CUIWnd* m_pRootWnd;
-
+	eUIMessageBoxFuntionType m_eFuntionType;
 };
 

@@ -60,6 +60,9 @@ void CObj::Update()
 
 void CObj::AddComponent(CComponent* pComponent)
 {
+	if (!pComponent)
+		return;
+
 	pComponent->SetOwner(this);
 
 	if (m_Component[pComponent->GetComponentType()])

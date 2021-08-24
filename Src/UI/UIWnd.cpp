@@ -45,9 +45,8 @@ void CUIWnd::HandleEvent(SDL_Event& event)
 		}
 	}
 
-	if (true == m_listChildren.empty() || collision==false)
+	if (collision==false)
 	{
-		
 		ProcessEvent(event);
 		UIMGR->SetFocusWnd(this);
 	}
@@ -59,6 +58,60 @@ void CUIWnd::HandleEvent(SDL_Event& event)
 SDL_Rect& CUIWnd::GetDestRect()
 {
 	return m_destRect;
+}
+
+void CUIWnd::OnMouseLeftButtonUp(SDL_Event& event)
+{
+	if (m_pMessageHander)
+		m_pMessageHander->OnMouseLeftButtonUp(event);
+
+	if (m_pParent)
+		m_pParent->OnMouseLeftButtonUp(event);
+}
+
+void CUIWnd::OnMouseRightButtonUp(SDL_Event& event)
+{
+	if (m_pMessageHander)
+		m_pMessageHander->OnMouseRightButtonUp(event);
+
+	if (m_pParent)
+		m_pParent->OnMouseRightButtonUp(event);
+}
+
+void CUIWnd::OnMouseRightButtonDown(SDL_Event& event)
+{
+	if (m_pMessageHander)
+		m_pMessageHander->OnMouseRightButtonDown(event);
+
+	if (m_pParent)
+		m_pParent->OnMouseRightButtonDown(event);
+}
+
+void CUIWnd::OnMouseLeftButtonDown(SDL_Event& event)
+{
+	if (m_pMessageHander)
+		m_pMessageHander->OnMouseLeftButtonDown(event);
+
+	if (m_pParent)
+		m_pParent->OnMouseLeftButtonDown(event);
+}
+
+void CUIWnd::OnMouseOver(SDL_Event& event)
+{
+	if (m_pMessageHander)
+		m_pMessageHander->OnMouseOver(event);
+
+	if (m_pParent)
+		m_pParent->OnMouseOver(event);
+}
+
+void CUIWnd::OnMouseOut(SDL_Event& event)
+{
+	if (m_pMessageHander)
+		m_pMessageHander->OnMouseOut(event);
+
+	if (m_pParent)
+		m_pParent->OnMouseOut(event);
 }
 
 void CUIWnd::SetSize(SDL_Point& size)
@@ -115,7 +168,11 @@ void CUIWnd::SetShow(bool set)
 	if (m_bShow)
 		UIMGR->AddToRenderList(this);
 	else
+	{
 		UIMGR->DeleteFromRenderListByName(this->GetName());
+		UIMGR->SetStickMouseWnd(NULL);
+	}
+		
 
 	if (m_listChildren.empty())
 	return;
@@ -127,12 +184,18 @@ void CUIWnd::SetShow(bool set)
 	}
 }
 
+void CUIWnd::SetRelativePos(SDL_Point& pos)
+{
+	m_relativePos.x = pos.x;
+	m_relativePos.y = pos.y;
+}
+
 void CUIWnd::SetPos(SDL_Point& Point)
 {
 	if (m_pParent)
 	{
-		m_destRect.x = Point.x + m_pParent->GetPos().x;
-		m_destRect.y = Point.y + m_pParent->GetPos().y;
+		m_destRect.x = m_relativePos.x + m_pParent->GetPos().x;
+		m_destRect.y = m_relativePos.y + m_pParent->GetPos().y;
 	}
 	else
 	{
@@ -144,9 +207,9 @@ void CUIWnd::SetPos(SDL_Point& Point)
 	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
 	for (iter; iter != m_listChildren.end(); ++iter)
 	{
-		point.x = (*iter)->GetDestRect().x;
-		point.y = (*iter)->GetDestRect().y;
-		(*iter)->SetPos(point);
+		//point.x = (*iter)->GetDestRect().x;
+		//point.y = (*iter)->GetDestRect().y;
+		(*iter)->SetPos(Point);
 	}
 }
 
@@ -165,30 +228,19 @@ void CUIWnd::ProcessEvent(SDL_Event& event)
 	if (event.type == SDL_MOUSEMOTION && event.button.button == 0)
 	{
 		OnMouseOver(event);
-		if (m_pMessageHander)
-			m_pMessageHander->OnMouseOver(event);
 	}
 	else if (event.button.button == SDL_BUTTON_LEFT && event.type == SDL_MOUSEBUTTONDOWN)
 	{
 		OnMouseLeftButtonDown(event);
-		if (m_pMessageHander)
-			m_pMessageHander->OnMouseLeftButtonDown(event);
 	}
 	else if (event.button.button == SDL_BUTTON_LEFT && event.type == SDL_MOUSEBUTTONUP)
 	{
-		OnMouseLeftButtonUp(event);
-		if (m_pMessageHander)
-			m_pMessageHander->OnMouseLeftButtonUp(event);
+		OnMouseLeftButtonUp(event);	
 	}
 	else if (event.button.button == SDL_BUTTON_RIGHT && event.type == SDL_MOUSEBUTTONUP)
 	{
-		OnMouseRightButtonUp(event);
-		if (m_pMessageHander)
-			m_pMessageHander->OnMouseRightButtonUp(event);
+		OnMouseRightButtonUp(event);	
 	}
-
-	if (m_pParent)
-		m_pParent->ProcessEvent(event);
 }
 
 CUIWnd* CUIWnd::GetParent()
@@ -238,3 +290,4 @@ bool CUIWnd::GetShow()
 {
 	return m_bShow;
 }
+
