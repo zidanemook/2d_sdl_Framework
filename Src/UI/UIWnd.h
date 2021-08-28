@@ -22,6 +22,7 @@ protected:
 	eUIEventState		m_evtState;
 	bool				m_bmovable;
 	bool				m_bShow;
+	bool				m_bRoot;
 
 	CMessageHandler*	m_pMessageHander;
 
@@ -47,11 +48,14 @@ public:
 	void			SetSizeRate(SDL_Point& size);
 	void			SetParent(CUIWnd* pWnd);
 	void			AddChildren(CUIWnd* pWnd);
+	void			DeleteChildren(std::wstring& strName);
 	void			SetName(const wchar_t* pwszName);
 	void			SetUIType(eUIType eType);
 	void			SetMessageHandler(CMessageHandler* pHandler);
 	void			SetMovable(bool set);
+	void			SetRoot(bool set);
 
+	CUIWnd*			GetRootWnd();
 	CUIWnd*			GetParent();
 	CUIWnd*			GetChildren(wchar_t* pwszName);
 	std::wstring&	GetName();
@@ -59,6 +63,7 @@ public:
 	SDL_Point		GetPos();
 	bool			GetMovable();
 	bool			GetShow();
+	bool			GetRoot();
 	
 private:
 

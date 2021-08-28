@@ -3,6 +3,8 @@
 #include "../Manager/UIManager.h"
 #include "../Manager/SystemManager.h"
 #include "../Manager/ModeManager.h"
+#include "../Manager/RenderManager.h"
+#include "DropButton.h"
 #include "UIWnd.h"
 
 CUIOption::CUIOption()
@@ -46,8 +48,40 @@ void CUIOption::OnMouseLeftButtonUp(SDL_Event& event)
 		{
 			ModeMgr->ChangeMode(eModeTypes_MainMenu);
 		}
+		else if (pWnd->GetName() == _T("Option_BG_Resolution"))
+		{
+			CDropButton* pDropButton = dynamic_cast<CDropButton*>(pWnd);
+			pDropButton->SetShowItems(true);			
+		}
+		else
+		{
+			CTextButton* pTextButton = dynamic_cast<CTextButton*>(pWnd);
+			if (pTextButton)
+			{
+				if (pTextButton->GetText() == L"1920*1080")
+				{
+					SYSMGR->SetWindowWidth(FHD_WIDTH);
+					SYSMGR->SetWindowHeight(FHD_HEIGHT);
+				}
+				else if (pTextButton->GetText() == L"1280*720")
+				{
+					SYSMGR->SetWindowWidth(HD_WIDTH);
+					SYSMGR->SetWindowHeight(HD_HEIGHT);
+				}
+
+				SYSMGR->ChangeResolution();
+				CDropButton* pDropButton = dynamic_cast<CDropButton*>(UIMGR->GetUIWndByName(_T("Option_BG_Resolution")));
+				if (pDropButton)
+					pDropButton->SetShowItems(false);
+			}
+		}
 	
 	}
+	/*CDropButton* pDropButton = dynamic_cast<CDropButton*>(UIMGR->GetUIWndByName(L"Option_BG_Resolution"));	
+	if (pDropButton)
+	{
+		pDropButton->SetShowItems(false);
+	}*/
 }
 
 void CUIOption::SetShow(bool bSet)
@@ -67,5 +101,12 @@ void CUIOption::SetShow(bool bSet)
 	}
 
 	m_bShow = bSet;
+
+	if (false == bSet)
+	{
+		CDropButton* pDropButton = dynamic_cast<CDropButton*>(UIMGR->GetUIWndByName(_T("Option_BG_Resolution")));
+		pDropButton->SetShowItems(false);
+	}
+	
 	m_pRootWnd->SetShow(bSet);
 }

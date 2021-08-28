@@ -47,7 +47,8 @@ inline void CTextButton::Free()
 
 void CTextButton::Render()
 {
-	//Button Image
+	if (false == m_bShow)
+		return;
 
 	if (m_pImageTexture)
 	{
@@ -145,6 +146,28 @@ void CTextButton::SetText(const std::wstring& wstText)
 	}
 }
 
+void CTextButton::SetTextAsItemInDropButton(const std::wstring& wstText, CUIWnd* pParent)
+{
+	m_Text = wstText;
+
+	CSingleTexture* pTexture = dynamic_cast<CSingleTexture*>(m_pFontTexture);
+
+	if (RSFONT->TextToTexture(wstText.c_str(), m_iTextSize, m_Color, pTexture->GetTexture()->GetTexturePointer(), m_FontTextureSize))
+	{
+		pTexture->GetTexture()->SetLoaded(true);
+		m_FontSrcRect.h = m_FontTextureSize.y;
+		m_FontSrcRect.w = m_FontTextureSize.x;
+		m_FontSrcRect.x = 0;
+		m_FontSrcRect.y = 0;
+
+		m_FontDestRect.h = m_FontTextureSize.y;
+		m_FontDestRect.w = m_FontTextureSize.x;
+
+		m_FontDestRect.x = pParent->GetPos().x + m_relativePos.x + (m_destRect.w - m_FontDestRect.w) / 2;
+		m_FontDestRect.y = pParent->GetPos().y + m_relativePos.y + (m_destRect.h - m_FontDestRect.h) / 2;
+	}
+}
+
 void CTextButton::SetIdleImage(CComponent* pImage)
 {
 	if (!pImage)
@@ -190,8 +213,6 @@ void CTextButton::SetHorizontalAlign(eUITextAlignType eType)
 
 void CTextButton::SetShow(bool bSet)
 {
-	m_bShow = bSet;
-
 	if (false == m_pImageTexture->GetTexture()->GetLoaded())
 	{
 		RSCMgr->LoadTexture(m_pImageTexture->GetTexture()->GetName(), m_pImageTexture->GetTexture()->GetPath());
@@ -203,6 +224,36 @@ void CTextButton::SetShow(bool bSet)
 std::wstring& CTextButton::GetText()
 {
 	return m_Text;
+}
+
+CComponent* CTextButton::GetIdleImage()
+{
+	return m_pIdle_Image;
+}
+
+CComponent* CTextButton::GetClickedImage()
+{
+	return m_pClicked_Image;
+}
+
+CComponent* CTextButton::GetOnMouseImage()
+{
+	return m_pOnMouse_Image;
+}
+
+int CTextButton::GetTextSize()
+{
+	return m_iTextSize;
+}
+
+eUITextAlignType CTextButton::GetVerticalAlign()
+{
+	return m_VerticalAlign;
+}
+
+eUITextAlignType CTextButton::GetHorizontalAlign()
+{
+	return m_HorizontalAlign;
 }
 
 

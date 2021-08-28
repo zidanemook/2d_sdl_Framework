@@ -188,6 +188,13 @@ bool CRenderManager::Init(SDL_Window * pWindow)
 	return bResult;
 }
 
+//bool CRenderManager::Recreate(SDL_Window* pWindow)
+//{
+//	SDL_DestroyRenderer(m_pRenderer);
+//
+//	return Init(pWindow);
+//}
+
 void CRenderManager::RenderClear()
 {
 	SDL_RenderClear(m_pRenderer);

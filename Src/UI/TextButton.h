@@ -5,7 +5,7 @@ class CComponent;
 class CSingleTexture;
 class CTextButton : public CUIWnd
 {
-private:
+protected:
 	explicit CTextButton();
 	~CTextButton();
 
@@ -15,7 +15,6 @@ public:
 
 public:
 	virtual void		Render();
-	//virtual void		HandleEvent(SDL_Event& event);
 	virtual void		SetPos(SDL_Point& Point);
 
 	virtual void		OnMouseLeftButtonUp(SDL_Event& event);
@@ -23,7 +22,7 @@ public:
 	virtual void		OnMouseOver(SDL_Event& event);
 	virtual void		OnMouseOut(SDL_Event& event);
 
-private:
+protected:
 	std::wstring		m_Text;
 	CSingleTexture*		m_pFontTexture;//Font
 	SDL_Point			m_FontTextureSize;
@@ -41,6 +40,7 @@ private:
 public:
 	//void SetText(const wchar_t* pwszText);
 	void SetText(const std::wstring& wstText);
+	void SetTextAsItemInDropButton(const std::wstring& wstText, CUIWnd* pParent);
 	void SetIdleImage(CComponent* pImage);
 	void SetClickedImage(CComponent* pImage);
 	void SetOnMouseImage(CComponent* pImage);
@@ -49,6 +49,13 @@ public:
 	void SetHorizontalAlign(eUITextAlignType eType);
 
 	std::wstring& GetText();
+	CComponent* GetIdleImage();
+	CComponent* GetClickedImage();
+	CComponent* GetOnMouseImage();
+	int GetTextSize();
+	eUITextAlignType GetVerticalAlign();
+	eUITextAlignType GetHorizontalAlign();
+
 
 public:
 	virtual void SetShow(bool bSet);

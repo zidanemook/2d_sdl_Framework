@@ -28,10 +28,13 @@ public:
 
 public:
 	bool Init(const char* title, int xpos, int ypos, bool fullscreen);
+	bool ChangeResolution();
 
 	SDL_Window * GetWindow();
 	int			GetWindowWidth();
+	void		SetWindowWidth(int width);
 	int			GetWindowHeight();
+	void		SetWindowHeight(int Height);
 	bool		LoadConfig(const wchar_t* wszfilepath);
 	bool		SaveConfig();
 	std::wstring	GetConfigPath();
@@ -41,7 +44,9 @@ private:
 	//SDL_Renderer *m_pRenderer;
 	int	m_iWidth;
 	int m_iHeight;
+	bool m_bResolutionChange;
 	int m_iFlag;
+	std::string m_title;
 };
 
 #define SYSMGR	CSystemManager::GetInstance()

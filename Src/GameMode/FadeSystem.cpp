@@ -86,6 +86,9 @@ void CFadeSystem::OnRender()
 
 void CFadeSystem::Render()
 {
+	if (!m_bPlay)
+		return;
+
 	CTexture* pTexture = m_pBlack->GetTexture();
 	SDL_Rect srcRect;
 	srcRect.x = 0;

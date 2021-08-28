@@ -81,6 +81,7 @@ public:
 
 public:
 	bool Init(SDL_Window * pWindow);
+	//bool Recreate(SDL_Window* pWindow);
 	void RenderClear();
 	void RenderPresent();
 	void RenderCopy(SDL_Texture* pTexture, SDL_Rect* pSrcRect, SDL_Rect* pDestRect);

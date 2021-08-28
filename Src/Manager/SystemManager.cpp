@@ -7,10 +7,12 @@
 #define CONFIGFILE L"config.json"
 #define GAMENAME L"2DFramework"
 
+
+
 CSystemManager* CSystemManager::m_pInst = nullptr;
 
 CSystemManager::CSystemManager()
-	: m_iWidth(DEFAULT_SCREEN_WIDTH), m_iHeight(DEFAULT_SCREEN_HEIGHT)
+	: m_iWidth(HD_WIDTH), m_iHeight(HD_HEIGHT), m_bResolutionChange(false), m_iFlag(0)
 {
 }
 
@@ -24,6 +26,7 @@ CSystemManager::~CSystemManager()
 bool CSystemManager::Init(const char* title, int xpos, int ypos, bool fullscreen)
 {
 	bool bResult = false;
+	m_title = title;
 
 	if (fullscreen)
 	{
@@ -64,6 +67,15 @@ bool CSystemManager::Init(const char* title, int xpos, int ypos, bool fullscreen
 	return bResult;
 }
 
+bool CSystemManager::ChangeResolution()
+{
+	//not fullscreen
+	SDL_SetWindowSize(m_pWindow, m_iWidth, m_iHeight);
+	//SDL_SetWindowPosition(m_pWindow, )
+
+	return false;
+}
+
 SDL_Window * CSystemManager::GetWindow()
 {
 	return m_pWindow;
@@ -74,9 +86,27 @@ int CSystemManager::GetWindowWidth()
 	return m_iWidth;
 }
 
+void CSystemManager::SetWindowWidth(int width)
+{
+	if(m_iWidth != width)
+	{
+		m_iWidth = width;
+	}
+		
+}
+
 int CSystemManager::GetWindowHeight()
 {
 	return m_iHeight;
+}
+
+void CSystemManager::SetWindowHeight(int Height)
+{
+	if (m_iHeight != Height)
+	{
+		m_iHeight = Height;
+	}
+		
 }
 
 bool CSystemManager::LoadConfig(const wchar_t* wszfilepath)

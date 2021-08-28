@@ -8,8 +8,11 @@
 #define PUSHKEY			0x040
 #define HOLDKEY			0x080
 
-#define DEFAULT_SCREEN_WIDTH	1080
-#define DEFAULT_SCREEN_HEIGHT	720
+#define HD_WIDTH	1280
+#define HD_HEIGHT	720
+
+#define FHD_WIDTH	1920
+#define FHD_HEIGHT	1080
 
 enum eModeTypes
 {
@@ -134,6 +137,7 @@ enum eUIType
 	eUIType_TextButton,
 	eUIType_TextBox,//글자보여주고 스크롤기능도 있음
 	eUIType_ListBox,//목록보여주고 스크롤기능도 있음
+	eUIType_DropButton,
 	eUIType_Max
 };
 

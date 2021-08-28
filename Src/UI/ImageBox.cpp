@@ -47,8 +47,6 @@ void CImageBox::Render()
 
 void CImageBox::SetShow(bool bSet)
 {
-	m_bShow = bSet;
-
 	CSingleTexture* pSingleTexture = dynamic_cast<CSingleTexture*>(m_pSingleTexture);
 	if (false == pSingleTexture->GetTexture()->GetLoaded())
 	{

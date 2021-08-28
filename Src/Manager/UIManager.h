@@ -45,6 +45,8 @@ public:
 	void ParseImageBox(CUIWnd* pWnd, Json::ValueIterator& iter);
 	void ParseTextButton(CUIWnd* pWnd, Json::ValueIterator& iter);
 	void ParseTextBox(CUIWnd* pWnd, Json::ValueIterator& iter);
+	void ParseDropButton(CUIWnd* pWnd, Json::ValueIterator& iter);
+	void ParseDropButtonMenuItems(CUIWnd* pParentWnd, CUIWnd* pWnd, Json::ValueIterator& iter, int idx, std::wstring& text);
 	eUIType StringTypeToEnumType(const wchar_t* wszType);
 	eUITextAlignType VerticalAlignStringToEnum(const wchar_t* wszType);
 	eUITextAlignType HorizontalAlignStringToEnum(const wchar_t* wszType);

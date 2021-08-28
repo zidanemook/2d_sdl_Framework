@@ -5,10 +5,12 @@
 
 CUIWnd::CUIWnd()
 {
+	m_bShow = false;
 	m_pParent = NULL;
 	m_pMessageHander = NULL;
 	m_evtState = eUIEventState_None;
 	m_bmovable = false;
+	m_bRoot = false;
 }
 
 CUIWnd::~CUIWnd()
@@ -17,14 +19,15 @@ CUIWnd::~CUIWnd()
 
 void CUIWnd::Render()
 {
-	if (m_listChildren.empty())
-		return;
+	//if (m_listChildren.empty())
+	//	return;
 
-	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
-	for (iter; iter != m_listChildren.end(); ++iter)
-	{
-		(*iter)->Render();
-	}
+	//std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
+	//for (iter; iter != m_listChildren.end(); ++iter)
+	//{
+	//	if((*iter)->GetShow()==true)
+	//	(*iter)->Render();
+	//}
 }
 
 void CUIWnd::HandleEvent(SDL_Event& event)
@@ -37,7 +40,7 @@ void CUIWnd::HandleEvent(SDL_Event& event)
 	std::list<CUIWnd*>::reverse_iterator riter = m_listChildren.rbegin();
 	for (riter; riter != m_listChildren.rend(); ++riter)
 	{
-		if (PointToRectCollision(point, (*riter)->GetDestRect()))
+		if (PointToRectCollision(point, (*riter)->GetDestRect()) && (true == (*riter)->GetShow()))
 		{
 			(*riter)->HandleEvent(event);
 			collision = true;
@@ -49,6 +52,26 @@ void CUIWnd::HandleEvent(SDL_Event& event)
 	{
 		ProcessEvent(event);
 		UIMGR->SetFocusWnd(this);
+
+		if (event.button.button == SDL_BUTTON_LEFT && event.type == SDL_MOUSEBUTTONUP)
+		{
+			//Move render order to top within this object's parent
+			if (m_pParent)
+			{
+				m_pParent->DeleteChildren(GetName());
+				m_pParent->AddChildren(this);
+			}
+
+			//Move the render order of the root window of this object to the top
+			CUIWnd* pRootWnd = GetRootWnd();
+			if (pRootWnd)
+			{
+				pRootWnd->SetShow(false);
+				pRootWnd->SetShow(true);
+			}
+			
+		}
+		
 	}
 	
 	
@@ -124,8 +147,8 @@ void CUIWnd::SetSizeRate(SDL_Point& size)
 {
 	float fscreenx = (float)SYSMGR->GetWindowWidth();
 	float fscreeny = (float)SYSMGR->GetWindowHeight();
-	m_destRect.w = (float)size.x*fscreenx/100.f;
-	m_destRect.h = (float)size.y*fscreeny/100.f;
+	m_destRect.w = (float)size.x * fscreenx / 100.f;
+	m_destRect.h = (float)size.y * fscreeny / 100.f;
 }
 
 void CUIWnd::SetParent(CUIWnd* pWnd)
@@ -139,6 +162,20 @@ void CUIWnd::AddChildren(CUIWnd* pWnd)
 		return;
 
 	m_listChildren.push_back(pWnd);
+}
+
+void CUIWnd::DeleteChildren(std::wstring& wstrName)
+{
+	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
+
+	for (iter; iter != m_listChildren.end(); ++iter)
+	{
+		if ((*iter)->GetName() == wstrName)
+		{
+			m_listChildren.erase(iter);
+			break;
+		}
+	}
 }
 
 void CUIWnd::SetName(const wchar_t* pwszName)
@@ -161,19 +198,29 @@ void CUIWnd::SetMovable(bool set)
 	m_bmovable = set;
 }
 
+void CUIWnd::SetRoot(bool set)
+{
+	m_bRoot = set;
+}
+
 void CUIWnd::SetShow(bool set)
 {
+	if (set == m_bShow)
+		return;
+
 	m_bShow = set;
 
-	if (m_bShow)
-		UIMGR->AddToRenderList(this);
-	else
-	{
-		UIMGR->DeleteFromRenderListByName(this->GetName());
-		UIMGR->SetStickMouseWnd(NULL);
-	}
+	//if (m_bRoot)
+	//{
+		if (m_bShow)
+			UIMGR->AddToRenderList(this);
+		else
+		{
+			UIMGR->DeleteFromRenderListByName(this->GetName());
+			UIMGR->SetStickMouseWnd(NULL);
+		}
+	//}
 		
-
 	if (m_listChildren.empty())
 	return;
 
@@ -207,8 +254,6 @@ void CUIWnd::SetPos(SDL_Point& Point)
 	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
 	for (iter; iter != m_listChildren.end(); ++iter)
 	{
-		//point.x = (*iter)->GetDestRect().x;
-		//point.y = (*iter)->GetDestRect().y;
 		(*iter)->SetPos(Point);
 	}
 }
@@ -241,6 +286,19 @@ void CUIWnd::ProcessEvent(SDL_Event& event)
 	{
 		OnMouseRightButtonUp(event);	
 	}
+}
+
+CUIWnd* CUIWnd::GetRootWnd()
+{
+	CUIWnd* pRoot = m_pParent;
+	if (!pRoot)
+		return NULL;
+
+	while (pRoot->GetParent())
+	{
+		pRoot = pRoot->GetParent();
+	}
+	return pRoot;
 }
 
 CUIWnd* CUIWnd::GetParent()
@@ -289,5 +347,10 @@ bool CUIWnd::GetMovable()
 bool CUIWnd::GetShow()
 {
 	return m_bShow;
+}
+
+bool CUIWnd::GetRoot()
+{
+	return m_bRoot;
 }
 

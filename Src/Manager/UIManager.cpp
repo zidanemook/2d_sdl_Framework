@@ -9,7 +9,17 @@
 #include "../UI/UIOption.h"
 #include "../UI/UIMessageBox.h"
 #include "../UI/TextBox.h"
+#include "../UI/DropButton.h"
 #include "../Component/SingleTexture.h"
+
+#pragma warning(disable : 4996)
+
+#define UITYPE_IMAGEBOX		_T("ImageBox")
+#define UITYPE_TEXTBUTTON	_T("TextButton")
+#define UITYPE_TEXTBOX		_T("TextBox")
+#define UITYPE_LISTBOX		_T("ListBox")
+#define UITYPE_DROPBUTTON	_T("DropButton")
+
 
 CUIManager* CUIManager::m_pInst = NULL;
 
@@ -85,6 +95,7 @@ CUIWnd* CUIManager::LoadUIFile(const std::wstring& UIFileName)
 	newWnd = RSCMgr->LoadUIJSONFile(UIFileName.c_str());
 	if (newWnd)
 	{
+		newWnd->SetRoot(true);
 		m_mapRootUI.insert(make_pair(UIFileName, newWnd));
 	}
 
@@ -163,6 +174,14 @@ CUIWnd* CUIManager::ParseUIWnd( Json::ValueIterator& iter)
 		break;
 	}
 
+	case eUIType_DropButton:
+	{
+		pWnd = CDropButton::Create();
+		ParseCommonAttribute(pWnd, iter, eType);
+		ParseDropButton(pWnd, iter);
+		break;
+	}
+
 	default:
 	{
 	}
@@ -174,9 +193,7 @@ CUIWnd* CUIManager::ParseUIWnd( Json::ValueIterator& iter)
 
 void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, eUIType eType)
 {
-	std::wstring wsName;
-	SDL_Point Point;
-
+	
 	CUIWnd* pParent = NULL;
 	pParent = GetUIWndByName(MToW(((*iter)["Parent"]).asString().c_str()));
 	if (pParent)
@@ -184,31 +201,32 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 		pWnd->SetParent(pParent);
 		pParent->AddChildren(pWnd);
 	}
-		
-	
+
 	pWnd->SetUIType(eType);
 
-	//std::wstring temp = MToW(((*iter)["Name"]).asString().c_str());
-	//if(!temp.empty())
-		wsName = MToW(((*iter)["Name"]).asString().c_str());
-	if (wsName.empty())
-	{
-		if(pParent)
-			wsName = pParent->GetName() + _T("_");
-		wsName += MToW(((*iter)["UIType"]).asString().c_str());
-		wchar_t number[16];
-		_itow_s(((*iter)["XPos"]).asInt(), number, 10);
-		wsName += _T("_");
-		wsName += number;
-		_itow_s(((*iter)["YPos"]).asInt(), number, 10);
-		wsName += _T("_");
-		wsName += number;
-	}
-	pWnd->SetName(wsName.c_str());
-
-
+	SDL_Point Point;
 	Point.x = (*iter)["XPos"].asInt();
 	Point.y = (*iter)["YPos"].asInt();
+
+	std::wstring wstrName;
+	wstrName = MToW(((*iter)["Name"]).asString().c_str());
+	if (wstrName.empty())
+	{
+		if (pParent)
+		{
+			wchar_t wszName[MAX_PATH] = { 0, };
+			wchar_t wszX[32]={ 0, };
+			wchar_t wszY[32]={ 0, };
+			std::wstring wstrType;
+			_itow_s(Point.x, wszX, 10);
+			_itow_s(Point.y, wszY, 10);
+			wstrType = MToW(((*iter)["UIType"]).asString().c_str()).c_str();
+			wsprintf(wszName, L"Parent_%s_Type_%s_XPos_%s_YPos%s", pParent->GetName().c_str(), wstrType.c_str(), wszX, wszY);
+			wstrName = wszName;
+		}
+	}
+	pWnd->SetName(wstrName.c_str());
+
 
 	if (pParent)
 	{
@@ -254,8 +272,6 @@ void CUIManager::ParseTextButton(CUIWnd* pWnd, Json::ValueIterator& iter)
 	std::wstring Button_OnMouse_ImageName = MToW(((*iter)["Button_OnMouse_ImageName"]).asString().c_str());
 	pTextButton->SetOnMouseImage(RSCMgr->GetNamingTextureByName(Button_OnMouse_ImageName));
 
-	//std::wstring FontType = MToW(((*iter)["Text"]["FontType"]).asString().c_str());
-
 	int FontSize = ((*iter)["Text"]["FontSize"]).asInt();
 	pTextButton->SetTextSize(FontSize);
 
@@ -291,25 +307,100 @@ void CUIManager::ParseTextBox(CUIWnd* pWnd, Json::ValueIterator& iter)
 	pTextBox->SetText(Text);
 }
 
+void CUIManager::ParseDropButton(CUIWnd* pWnd, Json::ValueIterator& iter)
+{
+	ParseTextButton(pWnd, iter);
+
+	Json::Value value = (*iter)["MenuItems"];
+
+	int itemcnt = value.size();
+	for (int i = 0; i < itemcnt; ++i)
+	{
+		std::wstring text = MToW(value[i].asString().c_str());
+
+		CTextButton* pButton = CTextButton::Create();
+		ParseDropButtonMenuItems(pWnd, pButton, iter, i, text);
+		
+	}
+}
+
+void CUIManager::ParseDropButtonMenuItems(CUIWnd* pParentWnd, CUIWnd* pWnd, Json::ValueIterator& iter, int idx, std::wstring& text)
+{
+	/*if (pParentWnd)
+	{
+		pWnd->SetParent(pParentWnd);
+		pParentWnd->AddChildren(pWnd);
+	}*/
+
+	//pWnd->SetParent(pParentWnd);
+	pWnd->SetMessageHandler(pParentWnd);
+	pWnd->SetUIType(eUIType_TextButton);
+
+	wchar_t wszName[MAX_PATH] = { 0, };
+	SDL_Point RelativePoint;
+	RelativePoint.x = 0;
+	RelativePoint.y = pParentWnd->GetDestRect().h * idx;
+	wchar_t wszX[32]{ 0, };
+	wchar_t wszY[32]{ 0, };
+	_itow(RelativePoint.x, wszX, 10);
+	_itow(RelativePoint.y, wszY, 10);
+	wsprintf(wszName, L"Parent_%s_Type_%s_XPos_%s_YPos%s", pParentWnd->GetName().c_str(), UITYPE_TEXTBUTTON, wszX, wszY);
+	pWnd->SetName(wszName);
+
+	pWnd->SetRelativePos(RelativePoint);
+
+	SDL_Point AbsolutePos;
+	AbsolutePos.x = RelativePoint.x + pParentWnd->GetPos().x;
+	AbsolutePos.y = RelativePoint.y + pParentWnd->GetPos().y;
+	pWnd->SetPos(AbsolutePos);
+	
+
+	SDL_Point size;
+	size.x = pParentWnd->GetDestRect().w;
+	size.y = pParentWnd->GetDestRect().h;
+	if (size.x != 0 || size.y != 0)
+		pWnd->SetSize(size);
+	
+	CTextButton* pParentButton = dynamic_cast<CTextButton*>(pParentWnd);
+	CTextButton* pTextButton = dynamic_cast<CTextButton*>(pWnd);	
+	pTextButton->SetIdleImage(pParentButton->GetIdleImage());
+	pTextButton->SetClickedImage(pParentButton->GetClickedImage());
+	pTextButton->SetOnMouseImage(pParentButton->GetOnMouseImage());
+	pTextButton->SetTextSize(pParentButton->GetTextSize());
+	pTextButton->SetHorizontalAlign(pParentButton->GetHorizontalAlign());
+	pTextButton->SetVerticalAlign(pParentButton->GetVerticalAlign());
+
+	pTextButton->SetTextAsItemInDropButton(text, pParentWnd);
+	
+
+
+	CDropButton* pDropButton = dynamic_cast<CDropButton*>(pParentWnd);
+	pDropButton->AddItem(pWnd);
+}
+
 eUIType CUIManager::StringTypeToEnumType(const wchar_t* wszType)
 {
 	eUIType eResult = eUIType_None;
 
-	if (0 == _tcscmp(wszType, _T("ImageBox")))
+	if (0 == _tcscmp(wszType, UITYPE_IMAGEBOX))
 	{
 		eResult = eUIType_ImageBox;
 	}
-	else if (0 == _tcscmp(wszType, _T("TextButton")))
+	else if (0 == _tcscmp(wszType, UITYPE_TEXTBUTTON))
 	{
 		eResult = eUIType_TextButton;
 	}
-	else if (0 == _tcscmp(wszType, _T("TextBox")))
+	else if (0 == _tcscmp(wszType, UITYPE_TEXTBOX))
 	{
 		eResult = eUIType_TextBox;
 	}
-	else if (0 == _tcscmp(wszType, _T("ListBox")))
+	else if (0 == _tcscmp(wszType, UITYPE_LISTBOX))
 	{
 		eResult = eUIType_ListBox;
+	}
+	else if (0 == _tcscmp(wszType, UITYPE_DROPBUTTON))
+	{
+		eResult = eUIType_DropButton;
 	}
 
 	return eResult;
