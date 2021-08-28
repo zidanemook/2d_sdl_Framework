@@ -83,6 +83,7 @@ void CUIMessageBox::SetShow(bool bSet)
 		m_eFuntionType = eUIMessageBoxFuntionType_None;
 	}
 	
+
 }
 
 bool CUIMessageBox::GetShow()

@@ -121,6 +121,11 @@ CComponent* CTextBox::GetImage()
 	return m_pImageTexture;
 }
 
+std::wstring& CTextBox::GetText()
+{
+	return m_Text;
+}
+
 void CTextBox::SetTextSize(int iSize)
 {
 	m_iTextSize = iSize;
@@ -138,7 +143,6 @@ void CTextBox::SetHorizontalAlign(eUITextAlignType eType)
 
 void CTextBox::SetShow(bool bSet)
 {
-	m_bShow = bSet;
 
 	if (false == m_pImageTexture->GetTexture()->GetLoaded())
 	{

@@ -36,7 +36,8 @@ public:
 	void SetVerticalAlign(eUITextAlignType eType);
 	void SetHorizontalAlign(eUITextAlignType eType);
 
-	CComponent* GetImage();
+	CComponent*		GetImage();
+	std::wstring&	GetText();
 
 public:
 	virtual void SetShow(bool bSet);

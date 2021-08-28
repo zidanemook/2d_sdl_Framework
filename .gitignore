@@ -74,3 +74,4 @@ x64/Release/FrameWork.tlog/CL.command.1.tlog
 x64/Release/FrameWork.tlog/CL.read.1.tlog
 x64/Release/FrameWork.tlog/CL.write.1.tlog
 *.tlog
+*.enc

@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "UIWnd.h"
+#include "TextBox.h"
+#include "TextButton.h"
 #include "../Manager/UIManager.h"
 #include "../Manager/SystemManager.h"
 
@@ -56,7 +58,7 @@ void CUIWnd::HandleEvent(SDL_Event& event)
 		if (event.button.button == SDL_BUTTON_LEFT && event.type == SDL_MOUSEBUTTONUP)
 		{
 			//Move render order to top within this object's parent
-			if (m_pParent)
+			if (m_pParent && true == GetShow())
 			{
 				m_pParent->DeleteChildren(GetName());
 				m_pParent->AddChildren(this);
@@ -64,7 +66,7 @@ void CUIWnd::HandleEvent(SDL_Event& event)
 
 			//Move the render order of the root window of this object to the top
 			CUIWnd* pRootWnd = GetRootWnd();
-			if (pRootWnd)
+			if (pRootWnd && true == GetShow())
 			{
 				pRootWnd->SetShow(false);
 				pRootWnd->SetShow(true);
@@ -137,6 +139,76 @@ void CUIWnd::OnMouseOut(SDL_Event& event)
 		m_pParent->OnMouseOut(event);
 }
 
+void CUIWnd::SetPos(SDL_Point& Point)
+{
+	if (m_pParent)
+	{
+		m_destRect.x = m_relativePos.x + m_pParent->GetPos().x;
+		m_destRect.y = m_relativePos.y + m_pParent->GetPos().y;
+	}
+	else
+	{
+		m_destRect.x = Point.x;
+		m_destRect.y = Point.y;
+	}
+
+	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
+	for (iter; iter != m_listChildren.end(); ++iter)
+	{
+		(*iter)->SetPos(Point);
+	}
+}
+
+void CUIWnd::SetPosRate(SDL_Point& pos)
+{
+	m_PosRate = pos;
+}
+
+void CUIWnd::SetRePos()
+{
+	SDL_Point Pos;
+	Pos.x = m_destRect.x;
+	Pos.y = m_destRect.y;
+	if (m_PosRate.x != 0 || m_PosRate.y != 0)
+	{
+		if(m_pParent)
+			SetRelativePosRate(m_PosRate);
+		else
+		{
+			float fscreenw = (float)SYSMGR->GetWindowWidth();
+			float fscreenh = (float)SYSMGR->GetWindowHeight();
+			Pos.x = int((float)m_PosRate.x * fscreenw / 100.f);
+			Pos.y = int((float)m_PosRate.y * fscreenh / 100.f);
+		}
+
+		SetPos(Pos);
+	}
+
+	if (eUIType_TextBox == m_eUIType)
+	{
+		CTextBox* pTextBox = dynamic_cast<CTextBox*>(this);
+		if (pTextBox)
+		{
+			pTextBox->SetText(pTextBox->GetText());
+		}
+	}
+	else if (eUIType_TextButton == m_eUIType)
+	{
+		CTextButton* pTextButton = dynamic_cast<CTextButton*>(this);
+		if (pTextButton)
+		{
+			pTextButton->SetText(pTextButton->GetText());
+		}
+	}
+
+	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
+	for (iter; iter != m_listChildren.end(); ++iter)
+	{
+		(*iter)->SetRePos();
+	}
+
+}
+
 void CUIWnd::SetSize(SDL_Point& size)
 {
 	m_destRect.w = size.x;
@@ -145,10 +217,47 @@ void CUIWnd::SetSize(SDL_Point& size)
 
 void CUIWnd::SetSizeRate(SDL_Point& size)
 {
+	m_SizeRate = size;
+
 	float fscreenx = (float)SYSMGR->GetWindowWidth();
 	float fscreeny = (float)SYSMGR->GetWindowHeight();
-	m_destRect.w = (float)size.x * fscreenx / 100.f;
-	m_destRect.h = (float)size.y * fscreeny / 100.f;
+	m_destRect.w = int((float)size.x * fscreenx / 100.f);
+	m_destRect.h = int((float)size.y * fscreeny / 100.f);
+}
+
+void CUIWnd::SetResize()
+{
+	if (m_SizeRate.x != 0 || m_SizeRate.y != 0)
+		SetSizeRate(m_SizeRate);
+
+	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
+	for (iter; iter != m_listChildren.end(); ++iter)
+	{
+		(*iter)->SetResize();
+	}
+}
+
+void CUIWnd::SetRelativePos(SDL_Point& pos)
+{
+	//if (m_pParent)
+	//{
+		m_relativePos.x = pos.x;
+		m_relativePos.y = pos.y;
+	//}
+}
+
+void CUIWnd::SetRelativePosRate(SDL_Point& pos)
+{
+	m_PosRate = pos;
+
+	//if (m_pParent)
+	//{
+		float fParentw = m_pParent->GetDestRect().w;
+		float fParenth = m_pParent->GetDestRect().h;
+		m_relativePos.x = int((float)pos.x * fParentw / 100.f);
+		m_relativePos.y = int((float)pos.y * fParenth / 100.f);
+	//}
+	
 }
 
 void CUIWnd::SetParent(CUIWnd* pWnd)
@@ -228,33 +337,6 @@ void CUIWnd::SetShow(bool set)
 	for (iter; iter != m_listChildren.end(); ++iter)
 	{
 		(*iter)->SetShow(set);
-	}
-}
-
-void CUIWnd::SetRelativePos(SDL_Point& pos)
-{
-	m_relativePos.x = pos.x;
-	m_relativePos.y = pos.y;
-}
-
-void CUIWnd::SetPos(SDL_Point& Point)
-{
-	if (m_pParent)
-	{
-		m_destRect.x = m_relativePos.x + m_pParent->GetPos().x;
-		m_destRect.y = m_relativePos.y + m_pParent->GetPos().y;
-	}
-	else
-	{
-		m_destRect.x = Point.x;
-		m_destRect.y = Point.y;
-	}
-
-	SDL_Point point;
-	std::list<CUIWnd*>::iterator iter = m_listChildren.begin();
-	for (iter; iter != m_listChildren.end(); ++iter)
-	{
-		(*iter)->SetPos(Point);
 	}
 }
 

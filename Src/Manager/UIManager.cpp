@@ -2,6 +2,7 @@
 #include "UIManager.h"
 #include "ResourceManager.h"
 #include "RenderManager.h"
+#include "SystemManager.h"
 #include "../UI/UIWnd.h"
 #include "../UI/ImageBox.h"
 #include "../UI/TextButton.h"
@@ -204,40 +205,49 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 
 	pWnd->SetUIType(eType);
 
-	SDL_Point Point;
-	Point.x = (*iter)["XPos"].asInt();
-	Point.y = (*iter)["YPos"].asInt();
+	SDL_Point Pos;
+	Pos.x = (*iter)["XPos"].asInt();
+	Pos.y = (*iter)["YPos"].asInt();
 
-	std::wstring wstrName;
-	wstrName = MToW(((*iter)["Name"]).asString().c_str());
-	if (wstrName.empty())
-	{
-		if (pParent)
-		{
-			wchar_t wszName[MAX_PATH] = { 0, };
-			wchar_t wszX[32]={ 0, };
-			wchar_t wszY[32]={ 0, };
-			std::wstring wstrType;
-			_itow_s(Point.x, wszX, 10);
-			_itow_s(Point.y, wszY, 10);
-			wstrType = MToW(((*iter)["UIType"]).asString().c_str()).c_str();
-			wsprintf(wszName, L"Parent_%s_Type_%s_XPos_%s_YPos%s", pParent->GetName().c_str(), wstrType.c_str(), wszX, wszY);
-			wstrName = wszName;
-		}
-	}
-	pWnd->SetName(wstrName.c_str());
-
-
+	SDL_Point PosRate;
 	if (pParent)
 	{
-		pWnd->SetRelativePos(Point);
+		if (Pos.x != 0 || Pos.y != 0)
+		{
+			pWnd->SetRelativePos(Pos);
+		}
+		else
+		{		
+			PosRate.x = (*iter)["XPosRate"].asInt();
+			PosRate.y = (*iter)["YPosRate"].asInt();
+			pWnd->SetRelativePosRate(PosRate);
+		}
 	}
+	else
+	{
+		if (Pos.x != 0 || Pos.y != 0)
+		{
+		}
+		else
+		{
+			PosRate.x = (*iter)["XPosRate"].asInt();
+			PosRate.y = (*iter)["YPosRate"].asInt();
+			pWnd->SetPosRate(PosRate);
 
-	pWnd->SetPos(Point);
+			float fscreenw = (float)SYSMGR->GetWindowWidth();
+			float fscreenh = (float)SYSMGR->GetWindowHeight();
+			Pos.x = int((float)PosRate.x * fscreenw / 100.f);
+			Pos.y = int((float)PosRate.y * fscreenh / 100.f);
+		}	
+	}
+	pWnd->SetPos(Pos);
+		
+
+		
 
 	SDL_Point sizerate;
-	sizerate.x = (*iter)["XRate"].asInt();
-	sizerate.y = (*iter)["YRate"].asInt();
+	sizerate.x = (*iter)["XSizeRate"].asInt();
+	sizerate.y = (*iter)["YSizeRate"].asInt();
 	if (sizerate.x != 0 || sizerate.y != 0)
 		pWnd->SetSizeRate(sizerate);
 
@@ -250,6 +260,26 @@ void CUIManager::ParseCommonAttribute(CUIWnd* pWnd, Json::ValueIterator& iter, e
 
 	bool bmovable = (*iter)["movable"].asBool();
 	pWnd->SetMovable(bmovable);
+
+
+	std::wstring wstrName;
+	wstrName = MToW(((*iter)["Name"]).asString().c_str());
+	if (wstrName.empty())
+	{
+		if (pParent)
+		{
+			wchar_t wszName[MAX_PATH] = { 0, };
+			wchar_t wszX[32] = { 0, };
+			wchar_t wszY[32] = { 0, };
+			std::wstring wstrType;
+			_itow_s(Pos.x, wszX, 10);
+			_itow_s(Pos.y, wszY, 10);
+			wstrType = MToW(((*iter)["UIType"]).asString().c_str()).c_str();
+			wsprintf(wszName, L"Parent_%s_Type_%s_XPos_%s_YPos%s", pParent->GetName().c_str(), wstrType.c_str(), wszX, wszY);
+			wstrName = wszName;
+		}
+	}
+	pWnd->SetName(wstrName.c_str());
 }
 
 void CUIManager::ParseImageBox(CUIWnd* pWnd, Json::ValueIterator& iter)
@@ -339,7 +369,7 @@ void CUIManager::ParseDropButtonMenuItems(CUIWnd* pParentWnd, CUIWnd* pWnd, Json
 	wchar_t wszName[MAX_PATH] = { 0, };
 	SDL_Point RelativePoint;
 	RelativePoint.x = 0;
-	RelativePoint.y = pParentWnd->GetDestRect().h * idx;
+	RelativePoint.y = (pParentWnd->GetDestRect().h + 5)* idx;
 	wchar_t wszX[32]{ 0, };
 	wchar_t wszY[32]{ 0, };
 	_itow(RelativePoint.x, wszX, 10);
@@ -533,6 +563,24 @@ void CUIManager::StciMouseProcess(SDL_Event& event)
 		ptWnd.y = ptMouse.y + m_ptDiff.y;
 
 		m_pStickMouseWnd->SetPos(ptWnd);
+	}
+}
+
+void CUIManager::RePosAllWnd()
+{
+	std::map<std::wstring, CUIWnd*>::iterator iter = m_mapRootUI.begin();
+	for (iter; iter != m_mapRootUI.end(); ++iter)
+	{
+		iter->second->SetRePos();
+	}
+}
+
+void CUIManager::ReSizeAllWnd()
+{
+	std::map<std::wstring, CUIWnd*>::iterator iter = m_mapRootUI.begin();
+	for (iter; iter != m_mapRootUI.end(); ++iter)
+	{
+		iter->second->SetResize();
 	}
 }
 

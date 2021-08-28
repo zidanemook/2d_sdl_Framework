@@ -70,6 +70,8 @@ void CUIOption::OnMouseLeftButtonUp(SDL_Event& event)
 				}
 
 				SYSMGR->ChangeResolution();
+				UIMGR->RePosAllWnd();
+				UIMGR->ReSizeAllWnd();
 				CDropButton* pDropButton = dynamic_cast<CDropButton*>(UIMGR->GetUIWndByName(_T("Option_BG_Resolution")));
 				if (pDropButton)
 					pDropButton->SetShowItems(false);

@@ -62,6 +62,8 @@ public:
 	CUIWnd* GetPreFocusWnd();
 	void SetStickMouseWnd(CUIWnd* pWnd);
 	void StciMouseProcess(SDL_Event& event);
+	void RePosAllWnd();
+	void ReSizeAllWnd();
 
 public:
 	CUIMainMenu*	GetUIMainMenu();

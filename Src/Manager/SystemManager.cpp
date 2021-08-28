@@ -67,6 +67,11 @@ bool CSystemManager::Init(const char* title, int xpos, int ypos, bool fullscreen
 	return bResult;
 }
 
+void CSystemManager::Destroy()
+{
+	SaveConfig();
+}
+
 bool CSystemManager::ChangeResolution()
 {
 	//not fullscreen

@@ -18,6 +18,7 @@ public:
 
 	void DestroyInstance(void)
 	{
+		Destroy();
 		delete m_pInst;
 		m_pInst = NULL;
 	}
@@ -28,6 +29,7 @@ public:
 
 public:
 	bool Init(const char* title, int xpos, int ypos, bool fullscreen);
+	void Destroy();
 	bool ChangeResolution();
 
 	SDL_Window * GetWindow();
